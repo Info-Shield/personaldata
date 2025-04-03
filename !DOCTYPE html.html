@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Индивидуальный проект: Защита персональных данных</title>
+  <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=jIrR3nHNH_4Vqd-rqWv4H63eCiOv9Z4_hHemcJJH42szKi-VaSwJMHPwx26UAEbp8bI9A-KBVnPR0_4KxEuOD0g0lU2e3BH10qoc3UEeU9eeN1qpr__2nXv-3jIJQi7IIzsjYH_6CEJriAD1FGlvq6r1Jabz7pMkz3-BY7dkJ8aOYlVu3FfZkyG8wJQwzmWKldBbivVSS1yrp_P7G0pCJ8bTHq_kFFnQu7IBykPFXG1zK1l28Y12Ov5a_XpKAEyfCrl9_ATX9OgS_5h37R8g4Q8YnNt4A0yROhUveo64uUn19B3DZUygAHb7aAVOaLF9OTmetKBM2wyJkUW1SwNpX1UBAHe2KR0BO4FupuO-xP2vKo-yTsXrVys3YIwv61DHKpn1j9Vtrmjlbd0gBEyJFlidZIOeF6lEZLtO2C5R-Tp0CM2erTRASsLg894iRHfGkYEENrnfCGEZy2Lf2zB98FLhxS0vvpNgRn-9dlz67nqnWrtJTY9jSZWXO8Yhjo2eioN4qZZIKMmXTqtTYsTIXL0ANQU-XU9u0Mo7Q-NlFu3Lxw7sfEy0kz8pbaBxycAhyNbFkUZt1bu7yjtPawPfMEfHj8HB5qaPLcwhFa0CVE0gFurIfSTntm6t85zXx5FjKlin-OfsnHOsXkjQV-GqKxym-QEBeW_o4UwVhAW-BlMQM55fWiSa3kH3kntpovfL32VBUqzjMw4ufXnuu4a5JM7DSF5CILEYhqhmqQ0HrPjyWYA4bz21MueuLYLgeUw41RveKtiOEWC0TQV8Tpzl_qNgiShYtwL1PTTQwsOoZvZ1RJk_tviv1lOavlbX8DcJ6f_5OC7IaSjdz2C-y-iDAKy1X6Sv2d_ClZGls5XiQJk8beRMvRkCa0qZezL_RP4E" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    /* Улучшенные стили для контейнеров с контентом */
+    .content-page-section {
+      background: #ffffff;
+      box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1), 0 8px 16px -4px rgba(0, 0, 0, 0.05);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .content-page-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.15);
+    }
+    /* Градиенты для секций */
+    .section-gradient {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(245, 248, 255, 0.88) 100%);
+      backdrop-filter: blur(8px);
+      transition: background 0.3s ease;
+    }
+    /* Кастомизация кнопок */
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .btn:hover {
+      transform: scale(1.02);
+    }
+    /* Навигация */
+    nav a.active {
+      color: #cbd5e1;
+      font-weight: 600;
+      background-color: rgba(255, 255, 255, 0.25);
+      box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+      border-radius: 0.5rem;
+    }
+    /* Логотип с SVG */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .logo svg {
+      width: 40px;
+      height: 40px;
+    }
+    /* Заголовки в блоке шапки */
+    #header-title-block h1, #header-title-block h2 {
+      transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    }
+    #header-title-block.hidden h1 {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    #header-title-block.hidden h2 {
+      transform: translateY(-10px);
+      opacity: 0;
+    }
+    /* Анимация для смены страниц */
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(20px); }
+    }
+    .fade-out-animation {
+      animation: fadeOut 0.3s ease-out forwards;
+    }
+    /* Плавная кнопка "Наверх" */
+    #scrollToTop {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      padding: 0.75rem;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 0.7;
+    }
+    #scrollToTop:hover {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+    /* Стили для элементов контента (копия стилей) */
+    .content-section h1 { @apply text-4xl md:text-5xl font-extrabold text-blue-800 mb-8 border-b pb-4; }
+    .content-section h2 { @apply text-3xl font-bold text-gray-800 mb-4 mt-8 border-l-4 border-blue-500 pl-4; }
+    .content-section h3 { @apply text-2xl font-semibold text-gray-700 mb-3 mt-6; }
+    .content-section h4 { @apply text-xl font-semibold text-gray-600 mb-2 mt-4; }
+    .content-section p { @apply text-lg leading-relaxed text-gray-700 mb-4; }
+    .content-section ul { @apply list-disc list-inside space-y-2 text-lg text-gray-700 mb-4 pl-4; }
+    .content-section ol { @apply list-decimal list-inside space-y-2 text-lg text-gray-700 mb-4 pl-4; }
+    .content-section strong { @apply font-semibold text-gray-900; }
+    .content-section .icon { @apply inline-block mr-2 text-xl align-middle; }
+    .content-section .note { @apply italic text-gray-600 text-base mt-2 mb-4; }
+    .content-section .highlight-box { @apply bg-blue-50 border border-blue-200 p-4 rounded-lg mb-4 text-blue-800; }
+    /* Карточки */
+    .content-section .grid > div {
+      @apply transition-shadow duration-300 hover:shadow-lg border border-gray-200 rounded-lg;
+    }
+    .content-section .grid h3 .icon {
+      @apply text-xl mr-3;
+    }
+    .content-section .grid p { max-width: none; }
+  </style>
+</head>
+<body class="text-gray-800">
+  <!-- HEADER -->
+  <header class="bg-gradient-to-r from-indigo-800 to-blue-800 text-white shadow-2xl">
+    <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+      <!-- Логотип с текстом -->
+      <div class="logo flex items-center mb-4 md:mb-0" data-aos="fade-right" data-aos-delay="100">
+        <!-- Простой SVG-логотип: щит -->
+        <svg viewBox="0 0 64 64" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 2L6 12v16c0 16.57 10.75 31.44 26 36 15.25-4.56 26-19.43 26-36V12L32 2z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        <a href="#" onclick="return false;" class="nav-link text-3xl font-bold tracking-tight hover:opacity-90 transition duration-300" data-target="page-home">Защита ПД</a>
+      </div>
+      <nav id="main-nav" data-aos="fade-left" data-aos-delay="200">
+        <ul class="flex flex-wrap justify-center space-x-4 md:space-x-6 text-lg">
+          <li><a href="#" data-target="page-home" class="nav-link hover:text-blue-200 transition duration-300 px-3 py-2 rounded-md font-medium">Главная</a></li>
+          <li><a href="#" data-target="page-definition" class="nav-link hover:text-blue-200 transition duration-300 px-3 py-2 rounded-md font-medium">Понятие ПД</a></li>
+          <li><a href="#" data-target="page-problems" class="nav-link hover:text-blue-200 transition duration-300 px-3 py-2 rounded-md font-medium">Проблемы</a></li>
+          <li><a href="#" data-target="page-threats" class="nav-link hover:text-blue-200 transition duration-300 px-3 py-2 rounded-md font-medium">Угрозы</a></li>
+          <li><a href="#" data-target="page-security_measures" class="nav-link hover:text-blue-200 transition duration-300 px-3 py-2 rounded-md font-medium">Меры защиты</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div id="header-title-block" class="text-center py-10 overflow-hidden">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight">Индивидуальный проект</h1>
+      <h2 class="text-xl md:text-2xl font-light opacity-90">Защита персональных данных</h2>
+    </div>
+  </header>
+  <!-- MAIN -->
+  <main class="container mx-auto px-4 py-12">
+    <!-- ДОМАШНЯЯ СТРАНИЦА -->
+    <div id="page-home" class="page-section">
+      <section class="bg-white shadow-2xl rounded-3xl p-8 md:p-10 mb-12 section-gradient card-hover" data-aos="fade-up">
+        <div class="flex items-center mb-6">
+          <i class="fas fa-bullseye text-5xl text-blue-600 mr-6" data-aos="zoom-in" data-aos-delay="100"></i>
+          <h2 class="text-3xl md:text-4xl font-bold text-blue-800">Цель Проекта</h2>
+        </div>
+        <p class="text-xl text-gray-700 leading-relaxed">
+          Изучение основных аспектов защиты персональных данных, а также выявление проблем и разработка рекомендаций для повышения уровня безопасности личной информации.
+        </p>
+      </section>
+
+      <section class="bg-white shadow-2xl rounded-3xl p-8 md:p-10 mb-12 section-gradient card-hover" data-aos="fade-up" data-aos-delay="100">
+        <div class="flex items-center mb-6">
+          <i class="fas fa-info-circle text-5xl text-green-600 mr-6" data-aos="zoom-in" data-aos-delay="200"></i>
+          <h2 class="text-3xl md:text-4xl font-bold text-green-800">Что такое персональные данные?</h2>
+        </div>
+        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+          Персональные данные — это любая информация, которая прямо или косвенно позволяет идентифицировать конкретного человека. Это могут быть:
+        </p>
+        <ul class="space-y-4 text-lg text-gray-700 mb-8 pl-6">
+          <li class="flex items-start" data-aos="fade-left" data-aos-delay="100">
+            <i class="fas fa-check-circle text-green-500 mr-4 mt-1"></i>
+            <span><strong class="font-medium text-gray-800">Общие данные:</strong> имя, возраст, адрес</span>
+          </li>
+          <li class="flex items-start" data-aos="fade-left" data-aos-delay="200">
+            <i class="fas fa-check-circle text-green-500 mr-4 mt-1"></i>
+            <span><strong class="font-medium text-gray-800">Идентификационные данные:</strong> паспортные данные, номер телефона, электронная почта</span>
+          </li>
+          <li class="flex items-start" data-aos="fade-left" data-aos-delay="300">
+            <i class="fas fa-check-circle text-green-500 mr-4 mt-1"></i>
+            <span><strong class="font-medium text-gray-800">Биометрические данные:</strong> отпечатки пальцев, фото лица, голосовые образцы</span>
+          </li>
+          <li class="flex items-start" data-aos="fade-left" data-aos-delay="400">
+            <i class="fas fa-check-circle text-green-500 mr-4 mt-1"></i>
+            <span><strong class="font-medium text-gray-800">Финансовые данные:</strong> номера банковских карт, история транзакций</span>
+          </li>
+          <li class="flex items-start" data-aos="fade-left" data-aos-delay="500">
+            <i class="fas fa-check-circle text-green-500 mr-4 mt-1"></i>
+            <span><strong class="font-medium text-gray-800">Специальные категории:</strong> здоровье, взгляды и т.д.</span>
+          </li>
+        </ul>
+        <a href="#" data-target="page-definition" class="nav-link btn bg-green-600 text-white hover:bg-green-700" data-aos="fade-up" data-aos-delay="600">
+          Подробнее о понятии и элементах <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </section>
+
+      <div class="grid md:grid-cols-2 gap-12 mb-12">
+        <section class="bg-white shadow-2xl rounded-3xl p-8 md:p-10 section-gradient card-hover flex flex-col" data-aos="fade-right" data-aos-delay="200">
+          <div class="flex items-center mb-6">
+            <i class="fas fa-user-secret text-5xl text-red-600 mr-6" data-aos="zoom-in" data-aos-delay="300"></i>
+            <h2 class="text-3xl md:text-4xl font-bold text-red-800">Основные Угрозы</h2>
+          </div>
+          <p class="text-lg text-gray-700 leading-relaxed mb-4">
+            Данные могут быть скомпрометированы различными способами:
+          </p>
+          <div class="space-y-4 text-lg text-gray-700 mb-6 flex-grow">
+            <div class="flex items-start" data-aos="fade-up" data-aos-delay="100">
+              <i class="fas fa-laptop-code text-red-500 mr-4 mt-1"></i>
+              <span><strong class="font-medium text-red-700">Технические:</strong> Вредоносное ПО, взлом систем, DDoS.</span>
+            </div>
+            <div class="flex items-start" data-aos="fade-up" data-aos-delay="200">
+              <i class="fas fa-sitemap text-red-500 mr-4 mt-1"></i>
+              <span><strong class="font-medium text-red-700">Организационные:</strong> Слабые политики, отсутствие контроля.</span>
+            </div>
+            <div class="flex items-start" data-aos="fade-up" data-aos-delay="300">
+              <i class="fas fa-users text-red-500 mr-4 mt-1"></i>
+              <span><strong class="font-medium text-red-700">Человеческий фактор:</strong> Фишинг, соц. инженерия, ошибки.</span>
+            </div>
+            <div class="flex items-start" data-aos="fade-up" data-aos-delay="400">
+              <i class="fas fa-building text-red-500 mr-4 mt-1"></i>
+              <span><strong class="font-medium text-red-700">Физические:</strong> Кража носителей, доступ в помещения.</span>
+            </div>
+            <div class="flex items-start" data-aos="fade-up" data-aos-delay="500">
+              <i class="fas fa-cloud text-red-500 mr-4 mt-1"></i>
+              <span><strong class="font-medium text-red-700">Облачные:</strong> Недостаточная защита, ошибки конфигурации.</span>
+            </div>
+          </div>
+          <div class="mt-auto">
+            <a href="#" data-target="page-threats" class="nav-link btn bg-red-600 text-white hover:bg-red-700 mb-2" data-aos="fade-up" data-aos-delay="600">
+              Подробнее об угрозах <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </section>
+
+        <section class="bg-white shadow-2xl rounded-3xl p-8 md:p-10 section-gradient card-hover flex flex-col" data-aos="fade-left" data-aos-delay="200">
+          <div class="flex items-center mb-6">
+            <i class="fas fa-exclamation-circle text-5xl text-yellow-600 mr-6" data-aos="zoom-in" data-aos-delay="300"></i>
+            <h2 class="text-3xl md:text-4xl font-bold text-yellow-800">Проблемы Защиты</h2>
+          </div>
+          <p class="text-lg text-gray-700 leading-relaxed mb-4">
+            Эффективной защите данных мешают несколько ключевых проблем:
+          </p>
+          <div class="space-y-4 text-lg text-gray-700 mb-6 flex-grow">
+            <div class="flex items-start" data-aos="fade-up" data-aos-delay="100">
+              <i class="fas fa-user-graduate text-yellow-500 mr-4 mt-1"></i>
+              <span><strong class="font-medium text-yellow-700">Недостаточная осведомленность:</strong> Пользователи не осознают риски.</span>
+            </div>
+            <div class="flex items-start" data-aos="fade-up" data-aos-delay="200">
+              <i class="fas fa-building text-yellow-500 mr-4 mt-1"></i>
+              <span><strong class="font-medium text-yellow-700">Халатность организаций:</strong> Нарушение правил хранения и обработки.</span>
+            </div>
+            <div class="flex items-start" data-aos="fade-up" data-aos-delay="300">
+              <i class="fas fa-user-secret text-yellow-500 mr-4 mt-1"></i>
+              <span><strong class="font-medium text-yellow-700">Киберпреступность:</strong> Рост числа и сложности атак.</span>
+            </div>
+            <div class="flex items-start" data-aos="fade-up" data-aos-delay="400">
+              <i class="fas fa-bug text-yellow-500 mr-4 mt-1"></i>
+              <span><strong class="font-medium text-yellow-700">Технические уязвимости:</strong> Ошибки в ПО и старые системы.</span>
+            </div>
+            <div class="flex items-start" data-aos="fade-up" data-aos-delay="500">
+              <i class="fas fa-theater-masks text-yellow-500 mr-4 mt-1"></i>
+              <span><strong class="font-medium text-yellow-700">Социальная инженерия:</strong> Манипуляция людьми для получения доступа.</span>
+            </div>
+          </div>
+          <div class="mt-auto">
+            <a href="#" data-target="page-problems" class="nav-link btn bg-yellow-600 text-white hover:bg-yellow-700 mr-4 mb-2" data-aos="fade-up" data-aos-delay="600">
+              Подробнее о проблемах <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <section class="bg-white shadow-2xl rounded-3xl p-8 md:p-10 mb-12 section-gradient card-hover" data-aos="fade-up" data-aos-delay="300">
+        <div class="flex items-center mb-8">
+          <i class="fas fa-user-shield text-5xl text-indigo-600 mr-6" data-aos="zoom-in" data-aos-delay="400"></i>
+          <h2 class="text-3xl md:text-4xl font-bold text-indigo-800">Рекомендации по Защите</h2>
+        </div>
+        <div class="grid md:grid-cols-2 gap-8 md:gap-12 mb-8">
+          <div class="bg-gradient-to-br from-indigo-50 to-blue-50 p-8 rounded-2xl border border-indigo-100 transition-all duration-300 ease-in-out hover:shadow-lg" data-aos="fade-right" data-aos-delay="500">
+            <h3 class="text-2xl font-bold mb-6 text-indigo-800 flex items-center">
+              <i class="fas fa-key mr-3 text-indigo-500"></i>
+              Безопасность Паролей
+            </h3>
+            <ul class="space-y-4 text-indigo-700 text-lg">
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-indigo-500 mr-3 mt-1"></i>
+                <span><strong class="font-medium">Длина и сложность:</strong> Не менее 12 символов, буквы, цифры, символы.</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-indigo-500 mr-3 mt-1"></i>
+                <span><strong class="font-medium">Уникальность:</strong> Разные пароли для разных сервисов.</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-indigo-500 mr-3 mt-1"></i>
+                <span><strong class="font-medium">Менеджеры паролей:</strong> Используйте для генерации и хранения.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="bg-gradient-to-br from-teal-50 to-green-50 p-8 rounded-2xl border border-teal-100 transition-all duration-300 ease-in-out hover:shadow-lg" data-aos="fade-left" data-aos-delay="500">
+            <h3 class="text-2xl font-bold mb-6 text-teal-800 flex items-center">
+              <i class="fas fa-shield-alt mr-3 text-teal-500"></i>
+              Дополнительная Защита
+            </h3>
+            <ul class="space-y-4 text-teal-700 text-lg">
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-teal-500 mr-3 mt-1"></i>
+                <span><strong class="font-medium">2FA/MFA:</strong> Включайте везде, где возможно.</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-teal-500 mr-3 mt-1"></i>
+                <span><strong class="font-medium">Обновления:</strong> Регулярно обновляйте ОС и ПО.</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-teal-500 mr-3 mt-1"></i>
+                <span><strong class="font-medium">Антивирус:</strong> Используйте и обновляйте надежное ПО.</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-teal-500 mr-3 mt-1"></i>
+                <span><strong class="font-medium">Осторожность:</strong> Будьте бдительны к фишингу и подозрительным ссылкам.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <a href="#" data-target="page-security_measures" class="nav-link btn bg-indigo-600 text-white hover:bg-indigo-700" data-aos="fade-up" data-aos-delay="600">
+          Все меры защиты <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </section>
+
+      <section class="bg-white shadow-2xl rounded-3xl p-8 md:p-10 mb-12 section-gradient card-hover" data-aos="fade-up" data-aos-delay="400">
+        <div class="flex items-center mb-8">
+          <i class="fas fa-chart-pie text-5xl text-purple-600 mr-6" data-aos="zoom-in" data-aos-delay="500"></i>
+          <h2 class="text-3xl md:text-4xl font-bold text-purple-800">Результаты Исследования</h2>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          <div class="bg-purple-100 p-6 rounded-xl text-center border border-purple-200 transition-all duration-300 ease-in-out hover:shadow-md hover:bg-purple-200" data-aos="zoom-in" data-aos-delay="100">
+            <div class="text-5xl font-extrabold text-purple-700 mb-3">90%</div>
+            <h3 class="text-lg font-semibold mb-1 text-purple-800">Осведомленность</h3>
+            <p class="text-sm text-purple-600">Знают о защите данных</p>
+          </div>
+          <div class="bg-blue-100 p-6 rounded-xl text-center border border-blue-200 transition-all duration-300 ease-in-out hover:shadow-md hover:bg-blue-200" data-aos="zoom-in" data-aos-delay="200">
+            <div class="text-5xl font-extrabold text-blue-700 mb-3">95%</div>
+            <h3 class="text-lg font-semibold mb-1 text-blue-800">Антивирус</h3>
+            <p class="text-sm text-blue-600">Используют защиту</p>
+          </div>
+          <div class="bg-green-100 p-6 rounded-xl text-center border border-green-200 transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-200" data-aos="zoom-in" data-aos-delay="300">
+            <div class="text-5xl font-extrabold text-green-700 mb-3">55%</div>
+            <h3 class="text-lg font-semibold mb-1 text-green-800">Пароли</h3>
+            <p class="text-sm text-green-600">Используют надежные</p>
+          </div>
+          <div class="bg-red-100 p-6 rounded-xl text-center border border-red-200 transition-all duration-300 ease-in-out hover:shadow-md hover:bg-red-200" data-aos="zoom-in" data-aos-delay="400">
+            <div class="text-5xl font-extrabold text-red-700 mb-3">60%</div>
+            <h3 class="text-lg font-semibold mb-1 text-red-800">Утечки</h3>
+            <p class="text-sm text-red-600">Сталкивались с последствиями</p>
+          </div>
+        </div>
+        <p class="text-center mt-6 text-gray-600 text-sm italic" data-aos="fade-up">
+          *Данные основаны на гипотетическом опросе для примера.
+        </p>
+      </section>
+    </div>
+
+    <!-- СТРАНИЦА ОПРЕДЕЛЕНИЯ ПД -->
+    <div id="page-definition" class="page-section hidden content-page-section content-section" data-aos="fade-in">
+      <h1 data-aos="fade-down" class="text-blue-800 border-b border-blue-200 pb-4">Понятие и Элементы Персональных Данных</h1>
+      <section id="definition" data-aos="fade-up">
+        <h2 data-aos="fade-right" class="border-blue-500"><i class="fas fa-info-circle icon text-blue-600"></i>2.1 Понятие Персональных Данных</h2>
+        <p>Персональные данные — это любая информация, которая прямо или косвенно позволяет идентифицировать конкретного человека. Это могут быть имя, фамилия, дата рождения, адрес проживания, номер телефона, электронная почта, фотографии, IP-адрес, биометрические данные и многое другое. Даже такие, казалось бы, незначительные детали, как предпочтения в музыке, история поиска в интернете или геолокация, могут быть использованы для составления подробного профиля личности.</p>
+        <p>В современном мире персональные данные играют ключевую роль. Они используются для авторизации в системах, предоставления услуг, анализа поведения пользователей и даже для принятия решений о выдаче кредитов или трудоустройстве. Например, банки анализируют историю транзакций клиентов, чтобы оценить их платежеспособность, а работодатели могут изучать профили соискателей в социальных сетях перед наймом.</p>
+        <p>Однако именно эта ценность делает персональные данные объектом интереса злоумышленников. Утечка такой информации может привести к серьезным последствиям. Мошенники могут использовать данные для финансового мошенничества, например, для оформления кредитов или покупок за счет жертвы. Также украденные данные могут быть использованы для манипуляции человеком, шантажа или даже физической угрозы. Например, если злоумышленники получают доступ к данным о местоположении человека, они могут использовать эту информацию для планирования преступлений.</p>
+        <p>Еще одна важная особенность персональных данных заключается в том, что они часто собираются без явного согласия пользователя. Многие сайты и приложения собирают данные через cookies, аналитические инструменты или трекеры, которые отслеживают действия пользователя в интернете. Например, рекламные сети могут собирать информацию о ваших предпочтениях, чтобы показывать персонализированную рекламу. Хотя это может показаться безобидным, такие практики поднимают вопросы о конфиденциальности и этике использования данных.</p>
+        <p>Стоит отметить, что персональные данные не ограничиваются только информацией, которую человек предоставляет добровольно. Существуют также <strong>метаданные</strong> — дополнительная информация, которая автоматически генерируется при использовании цифровых устройств. Например, каждый раз, когда вы звоните по телефону, отправляете сообщение или пользуетесь интернетом, создается запись о времени, длительности и местоположении вашего действия. Эти метаданные могут быть собраны и проанализированы, чтобы составить подробный профиль вашей жизни, даже если вы не предоставляли явной информации о себе.</p>
+        <p>Персональные данные бывают разных видов.</p>
+      </section>
+      <section id="elements" class="mt-10" data-aos="fade-up" data-aos-delay="100">
+        <h2 data-aos="fade-right" class="border-green-500"><i class="fas fa-list-ul icon text-green-600"></i>2.2 Элементы Персональных Данных</h2>
+        <p>Персональные данные можно разделить на несколько категорий:</p>
+        <div class="grid md:grid-cols-2 gap-6 mt-6">
+          <div class="bg-gray-50 p-6 rounded-lg border border-gray-200" data-aos="fade-up" data-aos-delay="100">
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><i class="fas fa-user icon text-gray-500"></i>Общие данные</h3>
+            <p class="text-base">Имя, фамилия, возраст, пол, адрес проживания.</p>
+          </div>
+          <div class="bg-gray-50 p-6 rounded-lg border border-gray-200" data-aos="fade-up" data-aos-delay="150">
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><i class="fas fa-id-card icon text-gray-500"></i>Идентификационные данные</h3>
+            <p class="text-base">Паспортные данные, номера телефонов, электронная почта.</p>
+          </div>
+          <div class="bg-gray-50 p-6 rounded-lg border border-gray-200" data-aos="fade-up" data-aos-delay="200">
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><i class="fas fa-fingerprint icon text-gray-500"></i>Биометрические данные</h3>
+            <p class="text-base">Отпечатки пальцев, фото лица, голосовые образцы.</p>
+          </div>
+          <div class="bg-gray-50 p-6 rounded-lg border border-gray-200" data-aos="fade-up" data-aos-delay="250">
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><i class="fas fa-credit-card icon text-gray-500"></i>Финансовые данные</h3>
+            <p class="text-base">Номера банковских карт, счета, история транзакций.</p>
+          </div>
+          <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 md:col-span-2" data-aos="fade-up" data-aos-delay="300">
+            <h3 class="text-xl font-semibold text-gray-700 mb-2"><i class="fas fa-heartbeat icon text-red-500"></i>Специальные категории данных</h3>
+            <p class="text-base">Информация о здоровье, политических взглядах, религиозных убеждениях.</p>
+          </div>
+        </div>
+        <p class="mt-6" data-aos="fade-up" data-aos-delay="350">Каждая категория данных требует особого подхода к защите.</p>
+      </section>
+    </div>
+
+    <!-- СТРАНИЦА ПРОБЛЕМЫ -->
+    <div id="page-problems" class="page-section hidden content-page-section content-section" data-aos="fade-in">
+      <h1 data-aos="fade-down" class="text-red-800 border-b border-red-200 pb-4">Проблемы Защиты Персональных Данных</h1>
+      <p data-aos="fade-up">Защита личных данных — сложная задача с множеством подводных камней. Чтобы их решить, нужно знать сами проблемы. Давайте разберём основные проблемы подробно.</p>
+      <section data-aos="fade-up" data-aos-delay="100">
+        <h2 data-aos="fade-right" class="border-red-500"><i class="fas fa-user-graduate icon text-red-600"></i>1. Недостаточная осведомленность пользователей</h2>
+        <p>Многие люди не понимают, насколько важно защищать свои данные, и часто предоставляют их бездумно. Например, при регистрации на сайтах или в социальных сетях пользователи могут указывать лишнюю информацию, такую как домашний адрес, номер телефона или место работы. Это создает уязвимости, которые могут быть использованы злоумышленниками. Кроме того, многие пользователи не знают, как правильно настраивать конфиденциальность в социальных сетях, что делает их данные доступными для широкой аудитории.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="150">
+        <h2 data-aos="fade-right" class="border-red-500"><i class="fas fa-building icon text-red-600"></i>2. Халатность организаций</h2>
+        <p>Компании, работающие с персональными данными, часто нарушают требования законодательства. Например, они могут хранить данные в незащищенных базах или передавать их третьим лицам без согласия пользователей. Такая халатность может привести к масштабным утечкам данных. Примером может служить скандал с Facebook и Cambridge Analytica, когда данные миллионов пользователей были переданы без их согласия.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="200">
+        <h2 data-aos="fade-right" class="border-red-500"><i class="fas fa-user-secret icon text-red-600"></i>3. Киберпреступность</h2>
+        <p>С развитием технологий растет и уровень киберпреступности. Хакеры используют сложные методы для получения доступа к базам данных. Например, атаки типа "SQL-инъекции" позволяют злоумышленникам внедрять вредоносный код в базы данных и получать доступ к персональным данным. Также распространены атаки через фишинговые письма, где мошенники выдают себя за надежные организации (например, банки) и запрашивают личные данные.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="250">
+        <h2 data-aos="fade-right" class="border-red-500"><i class="fas fa-laptop-code icon text-red-600"></i>4. Технические уязвимости</h2>
+        <p>Старые системы безопасности или ошибки в программном обеспечении могут стать причиной утечек данных. Например, если компания использует устаревшие версии операционных систем или антивирусов, это создает бреши в защите. Даже небольшая ошибка в коде может быть использована злоумышленниками для взлома системы.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="300">
+        <h2 data-aos="fade-right" class="border-red-500"><i class="fas fa-theater-masks icon text-red-600"></i>5. Социальная инженерия</h2>
+        <p>Это один из самых опасных методов, так как он направлен на манипуляцию людьми. Мошенники могут позвонить человеку, представиться сотрудником банка и попросить предоставить данные карты. Или отправить электронное письмо с просьбой подтвердить пароль от аккаунта. Люди, не подозревая подвоха, выполняют такие запросы, что приводит к утечке данных.</p>
+      </section>
+    </div>
+
+    <!-- СТРАНИЦА УГРОЗЫ -->
+    <div id="page-threats" class="page-section hidden content-page-section content-section" data-aos="fade-in">
+      <h1 data-aos="fade-down" class="text-yellow-800 border-b border-yellow-200 pb-4">Виды Угроз Персональным Данным</h1>
+      <p data-aos="fade-up">Современный мир цифровых технологий предоставляет множество удобств, но вместе с этим создает новые риски, которые могут серьезно повлиять на жизнь человека. Рассмотрим эти категории подробнее, чтобы лучше понять природу угроз и способы их предотвращения.</p>
+      <section data-aos="fade-up" data-aos-delay="100">
+        <h2 data-aos="fade-right" class="border-yellow-500"><i class="fas fa-laptop-code icon text-yellow-600"></i>1. Технические угрозы</h2>
+        <p>Технические угрозы связаны с использованием цифровых технологий, программного обеспечения и сетевых систем. Они являются одними из самых распространенных и опасных, так как затрагивают устройства, сети и системы, которые мы используем ежедневно. Эти угрозы часто возникают из-за уязвимостей в технологиях или ошибок в их использовании.</p>
+        <h4>Вирусы и вредоносное ПО</h4>
+        <p>Злоумышленники разрабатывают сложные программы, которые могут проникать в устройства через загрузку файлов, посещение небезопасных сайтов или открытие вложений в электронной почте. Например, трояны маскируются под легальные программы и крадут данные пользователя, а шпионские программы собирают информацию о действиях человека в интернете. Особенно опасны программы-вымогатели (ransomware), которые блокируют доступ к устройству или шифруют файлы, требуя выкуп за их восстановление. Такие атаки могут привести не только к потере данных, но и к значительным финансовым потерям.</p>
+        <h4>Атаки на серверы</h4>
+        <p>Серверы, где хранятся базы данных, часто становятся мишенью злоумышленников. DDoS-атаки (атаки отказа в обслуживании) направлены на перегрузку серверов, чтобы сделать их недоступными для пользователей. SQL-инъекции позволяют злоумышленникам внедрять вредоносный код в базы данных и получать доступ к персональным данным. Такие атаки особенно опасны для крупных компаний, которые хранят миллионы записей о своих клиентах. Например, взлом серверов может привести к утечке данных миллионов пользователей, что наносит огромный ущерб как компаниям, так и их клиентам.</p>
+        <h4>Уязвимости в программном обеспечении</h4>
+        <p>Если программное обеспечение содержит ошибки или не обновляется регулярно, это может стать причиной утечки данных. Например, уязвимость Heartbleed в OpenSSL позволила злоумышленникам получить доступ к данным, передаваемым через защищенные соединения. Даже небольшая ошибка в коде может быть использована для взлома системы. Это подчеркивает важность своевременного обновления программного обеспечения и использования надежных инструментов защиты.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="150">
+        <h2 data-aos="fade-right" class="border-yellow-500"><i class="fas fa-sitemap icon text-yellow-600"></i>2. Организационные угрозы</h2>
+        <p>Организационные угрозы связаны с внутренними процессами компании и поведением сотрудников. Они возникают из-за недостаточной осведомленности, халатности или намеренных действий. Эти угрозы особенно опасны, так как часто остаются незамеченными до тех пор, пока не произойдет серьезный инцидент.</p>
+        <h4>Нарушение правил обработки данных сотрудниками компании</h4>
+        <p>Сотрудники могут случайно или намеренно нарушать правила безопасности. Например, они могут использовать личные устройства для работы с конфиденциальными данными, что создает риски утечки. Также распространены случаи, когда сотрудники передают данные третьим лицам без разрешения или используют небезопасные методы хранения информации. Часто такие нарушения происходят из-за недостатка знаний или невнимательности.</p>
+        <h4>Отсутствие четкой политики безопасности</h4>
+        <p>Если компания не имеет четко определенной политики безопасности, это создает хаос в работе с данными. Например, сотрудники могут не знать, какие данные можно передавать, а какие нельзя. Отсутствие регламентов и инструкций увеличивает вероятность ошибок, которые могут привести к утечкам. Это особенно важно для организаций, работающих с большими объемами данных, таких как банки, медицинские учреждения или государственные структуры.</p>
+        <p class="note">В отличие от вирусов, червей, троянов, программ удалённого доступа <strong>стиллер</strong> сводит чистую функцию к конкретному действию-результату, аналогично локерам и шифровальщикам.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="200">
+        <h2 data-aos="fade-right" class="border-yellow-500"><i class="fas fa-users icon text-yellow-600"></i>3. Человеческие факторы</h2>
+        <p>Человеческий фактор — одна из самых сложных и распространенных причин утечек данных. Злоумышленники часто используют психологические приемы для получения доступа к информации. Этот тип угроз особенно опасен, так как он эксплуатирует доверие и невнимательность людей. Примеры:</p>
+        <h4>Фишинг</h4>
+        <p>Мошенники создают фальшивые сайты или отправляют письма, выдавая себя за надежные организации (например, банки). Пользователи, доверяя этим источникам, предоставляют свои данные. Например, письмо с просьбой подтвердить пароль от аккаунта или обновить банковские реквизиты может оказаться мошенническим. Фишинговые атаки становятся все более изощренными, и даже опытные пользователи могут попасться на удочку. Это подчеркивает важность обучения и повышения осведомленности о методах защиты данных.</p>
+        <h4>Передача данных третьим лицам без проверки</h4>
+        <p>Люди часто предоставляют свои данные непроверенным сайтам или приложениям, что создает риски утечки. Например, скачивание бесплатных приложений или участие в онлайн-опросах может привести к тому, что ваши данные окажутся в руках злоумышленников. Многие пользователи не читают условия использования сервисов и не понимают, как их данные будут использоваться. Это особенно актуально для социальных сетей и платформ, предлагающих бесплатные услуги.</p>
+        <h4>Социальная инженерия</h4>
+        <p>Это один из самых опасных методов, так как он направлен на манипуляцию людьми. Мошенники могут позвонить человеку, представиться сотрудником банка и попросить предоставить данные карты. Или отправить электронное письмо с просьбой подтвердить пароль от аккаунта. Люди, не подозревая подвоха, выполняют такие запросы, что приводит к утечке данных. Социальная инженерия особенно эффективна, так как злоумышленники используют психологические приемы, чтобы завоевать доверие жертвы.</p>
+        <h4>Использование слабых паролей</h4>
+        <p>Многие пользователи продолжают использовать простые и легко угадываемые пароли, такие как "123456" или "password". Это создает огромные риски, так как злоумышленники могут легко взломать такие учетные записи с помощью автоматизированных программ. Кроме того, использование одного и того же пароля для разных сервисов увеличивает вероятность утечки данных.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="250">
+        <h2 data-aos="fade-right" class="border-yellow-500"><i class="fas fa-building icon text-yellow-600"></i>4. Физические угрозы</h2>
+        <p>Физические угрозы связаны с потерей или кражей устройств, содержащих персональные данные. Например, если человек теряет телефон или ноутбук, злоумышленники могут получить доступ к данным, хранящимся на устройстве. Особенно опасны ситуации, когда устройства не защищены паролем или шифрованием.</p>
+        <h4>Потеря устройств</h4>
+        <p>Мобильные телефоны, ноутбуки и другие устройства часто содержат огромное количество личной информации. Если устройство потеряно или украдено, злоумышленники могут получить доступ к данным, если они не защищены должным образом.</p>
+        <h4>Кража документов</h4>
+        <p>Физические документы, такие как паспорта, водительские права или банковские карточки, также могут стать объектом кражи. Это особенно опасно, так как такие документы могут быть использованы для совершения мошеннических действий.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="300">
+        <h2 data-aos="fade-right" class="border-yellow-500"><i class="fas fa-cloud icon text-yellow-600"></i>5. Угрозы, связанные с облачными технологиями</h2>
+        <p>С развитием облачных сервисов растет и количество угроз, связанных с их использованием. Хотя облачные технологии предлагают удобство и доступность, они также создают новые риски. Например, если облачный провайдер не обеспечивает должный уровень безопасности, данные могут быть скомпрометированы. Также существует риск того, что злоумышленники получат доступ к вашему аккаунту в облаке через украденные учетные данные. Это особенно важно для компаний, которые хранят большие объемы данных в облаке, так как утечка может привести к серьезным последствиям. Примеры:</p>
+        <h4>Недостаточная защита облачных хранилищ</h4>
+        <p>Некоторые облачные сервисы не обеспечивают достаточного уровня шифрования или контроля доступа, что делает данные уязвимыми для атак.</p>
+        <h4>Синхронизация данных между устройствами</h4>
+        <p>Если данные синхронизируются между несколькими устройствами через облачные сервисы, утечка на одном устройстве может привести к утечке данных и на всех остальных.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="350">
+        <h2 data-aos="fade-right" class="border-yellow-500"><i class="fas fa-map-marker-alt icon text-yellow-600"></i>6. Угрозы, связанные с метаданными</h2>
+        <p>Метаданные — это информация, которая автоматически генерируется при использовании цифровых устройств. Например, каждый раз, когда вы звоните по телефону, отправляете сообщение или пользуетесь интернетом, создается запись о времени, длительности и местоположении вашего действия. Эти метаданные могут быть собраны и проанализированы, чтобы составить подробный профиль вашей жизни, даже если вы не предоставляли явной информации о себе. Хотя метаданные сами по себе кажутся менее значимыми, чем непосредственно персональные данные (например, имя или номер телефона), они могут быть использованы для создания детального портрета человека и его привычек.</p>
+        <h4>Геолокация</h4>
+        <p>Данные о местоположении являются одним из самых чувствительных типов метаданных. Современные устройства, такие как смартфоны, планшеты и фитнес-браслеты, постоянно отслеживают ваше местоположение через GPS, Wi-Fi и мобильные сети. Эти данные могут быть использованы для отслеживания перемещений человека. Например:</p>
+        <ul>
+          <li><strong>Отслеживание маршрутов:</strong> если злоумышленники получают доступ к данным геолокации, они могут узнать, где вы живете, работаете, какие места часто посещаете, и даже спрогнозировать ваши будущие перемещения.</li>
+          <li><strong>Социальные сети:</strong> Многие пользователи невольно публикуют свои геоданные через фотографии в социальных сетях, что может быть использовано для слежки или манипуляций.</li>
+        </ul>
+        <h4>Активность в интернете</h4>
+        <p>Каждый раз, когда вы заходите на сайт, ваш браузер сохраняет данные о вашей активности: IP-адрес, историю посещений, cookies и другие метаданные. Эти данные могут быть собраны и проанализированы:</p>
+        <ul>
+          <li><strong>Трекинг поведения:</strong> Рекламные сети используют метаданные для отслеживания ваших действий в интернете. Это может показаться безобидным, но если такие данные попадут в руки злоумышленников, они могут быть использованы для фишинговых атак или социальной инженерии.</li>
+          <li><strong>Уязвимости в браузерах:</strong> Некоторые браузеры или расширения могут передавать метаданные третьим лицам без вашего согласия, что увеличивает риск утечки данных.</li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- СТРАНИЦА МЕРЫ ЗАЩИТЫ -->
+    <div id="page-security_measures" class="page-section hidden content-page-section content-section" data-aos="fade-in">
+      <h1 data-aos="fade-down" class="text-indigo-800 border-b border-indigo-200 pb-4">Меры Безопасности</h1>
+      <p data-aos="fade-up">Защита персональных данных — это комплексный процесс, который требует применения различных методов и подходов. Каждая мера безопасности направлена на минимизацию рисков утечки данных и повышение уровня защиты информации. Личная безопасность начинается с осознанного подхода к защите своих данных. Это самый важный уровень защиты, так как именно пользователь является первым звеном в цепочке безопасности. Рассмотрим основные меры подробно:</p>
+      <section data-aos="fade-up" data-aos-delay="100">
+        <h2 data-aos="fade-right" class="border-indigo-500"><i class="fas fa-key icon text-indigo-600"></i>1. Использование сложных паролей</h2>
+        <p>Пароли должны быть длинными (не менее 12 символов), содержать буквы (в верхнем и нижнем регистре), цифры и специальные символы. Например, вместо простого пароля "qwerty123" лучше использовать что-то вроде "G7#pL9@xQ!z". Сложные пароли значительно снижают риск взлома автоматизированными программами.</p>
+        <p>Используйте генераторы паролей для создания надежных комбинаций.</p>
+        <p class="note"><strong>Важно:</strong> Никогда не используйте один и тот же пароль для разных сервисов. Если злоумышленники получат доступ к одному аккаунту, они смогут взломать и другие.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="150">
+        <h2 data-aos="fade-right" class="border-indigo-500"><i class="fas fa-mobile-alt icon text-indigo-600"></i>2. Двухфакторная аутентификация (2FA)</h2>
+        <p>Двухфакторная аутентификация добавляет дополнительный уровень защиты. Даже если злоумышленник узнает ваш пароль, он не сможет войти в систему без второго фактора (например, SMS-кода или приложения для генерации кодов, Отпечаток пальца или другая биометрическая информация.)</p>
+        <p class="note"><strong>Пример:</strong> Многие сервисы, такие как Google, Facebook и банковские приложения, предлагают 2FA. Включите эту функцию везде, где это возможно.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="200">
+        <h2 data-aos="fade-right" class="border-indigo-500"><i class="fas fa-sync-alt icon text-indigo-600"></i>3. Обновление программного обеспечения и операционной системы</h2>
+        <p>Разработчики постоянно работают над безопасностью продуктов, отслеживая последние угрозы и выпуская исправления безопасности в случае обнаружения уязвимостей в приложениях. Используйте последние версии операционных систем и приложений, чтобы не пропускать свежие обновления безопасности. Это особенно важно для приложений, содержащих платежные данные, сведения о состоянии здоровья и прочую конфиденциальную информацию пользователя.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="250">
+        <h2 data-aos="fade-right" class="border-indigo-500"><i class="fas fa-link icon text-indigo-600"></i>4. Проверка ссылок и писем</h2>
+        <p>Один неосторожный переход по ссылке – и ваши личные данные попали к злоумышленникам или устройство было заражено вредоносной программой. Поэтому важно следить за тем, по каким ссылкам вы переходите, и избегать определенных типов контента: ссылок из ненадежных источников, спам-сообщений, онлайн-викторин, кликбейтных заголовков, «бесплатных» предложений и нежелательной рекламы.</p>
+        <p>При получении электронного письма, в подлинности которого вы сомневаетесь, не переходите по содержащимся в нем ссылкам и не открывайте вложения. Рекомендуется вообще не открывать такие сообщения. Если вы не уверены в подлинности электронного письма, обратитесь непосредственно к отправителю. Например, при получении подозрительного письма якобы из вашего банка позвоните в банк и спросите, действительно ли письмо пришло от них.</p>
+        <p>При просмотре сайта убедитесь, что переход по ссылкам осуществляется на страницы со связанным или ожидаемым содержимым. Например, если вы переходите по ссылке на описание нового смартфона, но вместо этого попадаете на кликбейтную страницу о том, как похудели знаменитости, или на статью с заголовком «Где они сейчас?», немедленно покиньте эту страницу.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="300">
+        <h2 data-aos="fade-right" class="border-indigo-500"><i class="fas fa-shield-alt icon text-indigo-600"></i>5. Использование хорошего антивируса</h2>
+        <p>Помимо соблюдения рекомендаций по обеспечению безопасности в интернете, важно использовать надежное антивирусное решение. Программное обеспечение для безопасности в интернете защищает устройства и данные и блокирует не только распространенные угрозы, такие как вирусы и вредоносные программы, но и комплексные атаки с использованием приложений-шпионов, шифровальщиков и межсайтового скриптинга. Как и в случае с операционными системами и приложениями, антивирус необходимо регулярно обновлять, чтобы получать защиту от новейших киберугроз.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="350">
+        <h2 data-aos="fade-right" class="border-indigo-500"><i class="fas fa-download icon text-indigo-600"></i>6. Осторожность с загрузками</h2>
+        <p>Цель злоумышленников – заставить вас скачать вредоносную программу, которая откроет им доступ к вашему устройству. Вредоносные программы могут быть замаскированы под любое ПО, начиная с популярных игр и заканчивая приложениями для проверки погоды или наличия пробок на дороге. Кроме того, они могут быть скрыты на созданных злоумышленниками веб-сайтах, которые пытаются установить вредоносные программы на ваше устройство.</p>
+        <p>Вредоносные программы наносят ущерб: нарушают работу устройства, крадут личные данные, предоставляют несанкционированный доступ к компьютеру. Обычно для загрузки вредоносных программ требуется ряд действий со стороны пользователя, но встречается также заражение путем скрытой загрузки, когда веб-сайт пытается установить вредоносные программы на компьютер, не спрашивая предварительного разрешения. Будьте осторожны при переходе на неизвестный сайт и при загрузке объектов на устройство, загружайте контент только из надежных или официальных источников, если скачиваете из неизвестных источников файлы, то следует их проверять специальными веб-сервисами или антивирусом, который установлен у вас на компьютере.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="400">
+        <h2 data-aos="fade-right" class="border-indigo-500"><i class="fas fa-lock icon text-indigo-600"></i>7. Физические меры</h2>
+        <p>Физическая защита данных также важна, так как устройства и документы могут быть утеряны или украдены.</p>
+        <h4>Блокировка устройств</h4>
+        <p>Рекомендуется использовать пароли, секретные коды и другие средства безопасности, такие как считывание отпечатков пальцев или технологию распознавания лица на всех устройствах: телефонах, компьютерах, планшетах, умных часах, умных телевизорах и других устройствах. Эти меры безопасности снизят вероятность кражи ваших личных данных, если вы потеряете устройство.</p>
+      </section>
+      <section data-aos="fade-up" data-aos-delay="450">
+        <h2 data-aos="fade-right" class="border-indigo-500"><i class="fas fa-cloud-upload-alt icon text-indigo-600"></i>8. Меры, связанные с облачными технологиями</h2>
+        <p>Облачные сервисы становятся неотъемлемой частью современной жизни, но их использование требует особого внимания к безопасности.</p>
+        <h4>Выбор надежного облачного хранилища</h4>
+        <p>Убедитесь, что облачный провайдер предлагает высокий уровень безопасности, включая шифрование данных и двухфакторную аутентификацию. Используйте сервисы, такие как Google Drive, Dropbox или Microsoft OneDrive, но настройте дополнительные меры защиты.</p>
+      </section>
+    </div>
+  </main>
+  <!-- FOOTER -->
+  <footer class="bg-gradient-to-r from-blue-800 to-indigo-900 text-white py-12 mt-16">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-lg mb-8 opacity-90" data-aos="fade-up">© 2024 Индивидуальный проект</p>
+      <div class="flex justify-center space-x-8" data-aos="fade-up" data-aos-delay="100">
+        <a href="#" aria-label="GitHub" class="text-white hover:text-blue-200 transition transform hover:scale-125"><i class="fab fa-github text-4xl"></i></a>
+        <a href="#" aria-label="Telegram" class="text-white hover:text-blue-200 transition transform hover:scale-125"><i class="fab fa-telegram text-4xl"></i></a>
+        <a href="#" aria-label="VK" class="text-white hover:text-blue-200 transition transform hover:scale-125"><i class="fab fa-vk text-4xl"></i></a>
+      </div>
+    </div>
+  </footer>
+  <!-- Кнопка "Наверх" -->
+  <button id="scrollToTop" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });" title="Наверх">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+  <!-- Подключение AOS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    const pageSections = document.querySelectorAll('.page-section');
+    const allPageLinks = document.querySelectorAll('.nav-link[data-target]');
+    const mainNavLinks = document.querySelectorAll('#main-nav .nav-link');
+    const headerTitleBlock = document.getElementById('header-title-block');
+    
+    function showPage(pageId) {
+      pageSections.forEach(section => {
+        if (section.id === pageId) {
+          section.classList.remove('hidden');
+          section.classList.remove('fade-out-animation');
+          section.style.opacity = 1;
+          section.style.transform = 'translateY(0)';
+        } else {
+          if (!section.classList.contains('hidden')) {
+            section.classList.add('hidden');
+          }
+          section.classList.remove('fade-out-animation');
+        }
+      });
+      
+      if (pageId === 'page-home') {
+        headerTitleBlock.classList.remove('hidden');
+      } else {
+        headerTitleBlock.classList.add('hidden');
+      }
+      
+      mainNavLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-target') === pageId) {
+          link.classList.add('active');
+        }
+      });
+      
+      window.scrollTo(0, 0);
+      
+      if (typeof AOS !== 'undefined') {
+        AOS.refreshHard();
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof AOS !== 'undefined') {
+        AOS.init({
+          duration: 600,
+          once: true,
+          offset: 50,
+        });
+      }
+      showPage('page-home');
+      allPageLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('data-target');
+          let currentVisibleSection = null;
+          pageSections.forEach(section => {
+            if (!section.classList.contains('hidden')) {
+              currentVisibleSection = section;
+              section.classList.add('fade-out-animation');
+            }
+          });
+          setTimeout(() => {
+            showPage(targetId);
+          }, 300);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
