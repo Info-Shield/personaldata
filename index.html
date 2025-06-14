@@ -1,1 +1,358 @@
-hi
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Дикий Квест</title>
+    <style>
+        /* Центрирование */
+        body, html {
+            margin: 0;
+            padding: 0;
+            background: black;
+            color: white;
+            font-family: monospace;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .room {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 2;
+        }
+
+        /* Глитч-текст */
+        .glitch-text {
+            color: #0f0;
+            text-shadow: 
+                1px 1px #f00,
+                -1px -1px #00f,
+                2px 2px #0ff,
+                -2px -2px #f0f;
+            font-size: 20px;
+            transform: rotate(-5deg);
+            letter-spacing: 1px;
+            animation: shake 0.5s infinite;
+        }
+
+        /* Поля ввода */
+        input {
+            margin: 10px 0;
+            padding: 8px;
+            background: #000;
+            color: #0f0;
+            border: 2px solid #0f0;
+            width: 100%;
+            max-width: 300px;
+            font-size: 16px;
+        }
+
+        /* Кнопки */
+        button {
+            margin: 10px 0;
+            padding: 10px 20px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Скрытая ссылка */
+        #hiddenLink {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #0ff;
+            text-shadow: 1px 1px #f00;
+        }
+
+        /* Анимации */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .drop-zone {
+            width: 300px;
+            height: 100px;
+            border: 2px dashed #0f0;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #0f0;
+        }
+
+        .drag-item {
+            width: 50px;
+            height: 50px;
+            background: #0f0;
+            color: black;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 5px;
+            cursor: move;
+        }
+    </style>
+</head>
+<body>
+  
+    <div id="room1" class="room" style="display:flex;">
+        <h1 class="glitch-text">Этaп 1: Загaдк@</h1>
+        <p class="glitch-text">Шифр Цезаря: "xli qexl" → +4 → ? (введите ответ задом наперёд)</p>
+        <input type="text" id="answer1" placeholder="Введите ответ">
+        <button onclick="checkAnswer1()">Отправить</button>
+    </div>
+
+
+    <div id="room2" class="room" style="display:none;">
+        <h1 class="glitch-text">Этaп 2: Мaтемaтика</h1>
+        <p class="glitch-text">Решите уравнение:</p>
+        <p class="glitch-text">x² + 5x + 6 = 0 (введите корни задом наперёд)</p>
+        <input type="text" id="math1" placeholder="x₁">
+        <input type="text" id="math2" placeholder="x₂">
+        <button onclick="checkMath()">Проверить</button>
+    </div>
+
+
+    <div id="room3" class="room" style="display:none;">
+        <h1 class="glitch-text">Этaп 3: Тaймер</h1>
+        <p class="glitch-text">Нажмите, когда таймер = !</p>
+        <p id="timer" style="font-size:24px;color:#0ff;">5</p>
+        <button onclick="checkClick()">Кликни меня!</button>
+    </div>
+
+   
+    <div id="room4" class="room" style="display:none;">
+        <h1 class="glitch-text">Этaп 4: Кoд</h1>
+        <p class="glitch-text">Код = ASCII сумма:</p>
+        <p class="glitch-text">room1_answer + room2_x1 + room3_time</p>
+        <input type="text" id="codeInput" placeholder="Введите код">
+        <button onclick="checkCode()">Проверить</button>
+    </div>
+
+  
+    <div id="room5" class="room" style="display:none;">
+        <h1 class="glitch-text">Этaп 5: Drag-and-Drop</h1>
+        <p class="glitch-text">Перетащите буквы в правильном порядке:</p>
+        <div id="dragContainer" style="display: flex; flex-wrap: wrap; justify-content: center; margin: 10px;">
+            <div class="drag-item" draggable="true">G</div>
+            <div class="drag-item" draggable="true">B</div>
+            <div class="drag-item" draggable="true">U</div>
+        </div>
+        <div class="drop-zone" id="dropZone">Сюда</div>
+        <button onclick="checkDragDrop()">Проверить</button>
+    </div>
+
+
+    <div id="room6" class="room" style="display:none;">
+        <h1 class="glitch-text">Этaп 6: Кaпчa</h1>
+        <p class="glitch-text">Решите задачу:</p>
+        <p class="glitch-text" id="captchaQuestion">5 + 3 * 2 = ?</p>
+        <input type="text" id="captchaAnswer" placeholder="Ответ">
+        <button onclick="checkCaptcha()">Проверить</button>
+    </div>
+
+    <!-- Финал -->
+    <div id="final" class="room" style="display:none;">
+        <h1 class="glitch-text">🎉 Вы прoшли квест!</h1>
+        <button onclick="revealLink()">Получить награду</button>
+        <p id="hiddenLink"></p>
+    </div>
+
+    <!-- Звук -->
+    <audio id="glitchSound" src="glitch.mp3"></audio>
+    <audio id="successSound" src="success.mp3"></audio>
+    <audio id="errorSound" src="error.mp3"></audio>
+
+    <script>
+     
+        const questAnswers = {
+            room1: 'htam eht', 
+            room2_x1: null,    
+            room3: 1           
+        };
+
+      
+        function hideRoom(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function showRoom(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+
+        function playSound(id) {
+            const sound = document.getElementById(id);
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play();
+            }
+        }
+
+ 
+        function checkAnswer1() {
+            const input = document.getElementById('answer1').value.trim().toLowerCase();
+           
+            if (input === questAnswers.room1) {
+                playSound('glitchSound');
+                hideRoom('room1');
+                showRoom('room2');
+            } else {
+                playSound('errorSound');
+            }
+        }
+
+
+        function checkMath() {
+            const x1 = document.getElementById('math1').value.trim();
+            const x2 = document.getElementById('math2').value.trim();
+     
+            if ((x1 === '3-' && x2 === '2-') || (x1 === '2-' && x2 === '3-')) {
+       
+                questAnswers.room2_x1 = x1;
+
+                playSound('glitchSound');
+                hideRoom('room2');
+                showRoom('room3');
+                startTimer();
+            } else {
+                playSound('errorSound');
+            }
+        }
+
+    
+        let timerValue = 5;
+        let timerInterval = null; 
+        function startTimer() {
+           
+            if (timerInterval) clearInterval(timerInterval);
+            timerValue = 5;
+            document.getElementById("timer").textContent = timerValue;
+            
+            timerInterval = setInterval(() => {
+                timerValue--;
+                document.getElementById("timer").textContent = timerValue;
+                if (timerValue < 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById("timer").textContent = "0"; 
+                }
+            }, 1000);
+        }
+
+        function checkClick() {
+         
+            if (timerValue === 1) { 
+                clearInterval(timerInterval); 
+                playSound('glitchSound');
+                hideRoom('room3');
+                showRoom('room4');
+            } else {
+                playSound('errorSound');
+            }
+        }
+
+  
+        function checkCode() {
+            const code = document.getElementById('codeInput').value;
+            
+        
+            const part1_sum = questAnswers.room1.split('').reduce((sum, c) => sum + c.charCodeAt(0), 0);
+            const part2_sum = questAnswers.room2_x1.split('').reduce((sum, c) => sum + c.charCodeAt(0), 0);
+            const part3_sum = questAnswers.room3;
+            
+            const total = part1_sum + part2_sum + part3_sum;
+
+            if (code === total.toString()) {
+                playSound('glitchSound');
+                hideRoom('room4');
+                showRoom('room5');
+            } else {
+               
+                console.log("Ожидалось:", total, "Введено:", code);
+                console.log("Суммы:", { part1_sum, part2_sum, part3_sum });
+                playSound('errorSound');
+            }
+        }
+
+      
+        let draggedItem = null;
+
+        document.querySelectorAll('.drag-item').forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedItem = e.target;
+            });
+        });
+
+        document.getElementById('dropZone').addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        document.getElementById('dropZone').addEventListener('drop', (e) => {
+            e.preventDefault();
+         
+            if (e.target.id === 'dropZone') {
+                e.target.appendChild(draggedItem);
+            }
+        });
+
+        function checkDragDrop() {
+            const zone = document.getElementById('dropZone');
+            const letters = Array.from(zone.children).map(el => el.textContent).join('');
+            if (letters === 'BUG') {
+                playSound('glitchSound');
+                hideRoom('room5');
+                showRoom('room6');
+                generateCaptcha();
+            } else {
+                playSound('errorSound');
+            }
+        }
+
+
+        function generateCaptcha() {
+            const a = Math.floor(Math.random() * 10) + 1;
+            const b = Math.floor(Math.random() * 10) + 1;
+            const c = Math.floor(Math.random() * 10) + 1;
+            const op1 = Math.random() > 0.5 ? '+' : '*';
+            const op2 = Math.random() > 0.5 ? '+' : '*';
+            const expression = `${a} ${op1} ${b} ${op2} ${c}`;
+            document.getElementById('captchaQuestion').textContent = `${expression} = ?`;
+            
+            window.correctCaptchaAnswer = new Function('return ' + expression)();
+        }
+
+        function checkCaptcha() {
+            const answer = document.getElementById('captchaAnswer').value;
+            if (answer == window.correctCaptchaAnswer) {
+                playSound('successSound');
+                hideRoom('room6');
+                showRoom('final');
+            } else {
+                playSound('errorSound');
+            }
+        }
+
+     
+        function revealLink() {
+            const encrypted = atob("aHR0cHM6Ly93d3cubWVkaWFmaXJlLmNvbS9maWxlLzQwZDZrcjJncnpxc3VoYS9CdWcuZXhlL2ZpbGU=");
+            document.getElementById("hiddenLink").innerHTML = `<a href="${encrypted}" target="_blank" style="color:#0ff;">Ссылка</a>`;
+        }
+    </script>
+</body>
+</html>
