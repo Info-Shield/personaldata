@@ -96,13 +96,33 @@
         .processing-bar { width: 100%; background: #222; border: 1px solid #444; margin-top: 20px; display: none; }
         .processing-bar-fill { width: 0%; height: 10px; background: var(--accent-color); transition: width 1.5s ease-out; box-shadow: var(--glow-accent); }
 
-        #dev-console { display: none; position: fixed; top: 15px; right: 15px; width: 250px; background: rgba(10, 20, 10, 0.95); border: 1px solid var(--accent-color); box-shadow: 0 0 15px var(--accent-color); z-index: 999; backdrop-filter: blur(3px); }
+        #dev-console-trigger {
+            position: fixed; top: 10px; right: 10px;
+            width: 12px; height: 12px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            cursor: pointer; z-index: 998;
+            box-shadow: var(--glow-accent);
+            transition: all 0.2s;
+            animation: pulse 2s infinite;
+        }
+        #dev-console-trigger:hover { transform: scale(1.3); }
+        @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+        
+        #dev-console {
+            display: none; position: fixed; top: 15px; right: 15px;
+            width: 250px; background: rgba(10, 20, 10, 0.95);
+            border: 1px solid var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-color);
+            z-index: 999; backdrop-filter: blur(3px);
+        }
         #dev-console-header { padding: 10px; text-align: center; background: var(--accent-color); color: black; font-weight: bold; cursor: pointer; text-shadow: none; }
         #dev-console-body { padding: 15px; max-height: 300px; overflow-y: auto; transition: max-height 0.3s ease-out, padding 0.3s ease-out; }
         #dev-console-body.collapsed { max-height: 0; padding: 0 15px; overflow: hidden; }
         #dev-console-body ul { list-style: none; padding: 0; margin: 0; }
         #dev-console-body li a { display: block; padding: 5px; color: var(--main-color); text-decoration: none; transition: background-color 0.2s; }
         #dev-console-body li a:hover { background-color: rgba(0, 255, 255, 0.2); }
+
         #final-report-container { width: 100%; text-align: left; margin-top: 20px; }
         .report-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px dashed #333; opacity: 0; transform: translateX(-20px); transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.2s; }
         .report-item.visible { opacity: 1; transform: translateX(0); }
@@ -129,9 +149,10 @@
 <body>
     <div id="preloader"><div id="preloader-text"></div></div>
 
-    <!-- DEV CONSOLE -->
+    <!-- DEV CONSOLE & TRIGGER -->
+    <div id="dev-console-trigger" onclick="toggleDevConsole()"></div>
     <div id="dev-console">
-        <div id="dev-console-header" onclick="toggleDevConsole()">[DEV_CONSOLE]</div>
+        <div id="dev-console-header" onclick="collapseDevConsoleBody()">[DEV_CONSOLE]</div>
         <div id="dev-console-body">
             <ul id="dev-nav-list"></ul>
         </div>
@@ -443,8 +464,35 @@ ADD EAX, 3       ; Прибавить 3 к EAX
         
         function populateQuestData(upToStage) { const fullData = { '1': { user: 'GHOST', pass: 'AURORA_BREACH', token: '47' }, '3': { memoryKey: '0x41424344' }, '4': { shieldName: 'GHOST' }, '5': { attackerIP: '218.45.192.88' }, '6': { decodedFile: 'omega-data' }, '7': { backdoorPass: 'changeme' }, '10': { compromisedFile: 'user32.dll' }, '11': { command: 'ZER0-C00L-ACCESS' }, '12': { vulnerableFile: '/opt/aurora/diag_tool' }, '13': { sqlValue: 'backup_access_key_Alpha7!' }, '14': { asmResult: 45 }, '15': { attackerUser: 'j.holloway' } }; for(let i = 1; i <= upToStage; i++){ if(fullData[i]) Object.assign(questData, fullData[i]); } }
         function jumpToStage(stageNum) { stopGlitchEffect(); populateQuestData(stageNum - 1); currentStep = stageNum - 1; advanceState(); }
-        function toggleDevConsole() { document.getElementById('dev-console-body').classList.toggle('collapsed'); }
-        function initDevConsole() { const navList = document.getElementById('dev-nav-list'); for (let i = 1; i <= 17; i++) { const li = document.createElement('li'); li.innerHTML = `<a href="#" onclick="jumpToStage(${i})">Этап ${i}</a>`; navList.appendChild(li); } const finalLi = document.createElement('li'); finalLi.innerHTML = `<a href="#" onclick="jumpToFinalScreen()" style="color:var(--danger-color);">Финал</a>`; navList.appendChild(finalLi); document.getElementById('dev-console').style.display = 'block'; }
+        
+        function toggleDevConsole() {
+            const consoleEl = document.getElementById('dev-console');
+            const triggerEl = document.getElementById('dev-console-trigger');
+            if (consoleEl.style.display === 'block') {
+                consoleEl.style.display = 'none';
+                triggerEl.style.display = 'block';
+            } else {
+                consoleEl.style.display = 'block';
+                triggerEl.style.display = 'none';
+            }
+        }
+
+        function collapseDevConsoleBody() {
+             document.getElementById('dev-console-body').classList.toggle('collapsed');
+        }
+
+        function initDevConsole() {
+            const navList = document.getElementById('dev-nav-list');
+            for (let i = 1; i <= 17; i++) {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="#" onclick="jumpToStage(${i})">Этап ${i}</a>`;
+                navList.appendChild(li);
+            }
+            const finalLi = document.createElement('li');
+            finalLi.innerHTML = `<a href="#" onclick="jumpToFinalScreen()" style="color:var(--danger-color);">Финал</a>`;
+            navList.appendChild(finalLi);
+        }
+
         function jumpToFinalScreen() { stopGlitchEffect(); populateQuestData(17); currentStep = 18; showFinalScreen(); }
         function showProcessing(callback) { const bar = document.getElementById('processing'); const fill = document.getElementById('processing-fill'); bar.style.display = 'block'; fill.style.width = '0%'; setTimeout(() => { fill.style.width = '100%'; }, 100); setTimeout(() => { bar.style.display = 'none'; callback(); }, 1600); }
         function typewriter(element, text, callback) { let i = 0; element.innerHTML = ""; isTyping = true; const btn = document.getElementById('dialogue-button'); if(btn) btn.disabled = true; clearInterval(typewriterInterval); typewriterInterval = setInterval(() => { if (i < text.length) { element.innerHTML += text.charAt(i); i++; } else { isTyping = false; clearInterval(typewriterInterval); if(btn) btn.disabled = false; if(callback) callback(); } }, 20); }
@@ -643,6 +691,13 @@ ADD EAX, 3       ; Прибавить 3 к EAX
         }
         
         window.onload = startBootAnimation;
+        // Hotkey for dev console
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                e.preventDefault();
+                toggleDevConsole();
+            }
+        });
     </script>
 </body>
 </html>
