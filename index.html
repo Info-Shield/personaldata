@@ -2,357 +2,263 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>BUG</title>
+    <title>СИМУЛЯЦИЯ: ПРОТОКОЛ "ОМЕГА"</title>
     <style>
-        /* Центрирование */
-        body, html {
-            margin: 0;
-            padding: 0;
-            background: black;
-            color: white;
-            font-family: monospace;
-            overflow: hidden;
-            height: 100%;
-        }
-
-        .room {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            z-index: 2;
-        }
-
-        /* Глитч-текст */
-        .glitch-text {
-            color: #0f0;
-            text-shadow: 
-                1px 1px #f00,
-                -1px -1px #00f,
-                2px 2px #0ff,
-                -2px -2px #f0f;
-            font-size: 20px;
-            transform: rotate(-5deg);
-            letter-spacing: 1px;
-            animation: shake 0.5s infinite;
-        }
-
-        /* Поля ввода */
-        input {
-            margin: 10px 0;
-            padding: 8px;
-            background: #000;
-            color: #0f0;
-            border: 2px solid #0f0;
-            width: 100%;
-            max-width: 300px;
-            font-size: 16px;
-        }
-
-        /* Кнопки */
-        button {
-            margin: 10px 0;
-            padding: 10px 20px;
-            background: red;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        /* Скрытая ссылка */
-        #hiddenLink {
-            margin-top: 20px;
-            font-size: 20px;
-            color: #0ff;
-            text-shadow: 1px 1px #f00;
-        }
-
-        /* Анимации */
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(5px); }
-            75% { transform: translateX(-5px); }
-            100% { transform: translateX(0); }
-        }
-
-        .drop-zone {
-            width: 300px;
-            height: 100px;
-            border: 2px dashed #0f0;
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: #0f0;
-        }
-
-        .drag-item {
-            width: 50px;
-            height: 50px;
-            background: #0f0;
-            color: black;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 5px;
-            cursor: move;
-        }
+        :root { --main-color: #0f0; --accent-color: #0ff; --danger-color: #f00; }
+        body, html { margin: 0; padding: 0; background: black; color: var(--main-color); font-family: 'Courier New', Courier, monospace; height: 100%; overflow: hidden; }
+        #main-container { height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px 0; box-sizing: border-box; }
+        .content-wrapper { width: 100%; max-width: 800px; }
+        body::after { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0), rgba(0,0,0,0) 1px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 3px); animation: scanline 4s linear infinite; pointer-events: none; z-index: -2; }
+        @keyframes scanline { 0% { background-position: 0 0; } 100% { background-position: 0 100px; } }
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 100; transition: opacity 0.5s ease-out; }
+        #preloader-text { font-size: 16px; text-align: left; white-space: pre; border-right: 2px solid var(--main-color); animation: blink 0.7s step-end infinite; }
+        @keyframes blink { from, to { border-color: transparent; } 50% { border-color: var(--main-color); } }
+        .stage, #dialogue-box { display: none; flex-direction: column; align-items: center; text-align: center; padding: 25px; background-color: rgba(5, 5, 5, 0.9); border: 2px solid var(--main-color); box-shadow: 0 0 20px var(--main-color); margin: 20px; }
+        .fade-in { opacity: 0; transition: opacity 0.8s ease-in-out; }
+        .visible { opacity: 1; }
+        #dialogue-text { margin: 10px 0; min-height: 100px; font-size: 18px; line-height: 1.6; cursor: pointer; }
+        #guide-name { font-size: 20px; color: var(--accent-color); align-self: flex-start; text-shadow: 0 0 5px var(--accent-color); }
+        .glitch-text { color: var(--main-color); text-shadow: 1px 1px var(--danger-color), -1px -1px #00f; font-size: 26px; animation: shake 0.5s infinite alternate; }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 100% { transform: translate(-1px, -2px) rotate(-1deg); } }
+        p, pre { font-size: 16px; line-height: 1.6; color: #ccc; }
+        code { color: var(--accent-color); background-color: #111; padding: 3px 6px; border: 1px solid #333; border-radius: 3px; }
+        .log-box { width: 95%; background: #080808; border: 1px solid #333; padding: 15px; margin: 15px 0; text-align: left; white-space: pre-wrap; max-height: 250px; overflow-y: auto; color: #aaa; }
+        input { margin: 15px 0; padding: 12px; background: #000; color: var(--main-color); border: 2px solid var(--main-color); width: 100%; max-width: 400px; font-size: 16px; text-align: center; font-family: 'Courier New', Courier, monospace; transition: box-shadow 0.3s; }
+        input:focus { outline: none; box-shadow: 0 0 10px var(--main-color); }
+        button { margin: 10px 5px; padding: 12px 25px; background: #800000; color: white; border: 2px solid var(--danger-color); cursor: pointer; font-size: 16px; font-family: 'Courier New', Courier, monospace; transition: all 0.2s; }
+        button:hover { background: var(--danger-color); box-shadow: 0 0 15px var(--danger-color); transform: translateY(-3px); }
+        button:active { transform: translateY(-1px); }
+        button:disabled { background: #333; border-color: #555; cursor: not-allowed; transform: none; }
+        .wire-button { background: #555; border-color: #888; } .wire-button:hover { background: #777; box-shadow: 0 0 10px #777; }
+        .processing-bar { width: 100%; background: #222; border: 1px solid #444; margin-top: 20px; display: none; }
+        .processing-bar-fill { width: 0%; height: 10px; background: var(--accent-color); transition: width 1.5s ease-out; }
     </style>
 </head>
 <body>
-  
-    <div id="room1" class="room" style="display:flex;">
-        <h1 class="glitch-text">Этaп 1: Загaдк@</h1>
-        <p class="glitch-text">Шифр Цезаря: "xli qexl" → +4 → ? (введите ответ задом наперёд)</p>
-        <input type="text" id="answer1" placeholder="Введите ответ">
-        <button onclick="checkAnswer1()">Отправить</button>
-    </div>
+    <div id="preloader"><div id="preloader-text"></div></div>
+    <div id="main-container">
+        <div class="content-wrapper">
+            <div id="dialogue-box" class="fade-in">
+                <p id="guide-name">[ИИ Проводник]</p>
+                <p id="dialogue-text" onclick="skipTypewriter()"></p>
+                <button id="dialogue-button" onclick="proceedToNextStep()">Далее</button>
+                <div class="processing-bar" id="processing"><div class="processing-bar-fill" id="processing-fill"></div></div>
+            </div>
 
-
-    <div id="room2" class="room" style="display:none;">
-        <h1 class="glitch-text">Этaп 2: Мaтемaтика</h1>
-        <p class="glitch-text">Решите уравнение:</p>
-        <p class="glitch-text">x² + 5x + 6 = 0 (введите корни задом наперёд)</p>
-        <input type="text" id="math1" placeholder="x₁">
-        <input type="text" id="math2" placeholder="x₂">
-        <button onclick="checkMath()">Проверить</button>
-    </div>
-
-
-    <div id="room3" class="room" style="display:none;">
-        <h1 class="glitch-text">Этaп 3: Тaймер</h1>
-        <p class="glitch-text">Нажмите, когда таймер = !</p>
-        <p id="timer" style="font-size:24px;color:#0ff;">5</p>
-        <button onclick="checkClick()">Кликни меня!</button>
-    </div>
-
-   
-    <div id="room4" class="room" style="display:none;">
-        <h1 class="glitch-text">Этaп 4: Кoд</h1>
-        <p class="glitch-text">Код = ASCII сумма:</p>
-        <p class="glitch-text">room1_answer + room2_x1 + room3_time</p>
-        <input type="text" id="codeInput" placeholder="Введите код">
-        <button onclick="checkCode()">Проверить</button>
-    </div>
-
-  
-    <div id="room5" class="room" style="display:none;">
-        <h1 class="glitch-text">Этaп 5: Drag-and-Drop</h1>
-        <p class="glitch-text">Перетащите буквы в правильном порядке:</p>
-        <div id="dragContainer" style="display: flex; flex-wrap: wrap; justify-content: center; margin: 10px;">
-            <div class="drag-item" draggable="true">G</div>
-            <div class="drag-item" draggable="true">B</div>
-            <div class="drag-item" draggable="true">U</div>
+            <div id="stage1" class="stage fade-in">
+                <h1 class="glitch-text">ЭТАП 1: ВОССТАНОВЛЕНИЕ АУТЕНТИФИКАЦИИ</h1>
+                <p>Система входа повреждена. Восстановите данные для входа из лога. Требуется три параметра: USER_ID, PASSWORD, TOKEN.</p>
+                <div class="log-box">[00:01] Auth failure. Reason: Token mismatch.<br/>[00:02] Last valid user: AGENT_7<br/>[00:03] Pass hint: Enemy's name (O****)<br/>[00:04] Expected token: sum of digits in user_id (7) and error code 404.</div>
+                <input type="text" id="ans1_user" placeholder="USER_ID"> <input type="text" id="ans1_pass" placeholder="PASSWORD"> <input type="text" id="ans1_token" placeholder="TOKEN">
+                <button onclick="checkStage1()">Войти</button>
+            </div>
+            <div id="stage2" class="stage fade-in">
+                <h1 class="glitch-text">ЭТАП 2: КОНФИГУРАЦИЯ ФАЙРВОЛА</h1>
+                <p>Атака открыла все порты. Необходимо немедленно закрыть их и создать одно правило: разрешить входящий трафик по безопасному протоколу TCP на стандартный порт для HTTPS.</p>
+                <div><select id="ans2_protocol"><option>UDP</option><option>TCP</option><option>ICMP</option></select> <input type="text" id="ans2_port" placeholder="PORT"> <select id="ans2_action"><option>DENY</option><option>ALLOW</option></select></div>
+                <button onclick="checkStage2()">Применить правило</button>
+            </div>
+            <div id="stage3" class="stage fade-in">
+                <h1 class="glitch-text">ЭТАП 3: АНАЛИЗ ДАМПА ПАМЯТИ</h1>
+                <p>В оперативной памяти спрятан ключ доступа. Найдите его в этом дампе. Ключ всегда начинается с <code>0x</code> и состоит из 4 символов после префикса.</p>
+                <div class="log-box">... 00A0: 4F 4D 45 47 41 20 56 49 | OMEGA VI<br/>... 00B0: 52 55 53 20 44 45 54 45 | RUS DETE<br/>... 00C0: 43 54 45 44 2E 20 4B 45 | CTED. KE<br/>... 00D0: 59 3A 20 <span style="color:var(--danger-color);">30 78 46 33 34 44</span> 20 41 | Y: 0xF34D A</div>
+                <input type="text" id="answer3" placeholder="Введите ключ доступа (ACCESS_KEY)"> <button onclick="checkStage3()">Извлечь ключ</button>
+            </div>
+            <div id="stage4" class="stage fade-in">
+                <h1 class="glitch-text">ЭТАП 4: СТЕГАНОГРАФИЯ</h1>
+                <p>Враг спрятал сообщение в изображении. Проанализируйте ASCII-арт и найдите скрытое слово, составленное из "аномальных" символов.</p>
+                <pre class="log-box">####################################
+#S##################################
+###H################################
+#####I##############################
+#######E############################
+#########L##########################
+###########D########################
+####################################</pre>
+                <input type="text" id="answer4" placeholder="Скрытое слово"> <button onclick="checkStage4()">Расшифровать</button>
+            </div>
+            <div id="stage5" class="stage fade-in">
+                <h1 class="glitch-text">ЭТАП 5: ОБЕЗВРЕЖИВАНИЕ БОМБЫ</h1>
+                <p>Логическая бомба активирована. У вас одна попытка. Логи системы показывают: "Деактивация требует разрыва цепи питания, но не основной". Перережьте правильный провод.</p>
+                <div><button class="wire-button" onclick="checkStage5('PRIMARY_POWER')">PRIMARY_POWER</button> <button class="wire-button" onclick="checkStage5('COOLANT_SYSTEM')">COOLANT_SYSTEM</button> <button class="wire-button" onclick="checkStage5('AUX_POWER')">AUX_POWER</button></div>
+            </div>
+            <div id="stage6" class="stage fade-in">
+                <h1 class="glitch-text">ЭТАП 6: АНАЛИЗ ВРЕДОНОСНОГО КОДА</h1>
+                <p>Мы перехватили скрипт. Определите его основную вредоносную функцию (название функции).</p>
+                <div class="log-box">function <span style="color:var(--danger-color);">InjectAndHide</span>(process, file) {<br/>  target = find_process(process);<br/>  if (target) {<br/>    load_dll(target, file);<br/>    hide_from_tasklist(target);<br/>  }<br/>}</div>
+                <input type="text" id="answer6" placeholder="Название функции..."> <button onclick="checkStage6()">Идентифицировать</button>
+            </div>
+            <div id="stage7" class="stage fade-in">
+                <h1 class="glitch-text">ЭТАП 7: ПОИСК ROOTKIT-ПРОЦЕССА</h1>
+                <p>Rootkit скрывает свой процесс. Сравните результаты двух сканеров. Найдите процесс, видимый только при глубоком сканировании.</p>
+                <div class="log-box"><b>Standard Scan:</b><br/>svchost.exe<br/>explorer.exe<br/>lsass.exe<br/><br/><b>Deep Kernel Scan:</b><br/>svchost.exe<br/>explorer.exe<br/><span style="color:var(--danger-color);">xKrn.sys</span><br/>lsass.exe</div>
+                <input type="text" id="answer7" placeholder="Имя скрытого процесса..."> <button onclick="checkStage7()">Обнаружить</button>
+            </div>
+            <div id="stage8" class="stage fade-in">
+                <h1 class="glitch-text">ЭТАП 8: ДЕШИФРОВКА КАНАЛА</h1>
+                <p>Командный канал использует шифр Цезаря со сдвигом, равным первой цифре токена с этапа 1. Расшифруйте команду.</p>
+                <p>Команда: <code>SVXAREXMRO</code></p>
+                <input type="text" id="answer8" placeholder="Расшифрованная команда..."> <button onclick="checkStage8()">Дешифровать</button>
+            </div>
+            <div id="stage9" class="stage fade-in">
+                <h1 class="glitch-text">ЭТАП 9: ВОССТАНОВЛЕНИЕ ПУТИ</h1>
+                <p>Путь к антивирусному ядру поврежден. Расставьте фрагменты в правильном порядке. Имя ядра вы узнали на этапе 4.</p>
+                <div id="drag-container" style="display: flex; flex-wrap: wrap; justify-content: center; margin: 10px; padding: 10px; border: 1px dashed #444;"></div>
+                <div id="drop-zone" style="height: 50px; border: 2px dashed var(--main-color); margin-top: 15px; display: flex; align-items: center; justify-content: center; padding: 10px;"></div>
+                <button onclick="checkStage9()">Проверить путь</button>
+            </div>
+            <div id="stage10" class="stage fade-in">
+                <h1 class="glitch-text">ФИНАЛ: ГЛАВНЫЙ КОД ОТМЕНЫ</h1>
+                <p>Соберите главный код для деактивации "Омеги".<br/>Формат: [Ключ из памяти]-[Имя Rootkit]-[Команда с канала]</p>
+                <input type="text" id="answer10" placeholder="0xXXXX-xxxx.xxx-XXXXXXXXXX"> <button onclick="checkStage10()">ЗАПУСТИТЬ ПРОТОКОЛ ОТМЕНЫ</button>
+            </div>
         </div>
-        <div class="drop-zone" id="dropZone">Сюда</div>
-        <button onclick="checkDragDrop()">Проверить</button>
     </div>
-
-
-    <div id="room6" class="room" style="display:none;">
-        <h1 class="glitch-text">Этaп 6: Кaпчa</h1>
-        <p class="glitch-text">Решите задачу:</p>
-        <p class="glitch-text" id="captchaQuestion">5 + 3 * 2 = ?</p>
-        <input type="text" id="captchaAnswer" placeholder="Ответ">
-        <button onclick="checkCaptcha()">Проверить</button>
-    </div>
-
-    <!-- Финал -->
-    <div id="final" class="room" style="display:none;">
-        <h1 class="glitch-text">🎉 Вы прoшли квест!</h1>
-        <button onclick="revealLink()">Получить награду</button>
-        <p id="hiddenLink"></p>
-    </div>
-
-    <!-- Звук -->
-    <audio id="glitchSound" src="glitch.mp3"></audio>
-    <audio id="successSound" src="success.mp3"></audio>
-    <audio id="errorSound" src="error.mp3"></audio>
-
-    <script>
-     
-        const questAnswers = {
-            room1: 'htam eht', 
-            room2_x1: null,    
-            room3: 1           
-        };
-
-      
-        function hideRoom(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        function showRoom(id) {
-            document.getElementById(id).style.display = 'flex';
-        }
-
-
-        function playSound(id) {
-            const sound = document.getElementById(id);
-            if (sound) {
-                sound.currentTime = 0;
-                sound.play();
-            }
-        }
-
- 
-        function checkAnswer1() {
-            const input = document.getElementById('answer1').value.trim().toLowerCase();
-           
-            if (input === questAnswers.room1) {
-                playSound('glitchSound');
-                hideRoom('room1');
-                showRoom('room2');
-            } else {
-                playSound('errorSound');
-            }
-        }
-
-
-        function checkMath() {
-            const x1 = document.getElementById('math1').value.trim();
-            const x2 = document.getElementById('math2').value.trim();
-     
-            if ((x1 === '3-' && x2 === '2-') || (x1 === '2-' && x2 === '3-')) {
-       
-                questAnswers.room2_x1 = x1;
-
-                playSound('glitchSound');
-                hideRoom('room2');
-                showRoom('room3');
-                startTimer();
-            } else {
-                playSound('errorSound');
-            }
-        }
-
     
-        let timerValue = 5;
-        let timerInterval = null; 
-        function startTimer() {
-           
-            if (timerInterval) clearInterval(timerInterval);
-            timerValue = 5;
-            document.getElementById("timer").textContent = timerValue;
-            
-            timerInterval = setInterval(() => {
-                timerValue--;
-                document.getElementById("timer").textContent = timerValue;
-                if (timerValue < 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById("timer").textContent = "0"; 
-                }
-            }, 1000);
-        }
+    <script>
+        let currentStep = 0;
+        const finalUrl = "https://invasion-omega.github.io/ProtectServer/";
+        let typewriterInterval;
+        let isTyping = false;
+        const questData = {};
 
-        function checkClick() {
-         
-            if (timerValue === 1) { 
-                clearInterval(timerInterval); 
-                playSound('glitchSound');
-                hideRoom('room3');
-                showRoom('room4');
-            } else {
-                playSound('errorSound');
-            }
-        }
-
-  
-        function checkCode() {
-            const code = document.getElementById('codeInput').value;
-            
+        const dialogues = [
+            "Инициализация... Модуль ИИ-Проводника активен. Я проведу вас через симуляцию протокола 'Омега'. Каждый этап — критически важен. Готовы начать, агент?",
+            "Принято. Первый тест: аутентификация в поврежденной системе. Агент должен уметь находить сигнал в шуме.",
+            "Доступ разрешен. Теперь обезопасьте периметр. Настройте файрвол, пока не поздно.",
+            "Периметр защищен. Но враг мог оставить что-то в памяти. Проведите анализ дампа.",
+            "Ключ извлечен. Сохраните его. Враг часто использует обфускацию. Проверьте этот визуальный канал на скрытые данные.",
+            "Данные получены. Это имя нашего главного защитного протокола. Но осторожно... обнаружена активная логическая бомба! У вас одна попытка.",
+            "Цепь разорвана, бомба обезврежена. Отличная работа. Теперь анализ кода. Изучите перехваченный скрипт.",
+            "Вредоносная функция идентифицирована. Противник использует руткиты для маскировки. Сравните сканы и найдите скрытый процесс.",
+            "Rootkit обнаружен. Мы перехватили их командный канал, но он зашифрован. Используйте данные, что у вас уже есть, для дешифровки.",
+            "Команда расшифрована. Они пытаются заблокировать наш антивирус. Восстановите путь к его ядру немедленно.",
+            "Путь восстановлен. Защита активна. Агент, вы собрали все необходимые данные. Остался последний шаг. Соберите главный код отмены.",
+            "КОД ПРИНЯТ. ПРОТОКОЛ 'ОМЕГА' ПОЛНОСТЬЮ ДЕАКТИВИРОВАН. Симуляция завершена с высшей оценкой. Но это была лишь тренировка. Настоящая атака происходит прямо сейчас. У вас есть все навыки. Я перенаправляю вас на боевой сервер. Удачи, агент.",
+        ];
         
-            const part1_sum = questAnswers.room1.split('').reduce((sum, c) => sum + c.charCodeAt(0), 0);
-            const part2_sum = questAnswers.room2_x1.split('').reduce((sum, c) => sum + c.charCodeAt(0), 0);
-            const part3_sum = questAnswers.room3;
-            
-            const total = part1_sum + part2_sum + part3_sum;
-
-            if (code === total.toString()) {
-                playSound('glitchSound');
-                hideRoom('room4');
-                showRoom('room5');
-            } else {
-               
-                console.log("Ожидалось:", total, "Введено:", code);
-                console.log("Суммы:", { part1_sum, part2_sum, part3_sum });
-                playSound('errorSound');
+        function showProcessing(callback) {
+            const bar = document.getElementById('processing'); const fill = document.getElementById('processing-fill');
+            bar.style.display = 'block'; fill.style.width = '0%';
+            setTimeout(() => { fill.style.width = '100%'; }, 100);
+            setTimeout(() => { bar.style.display = 'none'; callback(); }, 1800);
+        }
+        function typewriter(element, text, callback) {
+            let i = 0; element.innerHTML = ""; isTyping = true;
+            const btn = document.getElementById('dialogue-button');
+            if(btn) btn.disabled = true;
+            clearInterval(typewriterInterval);
+            typewriterInterval = setInterval(() => {
+                if (i < text.length) { element.innerHTML += text.charAt(i); i++; } 
+                else { isTyping = false; clearInterval(typewriterInterval); if(btn) btn.disabled = false; if(callback) callback(); }
+            }, 25);
+        }
+        function skipTypewriter() {
+            if (!isTyping) return;
+            isTyping = false; clearInterval(typewriterInterval);
+            const btn = document.getElementById('dialogue-button');
+            const targetText = dialogues[Math.floor((currentStep) / 2)];
+            document.getElementById('dialogue-text').innerHTML = targetText;
+            if (btn) btn.disabled = false;
+        }
+        function hideAll() { document.querySelectorAll('.stage, #dialogue-box').forEach(el => { el.style.display = 'none'; el.classList.remove('visible'); }); }
+        function showDialogue(text) {
+            hideAll();
+            const box = document.getElementById('dialogue-box'); box.style.display = 'flex';
+            setTimeout(() => { box.classList.add('visible'); typewriter(document.getElementById('dialogue-text'), text); }, 10);
+        }
+        function showStage(id) {
+            hideAll();
+            const stage = document.getElementById(id); stage.style.display = 'flex';
+            setTimeout(() => { stage.classList.add('visible'); }, 10);
+            if (id === 'stage9') initDragDrop();
+        }
+        function proceedToNextStep() {
+            currentStep++;
+            const btn = document.getElementById('dialogue-button'); btn.textContent = "Далее";
+            const action = () => {
+                switch (currentStep) {
+                    case 1: showDialogue(dialogues[0]); break;
+                    case 2: showDialogue(dialogues[1]); break;
+                    case 3: showStage('stage1'); break;
+                    case 4: showDialogue(dialogues[2]); break;
+                    case 5: showStage('stage2'); break;
+                    case 6: showDialogue(dialogues[3]); break;
+                    case 7: showStage('stage3'); break;
+                    case 8: showDialogue(dialogues[4]); break;
+                    case 9: showStage('stage4'); break;
+                    case 10: showDialogue(dialogues[5]); break;
+                    case 11: showStage('stage5'); break;
+                    case 12: showDialogue(dialogues[6]); break;
+                    case 13: showStage('stage6'); break;
+                    case 14: showDialogue(dialogues[7]); break;
+                    case 15: showStage('stage7'); break;
+                    case 16: showDialogue(dialogues[8]); break;
+                    case 17: showStage('stage8'); break;
+                    case 18: showDialogue(dialogues[9]); break;
+                    case 19: showStage('stage9'); break;
+                    case 20: showDialogue(dialogues[10]); break;
+                    case 21: showStage('stage10'); break;
+                    case 22:
+                        showDialogue(dialogues[11]);
+                        btn.textContent = "ПОДКЛЮЧИТЬСЯ К СЕРВЕРУ";
+                        btn.onclick = () => { window.location.href = finalUrl; };
+                        break;
+                }
             }
+            if(currentStep > 2 && currentStep % 2 === 0) showProcessing(action);
+            else action();
         }
-
-      
-        let draggedItem = null;
-
-        document.querySelectorAll('.drag-item').forEach(item => {
-            item.addEventListener('dragstart', (e) => {
-                draggedItem = e.target;
-            });
-        });
-
-        document.getElementById('dropZone').addEventListener('dragover', (e) => {
-            e.preventDefault();
-        });
-
-        document.getElementById('dropZone').addEventListener('drop', (e) => {
-            e.preventDefault();
-         
-            if (e.target.id === 'dropZone') {
-                e.target.appendChild(draggedItem);
-            }
-        });
-
-        function checkDragDrop() {
-            const zone = document.getElementById('dropZone');
-            const letters = Array.from(zone.children).map(el => el.textContent).join('');
-            if (letters === 'BUG') {
-                playSound('glitchSound');
-                hideRoom('room5');
-                showRoom('room6');
-                generateCaptcha();
-            } else {
-                playSound('errorSound');
-            }
+        function checkStage1() {
+            if(document.getElementById('ans1_user').value.trim().toUpperCase() === 'AGENT_7' && document.getElementById('ans1_pass').value.trim().toUpperCase() === 'OMEGA' && document.getElementById('ans1_token').value.trim() === '411') {
+                questData.token = '411'; proceedToNextStep();
+            } else alert('ДОСТУП ЗАПРЕЩЕН. ПАРАМЕТРЫ НЕВЕРНЫ.');
         }
-
-
-        function generateCaptcha() {
-            const a = Math.floor(Math.random() * 10) + 1;
-            const b = Math.floor(Math.random() * 10) + 1;
-            const c = Math.floor(Math.random() * 10) + 1;
-            const op1 = Math.random() > 0.5 ? '+' : '*';
-            const op2 = Math.random() > 0.5 ? '+' : '*';
-            const expression = `${a} ${op1} ${b} ${op2} ${c}`;
-            document.getElementById('captchaQuestion').textContent = `${expression} = ?`;
-            
-            window.correctCaptchaAnswer = new Function('return ' + expression)();
+        function checkStage2() { if(document.getElementById('ans2_protocol').value === 'TCP' && document.getElementById('ans2_port').value.trim() === '443' && document.getElementById('ans2_action').value === 'ALLOW') proceedToNextStep(); else alert('КОНФИГУРАЦИЯ НЕВЕРНА. СИСТЕМА УЯЗВИМА.'); }
+        function checkStage3() { const answer = document.getElementById('answer3').value.trim().toUpperCase(); if(answer === '0XF34D') { questData.memoryKey = answer; proceedToNextStep(); } else alert('НЕВЕРНЫЙ КЛЮЧ. ДАННЫЕ НЕ ИЗВЛЕЧЕНЫ.'); }
+        function checkStage4() { const answer = document.getElementById('answer4').value.trim().toUpperCase(); if(answer === 'SHIELD') { questData.shieldName = answer; proceedToNextStep(); } else alert('ОШИБКА АНАЛИЗА.'); }
+        function checkStage5(wire) { if(wire === 'AUX_POWER') proceedToNextStep(); else { alert('КРИТИЧЕСКАЯ ОШИБКА. БОМБА ДЕТОНИРОВАЛА. ПЕРЕЗАПУСК СИМУЛЯЦИИ...'); location.reload(); } }
+        function checkStage6() { if(document.getElementById('answer6').value.trim().toLowerCase() === 'injectandhide') proceedToNextStep(); else alert('ИДЕНТИФИКАЦИЯ НЕ ПРОЙДЕНА.'); }
+        function checkStage7() { const answer = document.getElementById('answer7').value.trim(); if(answer === 'xKrn.sys') { questData.rootkitFile = answer; proceedToNextStep(); } else alert('СКРЫТЫЙ ПРОЦЕСС НЕ НАЙДЕН.'); }
+        function checkStage8() {
+            const shift = parseInt(questData.token[0], 10); const encrypted = "SVXAREXMRO"; let decrypted = "";
+            for (let i = 0; i < encrypted.length; i++) { let charCode = encrypted.charCodeAt(i) - shift; if (charCode < 65) charCode += 26; decrypted += String.fromCharCode(charCode); }
+            if(document.getElementById('answer8').value.trim().toUpperCase() === decrypted) { questData.command = decrypted; proceedToNextStep(); } 
+            else alert('ДЕШИФРОВКА НЕВЕРНА. ОЖИДАЛСЯ СДВИГ: ' + shift);
         }
-
-        function checkCaptcha() {
-            const answer = document.getElementById('captchaAnswer').value;
-            if (answer == window.correctCaptchaAnswer) {
-                playSound('successSound');
-                hideRoom('room6');
-                showRoom('final');
-            } else {
-                playSound('errorSound');
-            }
+        function initDragDrop() {
+            const container = document.getElementById('drag-container'); container.innerHTML = '';
+            const dropZone = document.getElementById('drop-zone'); dropZone.innerHTML = '';
+            const parts = [`${questData.shieldName}.SYS`, `C:\\WINDOWS\\`, `DRIVERS\\`, `SYSTEM32\\`]; parts.sort(() => Math.random() - 0.5);
+            parts.forEach(p => { const div = document.createElement('div'); div.textContent = p; div.draggable = true; div.style.cssText = "padding: 8px; margin: 5px; background: #333; border: 1px solid #555; cursor: move;"; div.addEventListener('dragstart', e => e.dataTransfer.setData('text', e.target.textContent)); container.appendChild(div); });
+            dropZone.addEventListener('dragover', e => e.preventDefault());
+            dropZone.addEventListener('drop', e => { e.preventDefault(); const data = e.dataTransfer.getData('text'); const draggedEl = Array.from(container.children).find(child => child.textContent === data); if(draggedEl) dropZone.appendChild(draggedEl); });
         }
-
-     
-        function revealLink() {
-            const encrypted = atob("aHR0cHM6Ly93d3cubWVkaWFmaXJlLmNvbS9maWxlLzQwZDZrcjJncnpxc3VoYS9CdWcuZXhlL2ZpbGU=");
-            document.getElementById("hiddenLink").innerHTML = `<a href="${encrypted}" target="_blank" style="color:#0ff;">Ссылка</a>`;
+        function checkStage9() {
+            const correctOrder = `C:\\WINDOWS\\SYSTEM32\\DRIVERS\\${questData.shieldName}.SYS`;
+            const currentOrder = Array.from(document.getElementById('drop-zone').children).map(el => el.textContent).join('');
+            if (currentOrder === correctOrder) proceedToNextStep(); else alert('НЕВЕРНЫЙ ПУТЬ. ЗАЩИТА НЕ АКТИВИРОВАНА.');
         }
+        function checkStage10() { const finalCode = `${questData.memoryKey}-${questData.rootkitFile}-${questData.command}`; if(document.getElementById('answer10').value.trim().toUpperCase() === finalCode.toUpperCase()) proceedToNextStep(); else alert('ГЛАВНЫЙ КОД НЕВЕРЕН. СВЕРЬТЕСЬ С ПОЛУЧЕННЫМИ ДАННЫМИ.'); }
+
+        // FIX: Re-implementing the boot animation sequence.
+        function startBootAnimation() {
+            const bootText = ["INITIATING SECURE CONNECTION...", "Loading AI 'GUIDE' module...", "Rendering simulation environment...", "READY."];
+            let line = 0;
+            const el = document.getElementById('preloader-text');
+            const interval = setInterval(() => {
+                if (line < bootText.length) { el.innerHTML += bootText[line] + "\n"; line++; } 
+                else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        const preloader = document.getElementById('preloader');
+                        preloader.style.opacity = '0';
+                        setTimeout(() => { preloader.style.display = 'none'; proceedToNextStep(); }, 500);
+                    }, 1000);
+                }
+            }, 500);
+        }
+        window.onload = startBootAnimation;
     </script>
 </body>
 </html>
