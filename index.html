@@ -97,7 +97,7 @@
             <div id="stage8" class="stage fade-in">
                 <h1 class="glitch-text">ЭТАП 8: ДЕШИФРОВКА КАНАЛА</h1>
                 <p>Командный канал использует шифр Цезаря со сдвигом, равным первой цифре токена с этапа 1. Расшифруйте команду.</p>
-                <p>Команда: <code>SVXAREXMRO</code></p>
+                <p>Команда: <code>SZIVVMHI</code></p>
                 <input type="text" id="answer8" placeholder="Расшифрованная команда..."> <button onclick="checkStage8()">Дешифровать</button>
             </div>
             <div id="stage9" class="stage fade-in">
@@ -110,7 +110,7 @@
             <div id="stage10" class="stage fade-in">
                 <h1 class="glitch-text">ФИНАЛ: ГЛАВНЫЙ КОД ОТМЕНЫ</h1>
                 <p>Соберите главный код для деактивации "Омеги".<br/>Формат: [Ключ из памяти]-[Имя Rootkit]-[Команда с канала]</p>
-                <input type="text" id="answer10" placeholder="0xXXXX-xxxx.xxx-XXXXXXXXXX"> <button onclick="checkStage10()">ЗАПУСТИТЬ ПРОТОКОЛ ОТМЕНЫ</button>
+                <input type="text" id="answer10" placeholder="0xXXXX-xxxx.xxx-XXXXXXXX"> <button onclick="checkStage10()">ЗАПУСТИТЬ ПРОТОКОЛ ОТМЕНЫ</button>
             </div>
         </div>
     </div>
@@ -221,10 +221,14 @@
         function checkStage6() { if(document.getElementById('answer6').value.trim().toLowerCase() === 'injectandhide') proceedToNextStep(); else alert('ИДЕНТИФИКАЦИЯ НЕ ПРОЙДЕНА.'); }
         function checkStage7() { const answer = document.getElementById('answer7').value.trim(); if(answer === 'xKrn.sys') { questData.rootkitFile = answer; proceedToNextStep(); } else alert('СКРЫТЫЙ ПРОЦЕСС НЕ НАЙДЕН.'); }
         function checkStage8() {
-            const shift = parseInt(questData.token[0], 10); const encrypted = "SVXAREXMRO"; let decrypted = "";
+            const shift = parseInt(questData.token[0], 10); 
+            const encrypted = "SZIVVMHI"; 
+            let decrypted = "";
             for (let i = 0; i < encrypted.length; i++) { let charCode = encrypted.charCodeAt(i) - shift; if (charCode < 65) charCode += 26; decrypted += String.fromCharCode(charCode); }
-            if(document.getElementById('answer8').value.trim().toUpperCase() === decrypted) { questData.command = decrypted; proceedToNextStep(); } 
-            else alert('ДЕШИФРОВКА НЕВЕРНА. ОЖИДАЛСЯ СДВИГ: ' + shift);
+            if(document.getElementById('answer8').value.trim().toUpperCase() === decrypted) { 
+                questData.command = decrypted; 
+                proceedToNextStep(); 
+            } else alert('ДЕШИФРОВКА НЕВЕРНА. ОЖИДАЛСЯ СДВИГ: ' + shift);
         }
         function initDragDrop() {
             const container = document.getElementById('drag-container'); container.innerHTML = '';
@@ -239,9 +243,15 @@
             const currentOrder = Array.from(document.getElementById('drop-zone').children).map(el => el.textContent).join('');
             if (currentOrder === correctOrder) proceedToNextStep(); else alert('НЕВЕРНЫЙ ПУТЬ. ЗАЩИТА НЕ АКТИВИРОВАНА.');
         }
-        function checkStage10() { const finalCode = `${questData.memoryKey}-${questData.rootkitFile}-${questData.command}`; if(document.getElementById('answer10').value.trim().toUpperCase() === finalCode.toUpperCase()) proceedToNextStep(); else alert('ГЛАВНЫЙ КОД НЕВЕРЕН. СВЕРЬТЕСЬ С ПОЛУЧЕННЫМИ ДАННЫМИ.'); }
+        function checkStage10() { 
+            const finalCode = `${questData.memoryKey}-${questData.rootkitFile}-${questData.command}`; 
+            if(document.getElementById('answer10').value.trim().toUpperCase() === finalCode.toUpperCase()) {
+                proceedToNextStep();
+            } else {
+                alert('ГЛАВНЫЙ КОД НЕВЕРЕН. СВЕРЬТЕСЬ С ПОЛУЧЕННЫМИ ДАННЫМИ.');
+            }
+        }
 
-        // FIX: Re-implementing the boot animation sequence.
         function startBootAnimation() {
             const bootText = ["INITIATING SECURE CONNECTION...", "Loading AI 'GUIDE' module...", "Rendering simulation environment...", "READY."];
             let line = 0;
