@@ -29,8 +29,8 @@
         }
         @keyframes scanline { 0% { background-position: 0 0; } 100% { background-position: 0 100px; } }
         #main-container {
-            height: 100vh; width: 100vw; display: flex; align-items: center; 
-            justify-content: center; flex-direction: column; overflow-y: auto; 
+            height: 100vh; width: 100vw; display: flex; align-items: center;
+            justify-content: center; flex-direction: column; overflow-y: auto;
             padding: 40px 20px; box-sizing: border-box;
         }
         .content-wrapper { width: 100%; max-width: 900px; }
@@ -40,7 +40,7 @@
         }
         #preloader-text { font-size: 16px; text-align: left; white-space: pre; border-right: 2px solid var(--main-color); animation: blink 0.7s step-end infinite; }
         @keyframes blink { from, to { border-color: transparent; } 50% { border-color: var(--main-color); } }
-        
+
         .stage, #dialogue-box, #final-screen {
             display: none; flex-direction: column; align-items: center; text-align: center;
             padding: 30px; background-color: rgba(5, 10, 5, 0.9); border: 1px solid var(--border-color);
@@ -48,7 +48,7 @@
         }
         .fade-in { opacity: 0; transition: opacity 1s ease-in-out; }
         .visible { opacity: 1; }
-        
+
         #dialogue-text { margin: 15px 0; min-height: 120px; font-size: 18px; line-height: 1.7; cursor: pointer; color: #d9ffda; }
         #guide-name { font-size: 22px; color: var(--accent-color); align-self: flex-start; text-shadow: var(--glow-accent); }
         .glitch-text {
@@ -67,8 +67,11 @@
             text-align: left; white-space: pre-wrap; max-height: 250px; overflow-y: auto; color: #aaa;
             box-shadow: inset 0 0 8px rgba(0,0,0,0.5); font-family: 'Consolas', 'Courier New', monospace;
         }
-        .log-box b { color: var(--warn-color); }
+        .log-box b { color: var(--warn-color); font-weight: normal; }
         .log-box .danger-text { color: var(--danger-color); font-weight: bold; }
+        .log-box .warn-text { color: var(--warn-color); }
+        .log-box .info-text { color: var(--info-color); }
+        
 
         #glitch-box {
             width: 95%; background: #050505; border: 1px solid #333; padding: 15px; margin: 15px 0;
@@ -108,7 +111,7 @@
         }
         #dev-console-trigger:hover { transform: scale(1.3); }
         @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
-        
+
         #dev-console {
             display: none; position: fixed; top: 15px; right: 15px;
             width: 250px; background: rgba(10, 20, 10, 0.95);
@@ -139,11 +142,16 @@
         .interactive-tool input, .interactive-tool pre { width: 100%; box-sizing: border-box; margin: 5px 0 10px 0; text-align: left; }
         .interactive-tool pre { background: #000; padding: 10px; min-height: 40px; color: var(--main-color); border: 1px solid #333;}
         
+        #stage16-display { display: flex; justify-content: space-between; width: 95%; padding: 20px; border: 1px solid var(--accent-color); margin: 20px 0; background: #000; font-size: 18px; }
+        #stage16-display div { flex-basis: 48%; text-align: left;}
+        #stage16-display span { color: var(--warn-color); }
         #stage16-actions { display: flex; flex-wrap: wrap; justify-content: center; margin: 15px 0;}
-        #stage16-actions button { flex-grow: 1; margin: 5px; }
-        #stage16-log { width: 95%; min-height: 80px; text-align: left; padding: 10px; background: #000; border: 1px solid #444; margin-top: 15px; }
-        #stage16-log .log-entry { color: var(--main-color); }
+        #stage16-actions button { flex-basis: 45%; margin: 5px; }
+        #stage16-log { width: 95%; min-height: 80px; text-align: left; padding: 10px; background: #050505; border: 1px solid #444; margin-top: 15px; color: #aaa; }
         #stage16-log .log-entry.error { color: var(--danger-color); }
+        #stage16-log .log-entry.success { color: var(--accent-color); }
+        #stage16-log .log-entry.warn { color: var(--warn-color); }
+
     </style>
 </head>
 <body>
@@ -157,7 +165,7 @@
             <ul id="dev-nav-list"></ul>
         </div>
     </div>
-    
+
     <div id="main-container">
         <div class="content-wrapper">
             <div id="dialogue-box" class="fade-in">
@@ -255,46 +263,50 @@ cerberus.logging.service   | active  | MONITOR</div>
     </template>
 
     <template id="stage6-template">
-        <h1 class="glitch-text">ЭТАП 6: ДЕКОДИРОВАНИЕ ПЕРЕХВАТА</h1>
-        <p>Мы перехватили контейнер данных, относящийся к "Омеге". Используйте утилиту для декодирования Base64, чтобы узнать имя файла, и введите его.</p>
-        <p>Скопируйте эту строку: <code>b21lZ2EtZGF0YQ==</code></p>
+        <h1 class="glitch-text">ЭТАП 6: АНАЛИЗ ШИФРОГРАММЫ</h1>
+        <p>Перехвачено сообщение "Цербера", зашифрованное сдвигом (шифр Цезаря). Расшифруйте его, чтобы получить кодовую фразу.</p>
+        <div class="log-box">ENCRYPTED PAYLOAD: "olssv-dvysk-vtlnh-alza"
+SECURITY LEVEL: 7
+ANALYSIS: The encryption key (shift value) corresponds to the security level number.</div>
         <div class="interactive-tool">
-            <label for="tool-input-6">[УТИЛИТА: BASE64 ДЕКОДЕР]</label>
-            <input type="text" id="tool-input-6" placeholder="Вставьте закодированную строку сюда...">
+            <label for="tool-input-6-text">[УТИЛИТА: ДЕШИФРАТОР СДВИГА]</label>
+            <input type="text" id="tool-input-6-text" placeholder="Зашифрованный текст...">
+            <label for="tool-input-6-key">Ключ сдвига:</label>
+            <input type="number" id="tool-input-6-key" placeholder="Числовой ключ...">
             <button onclick="processStage6Tool()">Обработать</button>
-            <label for="tool-output-6" style="margin-top:10px;">Результат:</label>
+            <label style="margin-top:10px;">Результат:</label>
             <pre id="tool-output-6"></pre>
         </div>
-        <input type="text" id="answer6" placeholder="Введите декодированное имя файла"> <button onclick="checkStage6()">Подтвердить</button>
+        <input type="text" id="answer6" placeholder="Введите расшифрованную фразу"> <button onclick="checkStage6()">Подтвердить</button>
     </template>
 
     <template id="stage7-template">
         <h1 class="glitch-text">ЭТАП 7: АНАЛИЗ ФАЙЛА КОНФИГУРАЦИИ</h1>
-        <p>Имя файла известно. Внутри — конфигурация одного из модулей "Цербера". Найдите пароль по умолчанию, оставленный разработчиком по халатности.</p>
-        <div class="log-box"># Cerberus Module Config v1.2 // "Project Watchdog"
-# DO NOT DISTRIBUTE
-[main]
-# Default password, must be changed on first run.
-auth_key = "changeme"
-listen_port = 443
-encryption = "AES-256"
-[modules]
-integrity_check = true
-stealth = true</div>
-        <input type="text" id="answer7" placeholder="Пароль по умолчанию"> <button onclick="checkStage7()">Найти</button>
+        <p>Имя файла известно. Внутри — конфигурация одного из модулей "Цербера". Соберите пароль по умолчанию из переменных согласно формату.</p>
+        <div class="log-box"># Cerberus Module Config v2.1 // "Project Chimera"
+# All values are case-sensitive.
+[variables]
+prefix = "chimera"
+secret_code = "lock"
+year = "2077"
+# Format for default password generation: ${prefix}-${year}-${secret_code}
+[settings]
+listen_port = 8443
+encryption = "AES-GCM"</div>
+        <input type="text" id="answer7" placeholder="Сконструированный пароль"> <button onclick="checkStage7()">Собрать</button>
     </template>
 
     <template id="stage8-template">
-        <h1 class="glitch-text">ЭТАП 8: ПРОТИВОДЕЙСТВИЕ АТАКЕ</h1>
-        <p>"Цербер" симулирует контратаку, выводя из строя систему охлаждения ядра. Проанализируйте телеметрию и выберите единственно верное действие для спасения системы.</p>
-        <div class="log-box">[15:10:01] SYS_MONITOR: Core voltage steady at 1.25V. Status: STABLE.
-[15:10:02] SYS_MONITOR: <b>Main coolant pump pressure at 5%. Status: FAILURE. Core temp rising.</b>
-[15:10:03] SYS_MONITOR: <b>Reserve coolant tank pressure at 100%. Status: STANDBY.</b>
-[15:10:04] SYS_MONITOR: CPU load at 98%. Possible brute-force attack.</div>
+        <h1 class="glitch-text">ЭТАП 8: НЕЙТРАЛИЗАЦИЯ УГРОЗЫ</h1>
+        <p>"Цербер" инициировал атаку, вызвавшую перегрев ядра. Проанализируйте телеметрию и выберите действие, устраняющее ПЕРВОПРИЧИНУ проблемы, а не её следствие.</p>
+        <div class="log-box">[15:10:01] SYS_MONITOR: Network traffic on eth0 at 998Mbps. Status: DDoS DETECTED.
+[15:10:02] SYS_MONITOR: CPU load at 100%. Cause: Network stack processing flood.
+[15:10:03] SYS_MONITOR: Main coolant pump pressure at 5%. Status: FAILURE. Core temp rising to critical.
+[15:10:04] SYS_MONITOR: Reserve coolant tank pressure at 100%. Status: STANDBY.</div>
         <div>
             <button class="danger" onclick="checkStage8('REBOOT_SERVER')">Аварийная Перезагрузка</button>
             <button onclick="checkStage8('RESERVE_COOLANT')">Активировать Резервное Охлаждение</button>
-            <button onclick="checkStage8('DISABLE_MAIN_PUMP')">Отключить Основной Насос</button>
+            <button onclick="checkStage8('ISOLATE_NETWORK')">Изолировать Сетевой Интерфейс (eth0)</button>
         </div>
     </template>
 
@@ -320,32 +332,35 @@ function log_telemetry(message) {
     </template>
 
     <template id="stage10-template">
-        <h1 class="glitch-text">ЭТАП 10: ПРОВЕРКА ЦЕЛОСТНОСТИ</h1>
-        <p>"Цербер" изменяет системные файлы для маскировки. Сравните хэш-суммы с эталоном и найдите имя скомпрометированного файла.</p>
-        <div class="log-box"><b>Live System File Hashes (MD5):</b>
-kernel32.dll: 5d41402abc4b2a76b9719d911017c592
-user32.dll:   a2a76b9719d911017c5925d41402abc4
-gdi32.dll:    e3b0c44298fc1c149afbf4c8996fb924
-
-<b>Secure Baseline Hashes (MD5):</b>
-kernel32.dll: 5d41402abc4b2a76b9719d911017c592
-user32.dll:   c75ca6a3262a344798354f2432847d8a
-gdi32.dll:    e3b0c44298fc1c149afbf4c8996fb924</div>
+        <h1 class="glitch-text">ЭТАП 10: ГЛУБОКИЙ АУДИТ СИСТЕМЫ</h1>
+        <p>"Цербер" изменил системный файл. Изучите отчет сканера целостности и определите имя файла, который не прошел критическую проверку (статус FAILED).</p>
+        <div class="log-box">[SYSTEM INTEGRITY SCAN REPORT - PID: 7712]
+[14:30:01] Scanning C:\Windows\System32...
+[14:30:02] Checking kernel32.dll... [OK]
+[14:30:03] Checking gdi32.dll... [OK]
+[14:30:04] Checking svchost.exe... <span class="warn-text">[WARNING]</span> Hash mismatch. Reason: Legitimate update. PRIORITY: LOW.
+[14:30:05] Checking user32.dll... <span class="danger-text">[FAILED]</span> PRIORITY: CRITICAL.
+    LIVE_HASH:    9a9f7d...c5d88
+    EXPECTED_HASH: 5f0b1a...8d3e9
+[14:30:06] Checking ntdll.dll... [OK]
+[14:30:07] Checking ntd11.dll... <span class="info-text">[UNKNOWN_FILE]</span> Not in system manifest.
+[14:30:08] ...
+[14:30:09] SCAN COMPLETE. 1 failure(s), 1 warning(s) detected.</div>
         <input type="text" id="answer10" placeholder="Имя скомпрометированного файла..."> <button onclick="checkStage10()">Обнаружить</button>
     </template>
 
     <template id="stage11-template">
-        <h1 class="glitch-text">ЭТАП 11: ДЕОБФУСКАЦИЯ КОМАНДЫ</h1>
-        <p>"Цербер" использует инверсию строк для обфускации команд. Восстановите исходную команду, которая является паролем из основного квеста.</p>
-        <p>Скопируйте этот фрагмент: <code>SSECCA-L00C-0REZ</code></p>
+        <h1 class="glitch-text">ЭТАП 11: ДЕКОДИРОВАНИЕ HEX</h1>
+        <p>"Цербер" передаёт команды в виде HEX-строк. Декодируйте перехваченную команду, чтобы узнать следующий пароль.</p>
+        <p>Скопируйте эту строку: <code>4F4D4547412D4C4F434B444F574E</code></p>
         <div class="interactive-tool">
-            <label for="tool-input-11">[УТИЛИТА: ИНВЕРТОР СТРОК]</label>
-            <input type="text" id="tool-input-11" placeholder="Вставьте инвертированную строку сюда...">
+            <label for="tool-input-11">[УТИЛИТА: HEX -> ASCII КОНВЕРТЕР]</label>
+            <input type="text" id="tool-input-11" placeholder="Вставьте HEX-строку сюда...">
             <button onclick="processStage11Tool()">Обработать</button>
-            <label for="tool-output-11" style="margin-top:10px;">Результат:</label>
+            <label style="margin-top:10px;">Результат:</label>
             <pre id="tool-output-11"></pre>
         </div>
-        <input type="text" id="answer11" placeholder="Введите исходную команду/пароль"> <button onclick="checkStage11()">Подтвердить</button>
+        <input type="text" id="answer11" placeholder="Введите декодированную команду/пароль"> <button onclick="checkStage11()">Подтвердить</button>
     </template>
 
     <template id="stage12-template">
@@ -371,50 +386,57 @@ gdi32.dll:    e3b0c44298fc1c149afbf4c8996fb924</div>
 
     <template id="stage14-template">
         <h1 class="glitch-text">ЭТАП 14: РЕВЕРС-ИНЖИНИРИНГ</h1>
-        <p>Проанализируйте фрагмент ассемблерного кода "Цербера". Определите, какое значение будет в регистре `EAX` после выполнения всех команд. Ответ дайте в десятичной системе.</p>
-        <div class="log-box">MOV EAX, 5       ; Поместить 5 в EAX
-ADD EAX, 10      ; Прибавить 10 к EAX (EAX = 15)
-XOR EAX, EAX     ; Обнулить EAX (EAX = 0)
-MOV EAX, 2Ah     ; Поместить 2A (hex) в EAX (это 42 в десят. системе)
-ADD EAX, 3       ; Прибавить 3 к EAX
+        <p>Проанализируйте фрагмент ассемблерного кода. Определите, какое значение будет в регистре `EAX` после выполнения всех команд. Ответ дайте в десятичной системе.</p>
+        <div class="log-box">_init:
+  MOV EAX, 12      ; EAX = 12
+_calc_offset:
+  ADD EAX, 3       ; EAX = 15
+  SUB EAX, 5       ; EAX = 10
+_scale_factor:
+  IMUL EAX, 4      ; EAX = 40 (Integer Multiply)
+_finalize:
+  SHL EAX, 1       ; EAX = 80 (Shift Left by 1 bit, equals EAX * 2)
 ; EAX = ?</div>
         <input type="text" id="answer14" placeholder="Финальное значение EAX (десятичное)"> <button onclick="checkStage14()">Вычислить</button>
     </template>
 
     <template id="stage15-template">
-        <h1 class="glitch-text">ЭТАП 15: ИДЕНТИФИКАЦИЯ ИНСАЙДЕРА</h1>
-        <p>В "Авроре" есть инсайдер. Сопоставьте логи, чтобы определить его имя пользователя (`user`). Это ключевая фигура в истории "Омеги".</p>
-        <div style="display: flex; width: 95%; justify-content: space-between; flex-wrap: wrap;">
-            <div class="log-box" style="width: 100%; max-width: 420px;"><b>FIREWALL.LOG (TIME: 13:02:14)</b><br>ALLOW TCP 10.1.1.5:49152 -> 192.168.1.50:3306</div>
-            <div class="log-box" style="width: 100%; max-width: 420px;"><b>AUTH.LOG (TIME: 13:02:15)</b><br>SUCCESS auth for user 'j.holloway' from 10.1.1.5 on sshd</div>
-        </div>
-        <input type="text" id="answer15" placeholder="Имя пользователя"> <button onclick="checkStage15()">Определить</button>
+        <h1 class="glitch-text">ЭТАП 15: КОРРЕЛЯЦИЯ ЛОГОВ</h1>
+        <p>Инсайдер использовал jump-хост для маскировки. Проследите его путь через системы, сопоставляя IP-адреса, и определите имя пользователя (`user`).</p>
+        <div class="log-box" style="border-color: var(--warn-color);"><b>VPN.LOG</b><br>...<br>[13:01:55] User 'j.holloway' authenticated. Assigned internal IP: 10.254.1.18<br>[13:01:59] User 'm.stark' authenticated. Assigned internal IP: 10.254.1.22<br>...</div>
+        <div class="log-box"><b>JUMP_HOST.LOG</b><br>...<br>[13:02:10] Inbound connection from 10.254.1.18 accepted.<br>[INFO] Source IP for outbound connections: 10.10.10.5<br>...</div>
+        <div class="log-box"><b>DATABASE.LOG</b><br>...<br>[13:02:16] Connection from 10.10.10.5. Query: 'DUMP TABLE users_private'. UNAUTHORIZED.<br>[13:02:20] Connection from 192.168.1.10. Query: 'SELECT status'. OK.<br>...</div>
+        <input type="text" id="answer15" placeholder="Имя пользователя инсайдера"> <button onclick="checkStage15()">Определить</button>
     </template>
 
     <template id="stage16-template">
-        <h1 class="glitch-text">ЭТАП 16: ПРОТОКОЛ "ЧИСТИЛЬЩИК"</h1>
-        <p>Для корректной нейтрализации агента "Цербера" необходимо выполнить действия в строгом порядке. Изучите протокол и выполните его шаг за шагом.</p>
-        <div class="log-box">
-            <b>Протокол Нейтрализации (SOP-7):</b>
-            1. <b>ИДЕНТИФИКАЦИЯ:</b> Найти процесс по имени связанного с ним файла.
-            2. <b>ИЗОЛЯЦИЯ:</b> Заблокировать процесс в памяти, чтобы предотвратить эвакуацию.
-            3. <b>ТЕРМИНАЦИЯ:</b> Уничтожить заблокированный процесс.
-            4. <b>САНИТАРНАЯ ОБРАБОТКА:</b> Стереть остаточные файлы с диска.
+        <h1 class="glitch-text">ЭТАП 16: ПРОТОКОЛ "ЖНЕЦ" v2.0</h1>
+        <p>Адаптивный агент "Цербера" активен. Управляйте энергией, анализируйте уязвимости и нейтрализуйте его.</p>
+        <div id="stage16-display">
+            <div>
+                АГЕНТ: <span id="agent-status">ЗАГРУЗКА...</span><br>
+                ЦЕЛОСТНОСТЬ: <span id="agent-health">100%</span>
+            </div>
+            <div>
+                ОПЕРАТОР: <br>
+                ЭНЕРГИЯ: <span id="player-energy">100</span>
+            </div>
         </div>
         <div id="stage16-actions">
-            <button id="action-find" onclick="performAction('find')">[1] Найти Процесс</button>
-            <button id="action-lock" onclick="performAction('lock')">[2] Заблокировать в Памяти</button>
-            <button id="action-kill" onclick="performAction('kill')">[3] Уничтожить Процесс</button>
-            <button id="action-purge" onclick="performAction('purge')">[4] Зачистить Файлы</button>
+            <button id="action-overload" onclick="performAgentAction('overload')">Перегрузка щита [-30Э]</button>
+            <button id="action-analyze" onclick="performAgentAction('analyze')">Анализ уязвимости [-10Э]</button>
+            <button id="action-execute-alpha" onclick="performAgentAction('execute_alpha')">Эксплойт: Альфа [-25Э]</button>
+            <button id="action-execute-beta" onclick="performAgentAction('execute_beta')">Эксплойт: Бета [-25Э]</button>
+            <button id="action-recharge" onclick="performAgentAction('recharge')">Перезарядка [+15Э]</button>
+            <button id="action-purge" class="danger" onclick="performAgentAction('purge')">Очистка системы</button>
         </div>
         <div id="stage16-log"></div>
-        <button onclick="checkStage16()">Завершить протокол</button>
     </template>
 
     <template id="stage17-template">
         <h1 class="glitch-text">ФИНАЛ: ФОРМИРОВАНИЕ КЛЮЧА ДОСТУПА</h1>
         <p>Вы собрали все части головоломки. Скомбинируйте ключевые данные для генерации мастер-ключа, который даст вам доступ к реальному узлу "Авроры".</p>
-        <p>Формат: [Ключ из памяти]-[IP "Цербера"]-[Пароль-команда]-[Имя инсайдера]</p>
+        <p>Формат: [Ключ из памяти]-[IP "Цербера"]-[Команда HEX]-[Имя инсайдера]</p>
         <input type="text" id="answer17" placeholder="0xXXXX-XXX.XX.XXX.XX-XXXX-XXXX-XXXXXX-X.xxxxxxxx"> <button class="danger" onclick="checkStage17()">СГЕНЕРИРОВАТЬ КЛЮЧ</button>
     </template>
     
@@ -436,8 +458,19 @@ ADD EAX, 3       ; Прибавить 3 к EAX
         let typewriterInterval, glitchInterval;
         let isTyping = false;
         const questData = {};
-        let userActionSequence = [];
-        const correctActionSequence = ['find', 'lock', 'kill', 'purge'];
+        
+        // --- State for Stage 16 ---
+        let gameState = {
+            agent: {
+                status: 'SHIELDED', // SHIELDED, VULNERABLE
+                health: 100,
+                adaptation: 'NONE' // NONE, ALPHA, BETA
+            },
+            player: {
+                energy: 100
+            },
+            gameOver: false
+        };
 
         // --- Диалоги Инструктора "Прометей" ---
         const dialogues = [
@@ -447,22 +480,22 @@ ADD EAX, 3       ; Прибавить 3 к EAX
             /* 3*/ "Подсистема деактивирована. Хорошо. Теперь сложнее: 'Цербер' прячет ключи в оперативной памяти. Сосредоточьтесь на активном ключе сессии, чтобы обмануть его сканеры.",
             /* 4*/ "Ключ извлечен. Следующий тест — ваше самоопределение в цифровом шуме. 'Цербер' попытается стереть ваш след. Подтвердите свой позывной.",
             /* 5*/ "Идентификация пройдена. 'Призрак' в машине. Теперь сетевой анализ. 'Цербер' отправляет отчеты на скрытые узлы. Найдите точку эксфильтрации данных.",
-            /* 6*/ "IP-адрес идентифицирован. Мы перехватили зашифрованный контейнер, помеченный как 'Омега'. Я предоставляю вам декодер. Узнайте, что внутри.",
-            /* 7*/ "Имя файла восстановлено. В 80% случаев взлом — результат халатности. Найдите пароль по умолчанию, оставленный разработчиком 'Цербера'.",
-            /* 8*/ "Пароль найден. Банально, но эффективно. Внимание, симуляция контратаки! 'Цербер' пытается вызвать отказ оборудования. Ваш выбор определит судьбу ядра.",
+            /* 6*/ "IP-адрес идентифицирован. Мы перехватили зашифрованный контейнер. Это не просто данные, а команда. Расшифруйте ее. Ключ скрыт в метаданных.",
+            /* 7*/ "Фраза восстановлена. В 80% случаев взлом — результат халатности. Изучите файл конфигурации и соберите пароль из компонентов, как это сделал бы ленивый разработчик.",
+            /* 8*/ "Пароль собран. Внимание, симуляция контратаки! 'Цербер' атакует систему. Не поддавайтесь панике, ищите корень проблемы, а не боритесь с симптомами.",
             /* 9*/ "Система стабилизирована. Решение верное. Теперь анализ кода. Мы перехватили инжектор 'Цербера'. Найдите его ключевую исполняющую функцию.",
-            /*10*/ "Функция идентифицирована. После внедрения 'Цербер' изменяет системные файлы, чтобы скрыть себя. Проведите проверку целостности по эталонным хэшам.",
-            /*11*/ "Компрометация обнаружена. Канал управления 'Цербера' перехвачен. Они используют простую инверсию для команд. Восстановите исходное сообщение.",
+            /*10*/ "Функция идентифицирована. После внедрения 'Цербер' изменяет системные файлы. Проведите глубокий аудит целостности и найдите критическую аномалию.",
+            /*11*/ "Компрометация обнаружена. Канал управления 'Цербера' передает команды в HEX-формате. Декодируйте перехваченное сообщение.",
             /*12*/ "Команда восстановлена. Теперь они попытаются повысить свои привилегии. Для этого им нужен файл с особыми правами доступа. Проведите аудит.",
             /*13*/ "Уязвимый файл найден. Атака также повредила базу данных. Восстановите последние валидные данные из журнала транзакций. Они могут быть важны.",
             /*14*/ "Данные восстановлены. Мы получили доступ к низкоуровневым инструкциям процессора. Рассчитайте результат их микрооперации, чтобы предсказать действия 'Цербера'.",
-            /*15*/ "Результат верен. Финальный аналитический этап: в сети 'Авроры' есть инсайдер. Сопоставьте логи и установите его личность. Он - ключ ко всему.",
-            /*16*/ "Личность установлена. Финальный практический тест. Перед вами стандартный протокол нейтрализации агента 'Цербера'. Следуйте ему без отклонений.",
-            /*17*/ "Протокол выполнен корректно. Вы собрали все фрагменты информации. Соберите из них мастер-ключ. Это ваш пропуск в реальную сеть 'Авроры'.",
+            /*15*/ "Результат верен. Финальный аналитический этап. Инсайдер использует посредника для маскировки. Проведите полную корреляцию логов, чтобы вскрыть его личность.",
+            /*16*/ "Личность установлена. Финальный практический тест. Против вас адаптивный боевой агент. Управляйте ресурсами и тактикой, чтобы выжить и победить.",
+            /*17*/ "Агент нейтрализован. Вы собрали все фрагменты информации. Соберите из них мастер-ключ. Это ваш пропуск в реальную сеть 'Авроры'.",
             /*18*/ "Ключ принят. Симуляция пройдена. Вы готовы. Окно для атаки открыто. Подключайтесь к узлу 'Аврора' и нейтрализуйте протокол 'Омега'. Удачи, Призрак."
         ];
         
-        function populateQuestData(upToStage) { const fullData = { '1': { user: 'GHOST', pass: 'AURORA_BREACH', token: '47' }, '3': { memoryKey: '0x41424344' }, '4': { shieldName: 'GHOST' }, '5': { attackerIP: '218.45.192.88' }, '6': { decodedFile: 'omega-data' }, '7': { backdoorPass: 'changeme' }, '10': { compromisedFile: 'user32.dll' }, '11': { command: 'ZER0-C00L-ACCESS' }, '12': { vulnerableFile: '/opt/aurora/diag_tool' }, '13': { sqlValue: 'backup_access_key_Alpha7!' }, '14': { asmResult: 45 }, '15': { attackerUser: 'j.holloway' } }; for(let i = 1; i <= upToStage; i++){ if(fullData[i]) Object.assign(questData, fullData[i]); } }
+        function populateQuestData(upToStage) { const fullData = { '1': { user: 'GHOST', pass: 'AURORA_BREACH', token: '47' }, '3': { memoryKey: '0x41424344' }, '4': { shieldName: 'GHOST' }, '5': { attackerIP: '218.45.192.88' }, '6': { decodedPhrase: 'hello-world-omega-test' }, '7': { constructedPass: 'chimera-2077-lock' }, '10': { compromisedFile: 'user32.dll' }, '11': { hexCommand: 'OMEGA-LOCKDOWN' }, '12': { vulnerableFile: '/opt/aurora/diag_tool' }, '13': { sqlValue: 'backup_access_key_Alpha7!' }, '14': { asmResult: 80 }, '15': { attackerUser: 'j.holloway' } }; for(let i = 1; i <= upToStage; i++){ if(fullData[i]) Object.assign(questData, fullData[i]); } }
         function jumpToStage(stageNum) { stopGlitchEffect(); populateQuestData(stageNum - 1); currentStep = stageNum - 1; advanceState(); }
         
         function toggleDevConsole() {
@@ -556,22 +589,22 @@ ADD EAX, 3       ; Прибавить 3 к EAX
             document.getElementById('dialogue-button').onclick = advanceState;
         }
 
-        function checkStage1() { if(document.getElementById('ans1_user').value.trim().toUpperCase() === 'GHOST' && document.getElementById('ans1_pass').value.trim().toUpperCase() === 'AURORA_BREACH' && document.getElementById('ans1_token').value.trim() === '47') { questData.user = 'GHOST'; questData.pass = 'AURORA_BREACH'; questData.token = '47'; handleCorrectAnswer(); } else alert("ДАННЫЕ НЕВЕРНЫ. 'ЦЕРБЕР' УСИЛИВАЕТ ЗАЩИТУ."); }
+        function checkStage1() { if(document.getElementById('ans1_user').value.trim().toUpperCase() === 'GHOST' && document.getElementById('ans1_pass').value.trim().toUpperCase() === 'AURORA_BREACH' && document.getElementById('ans1_token').value.trim() === '47') { questData.user = 'GHOST'; questData.pass = 'AURORA_BREACH'; questData.token = '47'; handleCorrectAnswer(); } else { alert("ДАННЫЕ НЕВЕРНЫ. 'ЦЕРБЕР' УСИЛИВАЕТ ЗАЩИТУ."); } }
         function checkStage2() { if(document.getElementById('answer2').value.trim().toLowerCase() === 'systemctl disable cerberus.legacy_ftp.service') {handleCorrectAnswer();} else { alert('НЕВЕРНАЯ КОМАНДА. ПОДСИСТЕМА ВСЕ ЕЩЕ АКТИВНА.'); }}
-        function checkStage3() { const answer = document.getElementById('answer3').value.trim().toUpperCase(); if(answer === '0X41424344') { questData.memoryKey = answer; handleCorrectAnswer(); } else alert('НЕВЕРНЫЙ КЛЮЧ. ПРОВЕРЬТЕ АДРЕС В ДАМПЕ.'); }
-        function checkStage4() { const answer = document.getElementById('answer4').value.trim().toUpperCase(); if(answer === 'GHOST') { questData.shieldName = answer; handleCorrectAnswer(); } else alert("ОШИБКА РАСПОЗНАВАНИЯ. 'ЦЕРБЕР' МАСКИРУЕТ СИГНАЛ."); }
-        function checkStage5() { const answer = document.getElementById('answer5').value.trim(); if(answer === '218.45.192.88') { questData.attackerIP = answer; handleCorrectAnswer(); } else alert('IP-АДРЕС НЕВЕРЕН. УТЕЧКА ПРОДОЛЖАЕТСЯ.'); }
-        function checkStage6() { if(document.getElementById('answer6').value.trim().toLowerCase() === 'omega-data') { questData.decodedFile = 'omega-data'; handleCorrectAnswer(); } else alert('ДЕКОДИРОВАНИЕ НЕУДАЧНО ИЛИ ОТВЕТ НЕВЕРЕН.'); }
-        function checkStage7() { if(document.getElementById('answer7').value.trim() === 'changeme') { questData.backdoorPass = 'changeme'; handleCorrectAnswer(); } else alert('УЯЗВИМОСТЬ НЕ НАЙДЕНА.'); }
-        function checkStage8(action) { if(action === 'RESERVE_COOLANT') handleCorrectAnswer(); else { alert('КРИТИЧЕСКАЯ ОШИБКА. ПЕРЕГРЕВ ЯДРА. СИМУЛЯЦИЯ ПРОВАЛЕНА. ПЕРЕЗАПУСК...'); location.reload(); } }
-        function checkStage9() { if(document.getElementById('answer9').value.trim().toLowerCase() === 'inject_and_hide') handleCorrectAnswer(); else alert('ИДЕНТИФИКАЦИЯ НЕ ПРОЙДЕНА.'); }
-        function checkStage10() { const answer = document.getElementById('answer10').value.trim().toLowerCase(); if(answer === 'user32.dll') { questData.compromisedFile = 'user32.dll'; handleCorrectAnswer(); } else alert('НЕВЕРНЫЙ ФАЙЛ. ЦЕЛОСТНОСТЬ СИСТЕМЫ НАРУШЕНА.'); }
-        function checkStage11() { if(document.getElementById('answer11').value.trim().toUpperCase() === 'ZER0-C00L-ACCESS') { questData.command = 'ZER0-C00L-ACCESS'; handleCorrectAnswer(); } else alert('НЕВЕРНАЯ КОМАНДА.'); }
-        function checkStage12() { if(document.getElementById('answer12').value.trim() === '/opt/aurora/diag_tool') { questData.vulnerableFile = '/opt/aurora/diag_tool'; handleCorrectAnswer(); } else alert('НЕВЕРНЫЙ ПУТЬ К ФАЙЛУ. ВЕКТОР АТАКИ ОСТАЕТСЯ ОТКРЫТЫМ.'); }
-        function checkStage13() { if(document.getElementById('answer13').value.trim() === 'backup_access_key_Alpha7!') { questData.sqlValue = 'backup_access_key_Alpha7!'; handleCorrectAnswer(); } else alert('ДАННЫЕ НЕВЕРНЫ.'); }
-        function checkStage14() { if(document.getElementById('answer14').value.trim() === '45') { questData.asmResult = 45; handleCorrectAnswer(); } else alert('НЕВЕРНЫЙ РЕЗУЛЬТАТ. ПРОВЕРЬТЕ ВЫЧИСЛЕНИЯ (2A hex + 3).'); }
-        function checkStage15() { if(document.getElementById('answer15').value.trim().toLowerCase() === 'j.holloway') { questData.attackerUser = 'j.holloway'; handleCorrectAnswer(); } else alert('НЕВЕРНОЕ ИМЯ ПОЛЬЗОВАТЕЛЯ.'); }
-        function checkStage17() { const finalCode = `${questData.memoryKey}-${questData.attackerIP}-${questData.command}-${questData.attackerUser}`; if(document.getElementById('answer17').value.trim().toUpperCase() === finalCode.toUpperCase()) { handleCorrectAnswer(); } else { alert('МАСТЕР-КЛЮЧ НЕВЕРЕН. ДОСТУП ЗАБЛОКИРОВАН.'); } }
+        function checkStage3() { const answer = document.getElementById('answer3').value.trim().toUpperCase(); if(answer === '0X41424344') { questData.memoryKey = answer; handleCorrectAnswer(); } else { alert('НЕВЕРНЫЙ КЛЮЧ. ПРОВЕРЬТЕ АДРЕС В ДАМПЕ.'); } }
+        function checkStage4() { const answer = document.getElementById('answer4').value.trim().toUpperCase(); if(answer === 'GHOST') { questData.shieldName = answer; handleCorrectAnswer(); } else { alert("ОШИБКА РАСПОЗНАВАНИЯ. 'ЦЕРБЕР' МАСКИРУЕТ СИГНАЛ."); } }
+        function checkStage5() { const answer = document.getElementById('answer5').value.trim(); if(answer === '218.45.192.88') { questData.attackerIP = answer; handleCorrectAnswer(); } else { alert('IP-АДРЕС НЕВЕРЕН. УТЕЧКА ПРОДОЛЖАЕТСЯ.'); } }
+        function checkStage6() { if(document.getElementById('answer6').value.trim().toLowerCase() === 'hello-world-omega-test') { questData.decodedPhrase = 'hello-world-omega-test'; handleCorrectAnswer(); } else { alert('ДЕКОДИРОВАНИЕ НЕУДАЧНО ИЛИ ФРАЗА НЕВЕРНА.'); } }
+        function checkStage7() { if(document.getElementById('answer7').value.trim() === 'chimera-2077-lock') { questData.constructedPass = 'chimera-2077-lock'; handleCorrectAnswer(); } else { alert('НЕВЕРНЫЙ ПАРОЛЬ. ПРОВЕРЬТЕ ФОРМАТ И ПЕРЕМЕННЫЕ.'); } }
+        function checkStage8(action) { if(action === 'ISOLATE_NETWORK') handleCorrectAnswer(); else { alert('НЕВЕРНОЕ РЕШЕНИЕ. БОРЬБА СО СЛЕДСТВИЕМ, А НЕ С ПРИЧИНОЙ, ПРИВЕЛА К КРАХУ СИСТЕМЫ. ПЕРЕЗАПУСК...'); location.reload(); } }
+        function checkStage9() { if(document.getElementById('answer9').value.trim().toLowerCase() === 'inject_and_hide') { handleCorrectAnswer(); } else { alert('ИДЕНТИФИКАЦИЯ НЕ ПРОЙДЕНА.'); } }
+        function checkStage10() { const answer = document.getElementById('answer10').value.trim().toLowerCase(); if(answer === 'user32.dll') { questData.compromisedFile = 'user32.dll'; handleCorrectAnswer(); } else { alert('НЕВЕРНЫЙ ФАЙЛ. ВНИМАТЕЛЬНО ИЗУЧИТЕ ОТЧЕТ НА ПРЕДМЕТ КРИТИЧЕСКИХ СБОЕВ.'); } }
+        function checkStage11() { if(document.getElementById('answer11').value.trim().toUpperCase() === 'OMEGA-LOCKDOWN') { questData.hexCommand = 'OMEGA-LOCKDOWN'; handleCorrectAnswer(); } else { alert('НЕВЕРНАЯ КОМАНДА.'); } }
+        function checkStage12() { if(document.getElementById('answer12').value.trim() === '/opt/aurora/diag_tool') { questData.vulnerableFile = '/opt/aurora/diag_tool'; handleCorrectAnswer(); } else { alert('НЕВЕРНЫЙ ПУТЬ К ФАЙЛУ. ВЕКТОР АТАКИ ОСТАЕТСЯ ОТКРЫТЫМ.'); } }
+        function checkStage13() { if(document.getElementById('answer13').value.trim() === 'backup_access_key_Alpha7!') { questData.sqlValue = 'backup_access_key_Alpha7!'; handleCorrectAnswer(); } else { alert('ДАННЫЕ НЕВЕРНЫ.'); } }
+        function checkStage14() { if(document.getElementById('answer14').value.trim() === '80') { questData.asmResult = 80; handleCorrectAnswer(); } else { alert('НЕВЕРНЫЙ РЕЗУЛЬТАТ. ПРОВЕРЬТЕ ВЫЧИСЛЕНИЯ.'); } }
+        function checkStage15() { if(document.getElementById('answer15').value.trim().toLowerCase() === 'j.holloway') { questData.attackerUser = 'j.holloway'; handleCorrectAnswer(); } else { alert('НЕВЕРНОЕ ИМЯ ПОЛЬЗОВАТЕЛЯ. ПРОВЕРЬТЕ ЦЕПОЧКУ СОБЫТИЙ В ЛОГАХ.'); } }
+        function checkStage17() { const finalCode = `${questData.memoryKey}-${questData.attackerIP}-${questData.hexCommand}-${questData.attackerUser}`; if(document.getElementById('answer17').value.trim().toUpperCase() === finalCode.toUpperCase()) { handleCorrectAnswer(); } else { alert('МАСТЕР-КЛЮЧ НЕВЕРЕН. ДОСТУП ЗАБЛОКИРОВАН.'); } }
 
         function startGlitchEffect() {
             const glitchBox = document.getElementById('glitch-box');
@@ -589,49 +622,159 @@ ADD EAX, 3       ; Прибавить 3 к EAX
         }
 
         function processStage6Tool() {
-            const input = document.getElementById('tool-input-6').value;
+            const text = document.getElementById('tool-input-6-text').value.toLowerCase();
+            const shift = parseInt(document.getElementById('tool-input-6-key').value);
             const output = document.getElementById('tool-output-6');
-            try { output.textContent = atob(input); } 
-            catch (e) { output.textContent = 'ОШИБКА: Неверные данные Base64.'; }
+            if (isNaN(shift)) { output.textContent = 'ОШИБКА: Ключ должен быть числом.'; return; }
+            
+            let result = '';
+            const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const index = alphabet.indexOf(char);
+                if (index !== -1) {
+                    let newIndex = (index - shift + 26) % 26;
+                    result += alphabet[newIndex];
+                } else {
+                    result += char;
+                }
+            }
+            output.textContent = result;
         }
 
         function processStage11Tool() {
-            const input = document.getElementById('tool-input-11').value;
-            document.getElementById('tool-output-11').textContent = input.split('').reverse().join('');
+            const hex = document.getElementById('tool-input-11').value.replace(/\s/g, '');
+            const output = document.getElementById('tool-output-11');
+            let str = '';
+            if (hex.length % 2 !== 0) {
+                 output.textContent = 'ОШИБКА: Неверная длина HEX-строки.'; return;
+            }
+            try {
+                for (let i = 0; i < hex.length; i += 2) {
+                    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+                }
+                output.textContent = str;
+            } catch (e) {
+                output.textContent = 'ОШИБКА: Неверные символы в HEX-строке.';
+            }
         }
         
+        // --- STAGE 16: Reaper Protocol v2.0 Logic ---
         function initStage16() {
-            userActionSequence = [];
+            gameState = {
+                agent: { status: 'SHIELDED', health: 100, adaptation: 'NONE' },
+                player: { energy: 100 },
+                gameOver: false
+            };
             const log = document.getElementById('stage16-log');
             if(log) log.innerHTML = '';
-            document.querySelectorAll('#stage16-actions button').forEach(btn => {
-                btn.disabled = false;
-                btn.style.opacity = '1';
-            });
+
+            // BUG FIX: Re-enable buttons on restart
+            document.querySelectorAll('#stage16-actions button').forEach(btn => btn.disabled = false);
+
+            updateGameDisplay();
+            logToStage16('Протокол "Жнец" v2.0 активирован. Цель обнаружена.', 'warn');
         }
         
-        function performAction(action) {
-            const log = document.getElementById('stage16-log');
-            const btn = document.getElementById(`action-${action}`);
-            if (!log || !btn || btn.disabled) return;
-            
-            userActionSequence.push(action);
-            log.innerHTML += `<p class="log-entry">> Выполнено действие: ${action.toUpperCase()}</p>`;
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
+        function updateGameDisplay() {
+            document.getElementById('agent-status').textContent = gameState.agent.status + (gameState.agent.adaptation !== 'NONE' ? ` (ADAPTED: ${gameState.agent.adaptation})` : '');
+            document.getElementById('agent-health').textContent = `${gameState.agent.health}%`;
+            document.getElementById('player-energy').textContent = gameState.player.energy;
+
+            if (gameState.gameOver) {
+                 document.querySelectorAll('#stage16-actions button').forEach(btn => btn.disabled = true);
+            }
         }
 
-        function checkStage16() {
+        function logToStage16(message, type = 'info') {
             const log = document.getElementById('stage16-log');
-            if(!log) return;
-            if (JSON.stringify(userActionSequence) === JSON.stringify(correctActionSequence)) {
-                log.innerHTML += `<p class="log-entry" style="color:var(--accent-color)">> ПРОТОКОЛ ВЫПОЛНЕН УСПЕШНО. АГЕНТ 'ЦЕРБЕРА' НЕЙТРАЛИЗОВАН.</p>`;
-                setTimeout(handleCorrectAnswer, 1000);
-            } else {
-                log.innerHTML += `<p class="log-entry error">> ОШИБКА ПОСЛЕДОВАТЕЛЬНОСТИ. ПРОТОКОЛ ПРОВАЛЕН. СБРОС...</p>`;
-                setTimeout(initStage16, 2000);
-                alert('НЕВЕРНАЯ ПОСЛЕДОВАТЕЛЬНОСТЬ. Система возвращена в исходное состояние. Попробуйте снова, следуя протоколу.');
+            if(log) log.innerHTML += `<p class="log-entry ${type}">> ${message}</p>`;
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function spendEnergy(cost) {
+            if (gameState.player.energy < cost) {
+                logToStage16(`Недостаточно энергии! Требуется: ${cost}, Доступно: ${gameState.player.energy}`, 'error');
+                return false;
             }
+            gameState.player.energy -= cost;
+            return true;
+        }
+
+        function performAgentAction(action) {
+            if (gameState.gameOver) return;
+
+            switch(action) {
+                case 'overload':
+                    if (!spendEnergy(30)) return;
+                    if (gameState.agent.status === 'SHIELDED') {
+                        gameState.agent.status = 'VULNERABLE';
+                        logToStage16('Щиты перегружены. Агент уязвим!', 'success');
+                    } else {
+                        logToStage16('Действие неэффективно. Щиты уже отключены.', 'error');
+                    }
+                    break;
+                
+                case 'analyze':
+                    if (!spendEnergy(10)) return;
+                    let vulnerability = 'АЛЬФА';
+                    if (gameState.agent.adaptation === 'ALPHA') { vulnerability = 'БЕТА'; }
+                    logToStage16(`АНАЛИЗ: Обнаружена уязвимость к эксплойту типа ${vulnerability}.`, 'info');
+                    break;
+
+                case 'execute_alpha':
+                case 'execute_beta':
+                    const exploitType = (action === 'execute_alpha') ? 'ALPHA' : 'BETA';
+                    if (!spendEnergy(25)) return;
+
+                    if (gameState.agent.status === 'SHIELDED') {
+                        logToStage16('КОНТРАТАКА: Атака по щиту вызвала ответный импульс! Энергия -20.', 'danger-text');
+                        gameState.player.energy -= 20;
+                    } else if (gameState.agent.adaptation === exploitType) {
+                        logToStage16(`Броня адаптирована к ${exploitType}. Атака неэффективна.`, 'error');
+                    } else {
+                        gameState.agent.health -= 50;
+                        gameState.agent.adaptation = exploitType;
+                        if(gameState.agent.health < 0) gameState.agent.health = 0;
+                        logToStage16(`Попадание эксплойтом ${exploitType}! Целостность агента: ${gameState.agent.health}%.`, 'success');
+                        
+                        if (gameState.agent.health > 0) {
+                            logToStage16(`Агент адаптируется к атаке типа ${exploitType}...`, 'warn');
+                            setTimeout(() => {
+                               gameState.agent.status = 'SHIELDED';
+                               logToStage16('Агент восстановил щиты!');
+                               updateGameDisplay();
+                            }, 1500);
+                        }
+                    }
+                    break;
+
+                case 'recharge':
+                    if (!spendEnergy(0)) return; // Check for energy just in case, cost is 0
+                    gameState.player.energy += 15;
+                    if (gameState.player.energy > 100) gameState.player.energy = 100;
+                    logToStage16('Перенаправление энергии... Заряд +15.', 'info');
+                    break;
+
+                case 'purge':
+                    if (gameState.agent.health <= 0) {
+                        logToStage16('Протокол "Жнец" выполнен. Агент стерт. Система чиста.', 'success');
+                        gameState.gameOver = true;
+                        setTimeout(handleCorrectAnswer, 1500);
+                    } else {
+                        logToStage16('Очистка невозможна. Агент все еще активен.', 'error');
+                    }
+                    break;
+            }
+
+            if (gameState.player.energy <= 0 && !gameState.gameOver) {
+                gameState.player.energy = 0;
+                logToStage16('КРИТИЧЕСКИЙ СБОЙ: Энергия на нуле. Миссия провалена. Перезапуск протокола...', 'danger-text');
+                gameState.gameOver = true;
+                setTimeout(initStage16, 3000);
+            }
+            
+            updateGameDisplay();
         }
         
         function showFinalScreen() {
@@ -646,7 +789,7 @@ ADD EAX, 3       ; Прибавить 3 к EAX
             const reportData = [
                 { label: 'Ключ сессии:', value: questData.memoryKey },
                 { label: 'IP-адрес "Цербера":', value: questData.attackerIP },
-                { label: 'Пароль-команда:', value: questData.command },
+                { label: 'Команда HEX:', value: questData.hexCommand },
                 { label: 'Ключевой инсайдер:', value: questData.attackerUser },
                 { label: 'Цель:', value: "ПРОТОКОЛ ОМЕГА" },
                 { label: 'Статус:', value: "ГОТОВ К ВЫПОЛНЕНИЮ" },
