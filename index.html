@@ -31,7 +31,7 @@
         #main-container {
             height: 100vh; width: 100vw; display: flex; align-items: center;
             justify-content: center; flex-direction: column; overflow-y: auto;
-            padding: 40px 20px; box-sizing: border-box;
+            padding: 20px; box-sizing: border-box;
         }
         .content-wrapper { width: 100%; max-width: 900px; }
         #preloader {
@@ -41,7 +41,7 @@
         #preloader-text { font-size: 16px; text-align: left; white-space: pre; border-right: 2px solid var(--main-color); animation: blink 0.7s step-end infinite; }
         @keyframes blink { from, to { border-color: transparent; } 50% { border-color: var(--main-color); } }
 
-        .stage, #dialogue-box, #final-screen {
+        .stage, #dialogue-box {
             display: none; flex-direction: column; align-items: center; text-align: center;
             padding: 30px; background-color: rgba(5, 10, 5, 0.9); border: 1px solid var(--border-color);
             box-shadow: 0 0 25px rgba(0, 255, 0, 0.2); margin: 20px; backdrop-filter: blur(2px);
@@ -72,7 +72,6 @@
         .log-box .warn-text { color: var(--warn-color); }
         .log-box .info-text { color: var(--info-color); }
         
-
         #glitch-box {
             width: 95%; background: #050505; border: 1px solid #333; padding: 15px; margin: 15px 0;
             text-align: center; white-space: pre; font-size: 28px; color: var(--main-color);
@@ -85,38 +84,34 @@
             box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
         }
         input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 10px var(--accent-color); }
+        input.error { border-color: var(--danger-color); animation: shake 0.5s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        
         button {
             margin: 10px 5px; padding: 12px 25px; background: transparent; color: var(--main-color);
             border: 1px solid var(--main-color); cursor: pointer; font-size: 16px;
             font-family: 'Consolas', 'Courier New', monospace; transition: all 0.2s;
             text-shadow: 0 0 5px var(--main-color);
         }
-        button:hover { background: var(--main-color); color: black; box-shadow: var(--glow-main); transform: translateY(-3px); text-shadow: none; }
-        button:active { transform: translateY(-1px); }
+        button:hover:not(:disabled) { background: var(--main-color); color: black; box-shadow: var(--glow-main); transform: translateY(-3px); text-shadow: none; }
+        button:active:not(:disabled) { transform: translateY(-1px); }
         button.danger { border-color: var(--danger-color); color: var(--danger-color); text-shadow: 0 0 5px var(--danger-color); }
-        button.danger:hover { background: var(--danger-color); color: white; box-shadow: var(--glow-danger); text-shadow: none;}
+        button.danger:hover:not(:disabled) { background: var(--danger-color); color: white; box-shadow: var(--glow-danger); text-shadow: none;}
         button:disabled { background: #333; border-color: #555; cursor: not-allowed; transform: none; color: #888; text-shadow: none;}
         .processing-bar { width: 100%; background: #222; border: 1px solid #444; margin-top: 20px; display: none; }
         .processing-bar-fill { width: 0%; height: 10px; background: var(--accent-color); transition: width 1.5s ease-out; box-shadow: var(--glow-accent); }
 
         #dev-console-trigger {
-            position: fixed; top: 10px; right: 10px;
-            width: 12px; height: 12px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            cursor: pointer; z-index: 998;
-            box-shadow: var(--glow-accent);
-            transition: all 0.2s;
-            animation: pulse 2s infinite;
+            position: fixed; top: 10px; right: 10px; width: 12px; height: 12px; background: var(--accent-color);
+            border-radius: 50%; cursor: pointer; z-index: 998; box-shadow: var(--glow-accent);
+            transition: all 0.2s; animation: pulse 2s infinite;
         }
         #dev-console-trigger:hover { transform: scale(1.3); }
         @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
 
         #dev-console {
-            display: none; position: fixed; top: 15px; right: 15px;
-            width: 250px; background: rgba(10, 20, 10, 0.95);
-            border: 1px solid var(--accent-color);
-            box-shadow: 0 0 15px var(--accent-color);
+            display: none; position: fixed; top: 15px; right: 15px; width: 250px; background: rgba(10, 20, 10, 0.95);
+            border: 1px solid var(--accent-color); box-shadow: 0 0 15px var(--accent-color);
             z-index: 999; backdrop-filter: blur(3px);
         }
         #dev-console-header { padding: 10px; text-align: center; background: var(--accent-color); color: black; font-weight: bold; cursor: pointer; text-shadow: none; }
@@ -125,17 +120,6 @@
         #dev-console-body ul { list-style: none; padding: 0; margin: 0; }
         #dev-console-body li a { display: block; padding: 5px; color: var(--main-color); text-decoration: none; transition: background-color 0.2s; }
         #dev-console-body li a:hover { background-color: rgba(0, 255, 255, 0.2); }
-
-        #final-report-container { width: 100%; text-align: left; margin-top: 20px; }
-        .report-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px dashed #333; opacity: 0; transform: translateX(-20px); transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.2s; }
-        .report-item.visible { opacity: 1; transform: translateX(0); }
-        .report-item:hover { background-color: rgba(0, 255, 0, 0.1); }
-        .report-item .label { color: var(--accent-color); flex-basis: 40%; }
-        .report-item .data { color: var(--main-color); font-weight: bold; flex-basis: 50%; letter-spacing: 1px;}
-        .report-item .status { color: #555; flex-basis: 10%; text-align: right; }
-        .report-item .status.confirmed { color: var(--main-color); font-weight: bold; text-shadow: var(--glow-main); }
-        #final-link { margin-top: 30px; color: white; font-weight: bold; text-decoration: none; font-size: 18px; display: block; padding: 15px 30px; border: 1px solid var(--danger-color); transition: all 0.2s; background: var(--danger-color); box-shadow: var(--glow-danger); }
-        #final-link:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--danger-color); }
 
         .interactive-tool { border: 1px solid var(--accent-color); margin-top: 20px; padding: 15px; width: 95%; background: rgba(0, 20, 20, 0.5); text-align: left; }
         .interactive-tool label { display: block; margin-bottom: 5px; color: var(--accent-color); }
@@ -147,20 +131,93 @@
         #stage16-display span { color: var(--warn-color); }
         #stage16-actions { display: flex; flex-wrap: wrap; justify-content: center; margin: 15px 0;}
         #stage16-actions button { flex-basis: 45%; margin: 5px; }
-        #stage16-log { width: 95%; min-height: 80px; text-align: left; padding: 10px; background: #050505; border: 1px solid #444; margin-top: 15px; color: #aaa; }
+        #stage16-log { width: 95%; min-height: 80px; text-align: left; padding: 10px; background: #050505; border: 1px solid #444; margin-top: 15px; color: #aaa; overflow-y: auto; max-height: 150px;}
         #stage16-log .log-entry.error { color: var(--danger-color); }
         #stage16-log .log-entry.success { color: var(--accent-color); }
         #stage16-log .log-entry.warn { color: var(--warn-color); }
+        
+        /* --- TRANSITION SCREEN STYLES --- */
+        #transition-screen {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            padding: 2vw; box-sizing: border-box;
+            background: #010201; margin: 0;
+            flex-direction: column;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 0 35px var(--accent-color), inset 0 0 25px var(--accent-color);
+        }
+        .final-header {
+            width: 100%; text-align: center; color: var(--accent-color);
+            font-size: 2vw; text-shadow: var(--glow-accent);
+            border-bottom: 1px solid var(--border-color); padding-bottom: 15px;
+            margin-bottom: 20px; letter-spacing: 5px;
+        }
+        .final-content { display: flex; width: 100%; height: 100%; overflow: hidden; gap: 20px; }
+        .final-panel {
+            flex: 1; border: 1px solid var(--border-color);
+            background: rgba(5, 15, 5, 0.5); padding: 15px;
+            overflow-y: auto;
+        }
+        .final-panel-title { color: var(--warn-color); border-bottom: 1px dashed var(--warn-color); padding-bottom: 8px; margin-bottom: 10px; font-size: 1.2em;}
+        #final-telemetry-log { white-space: pre-wrap; color: #ccc; font-size: 0.9em; }
+        #final-ascii-art {
+            flex: 1.5; text-align: center; color: var(--danger-color);
+            font-size: 1vw; line-height: 1.1; white-space: pre;
+            text-shadow: var(--glow-danger); animation: pulse-danger 2.5s infinite;
+            display: flex; align-items: center; justify-content: center;
+        }
+        @keyframes pulse-danger { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+        
+        #final-debrief-table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+        #final-debrief-table th, #final-debrief-table td { padding: 10px 8px; text-align: left; border-bottom: 1px dotted var(--border-color); vertical-align: top; }
+        #final-debrief-table th { color: var(--accent-color); text-transform: uppercase; }
+        #final-debrief-table tr { opacity: 0; transition: opacity 0.5s ease-in-out; }
+        #final-debrief-table td:nth-child(2) { color: var(--main-color); font-weight: bold; }
+        #final-debrief-table .status-success { color: var(--main-color); }
+        #final-debrief-table .status-warn { color: var(--warn-color); }
+        #final-debrief-table .status-danger { color: var(--danger-color); }
+        #final-debrief-table .status-accent { color: var(--accent-color); font-weight: bold; }
+        
+        .final-footer { margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px; width: 100%; text-align: center; }
+        #final-command-prompt { display: flex; align-items: center; justify-content: center; font-size: 1.5em; }
+        #final-command-prompt span { color: var(--warn-color); }
+        #final-command-input { background: transparent; border: none; color: var(--main-color); flex-grow: 1; font-size: 1em; margin: 0 0 0 10px; padding: 5px; border-bottom: 2px solid var(--main-color); }
+        #final-command-input:focus { outline: none; border-bottom-color: var(--accent-color); }
 
+        /* --- TRUE FINAL SCREEN STYLES --- */
+        #true-final-screen { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #010201; padding: 2vw; box-sizing: border-box; flex-direction: column; z-index: 1002; border: 2px solid var(--main-color); box-shadow: 0 0 40px var(--main-color), inset 0 0 30px var(--main-color); }
+        #true-final-screen .final-header { color: var(--main-color); text-shadow: var(--glow-main); letter-spacing: 8px; animation: fadeInUp 1s ease-out; }
+        #true-final-screen .final-content { gap: 25px; }
+        #true-final-screen .final-panel-true { flex: 1; border: 1px solid var(--border-color); background: rgba(5, 20, 5, 0.6); padding: 20px; opacity: 0; animation: fadeInUp 1s ease-out forwards; display: flex; flex-direction: column; }
+        #true-final-screen .final-panel-true:nth-child(2) { animation-delay: 0.5s; }
+        #true-final-screen .final-panel-true:nth-child(3) { animation-delay: 1s; }
+        #true-final-screen .final-panel-title { color: var(--accent-color); text-shadow: var(--glow-accent); font-size: 1.4em; border-bottom: 1px solid var(--accent-color); padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;}
+        #true-final-screen dl { margin: 0; padding: 0; }
+        #true-final-screen dt { color: var(--accent-color); padding: 8px 0 4px; opacity: 0; animation: fadeInUp 0.5s ease-out forwards; }
+        #true-final-screen dd { color: var(--main-color); margin: 0 0 15px 15px; padding-left: 15px; border-left: 2px solid var(--border-color); font-weight: bold; font-size: 1.1em; opacity: 0; animation: fadeInUp 0.5s ease-out forwards; word-wrap: break-word; }
+        #true-final-screen #final-target-info { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; }
+        #true-final-screen .target-info { margin-bottom: 1.5em; font-size: 1.5em; letter-spacing: 2px; }
+        #true-final-screen .target-label { color: var(--accent-color); display: block; font-size: 0.8em; margin-bottom: 5px; }
+        #true-final-screen .target-data { color: var(--main-color); font-weight: bold; }
+        #true-final-screen .target-status { color: var(--warn-color); font-weight: bold; font-size: 1.8em; margin-top: 1em; text-shadow: var(--glow-warn); animation: pulse-warn 2s infinite; }
+        @keyframes pulse-warn { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+        
+        #true-final-screen .final-footer { opacity: 0; animation: fadeInUp 1s 2s ease-out forwards; }
+        #connect-button { font-size: 1.5em; padding: 15px 40px; border: 2px solid var(--danger-color); color: var(--danger-color); text-shadow: var(--glow-danger); text-decoration: none; }
+        #connect-button:hover { background: var(--danger-color); color: #fff; text-shadow: none; box-shadow: var(--glow-danger); }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .glitch-active { animation: screen-glitch 0.3s linear infinite; }
+        @keyframes screen-glitch { 0% { transform: translate(0, 0); opacity: 1; } 10% { transform: translate(-2px, 2px); } 20% { transform: translate(2px, -2px); } 30% { opacity: 0.8; } 100% { transform: translate(0, 0); opacity: 1; } }
     </style>
 </head>
 <body>
     <div id="preloader"><div id="preloader-text"></div></div>
 
-    <!-- DEV CONSOLE & TRIGGER -->
-    <div id="dev-console-trigger" onclick="toggleDevConsole()"></div>
+    <div id="dev-console-trigger"></div>
     <div id="dev-console">
-        <div id="dev-console-header" onclick="collapseDevConsoleBody()">[DEV_CONSOLE]</div>
+        <div id="dev-console-header">[DEV_CONSOLE]</div>
         <div id="dev-console-body">
             <ul id="dev-nav-list"></ul>
         </div>
@@ -170,677 +227,358 @@
         <div class="content-wrapper">
             <div id="dialogue-box" class="fade-in">
                 <p id="guide-name">[ИИ-Инструктор "Прометей"]</p>
-                <p id="dialogue-text" onclick="skipTypewriter()"></p>
+                <p id="dialogue-text"></p>
                 <button id="dialogue-button">Продолжить</button>
                 <div class="processing-bar" id="processing"><div class="processing-bar-fill" id="processing-fill"></div></div>
             </div>
 
-            <!-- Контейнеры для этапов теперь пустые. Контент будет загружен из шаблонов. -->
-            <div id="stage1" class="stage fade-in"></div>
-            <div id="stage2" class="stage fade-in"></div>
-            <div id="stage3" class="stage fade-in"></div>
-            <div id="stage4" class="stage fade-in"></div>
-            <div id="stage5" class="stage fade-in"></div>
-            <div id="stage6" class="stage fade-in"></div>
-            <div id="stage7" class="stage fade-in"></div>
-            <div id="stage8" class="stage fade-in"></div>
-            <div id="stage9" class="stage fade-in"></div>
-            <div id="stage10" class="stage fade-in"></div>
-            <div id="stage11" class="stage fade-in"></div>
-            <div id="stage12" class="stage fade-in"></div>
-            <div id="stage13" class="stage fade-in"></div>
-            <div id="stage14" class="stage fade-in"></div>
-            <div id="stage15" class="stage fade-in"></div>
-            <div id="stage16" class="stage fade-in"></div>
-            <div id="stage17" class="stage fade-in"></div>
-            <div id="final-screen" class="stage fade-in"></div>
+            <div id="stage1" class="stage fade-in"></div><div id="stage2" class="stage fade-in"></div><div id="stage3" class="stage fade-in"></div><div id="stage4" class="stage fade-in"></div><div id="stage5" class="stage fade-in"></div><div id="stage6" class="stage fade-in"></div><div id="stage7" class="stage fade-in"></div><div id="stage8" class="stage fade-in"></div><div id="stage9" class="stage fade-in"></div><div id="stage10" class="stage fade-in"></div><div id="stage11" class="stage fade-in"></div><div id="stage12" class="stage fade-in"></div><div id="stage13" class="stage fade-in"></div><div id="stage14" class="stage fade-in"></div><div id="stage15" class="stage fade-in"></div><div id="stage16" class="stage fade-in"></div><div id="stage17" class="stage fade-in"></div>
+            
+            <div id="transition-screen" class="stage fade-in"></div>
+            <div id="true-final-screen" class="stage fade-in"></div>
 
+            <div id="stage19" class="stage fade-in"></div>
+            <div id="stage20" class="stage fade-in"></div>
+            <div id="stage21" class="stage fade-in"></div>
         </div>
     </div>
     
-    <!-- Шаблоны для всего контента -->
-    <template id="stage1-template">
-        <h1 class="glitch-text">ЭТАП 1: ПРОБОЙ ПЕРИМЕТРА</h1>
-        <p>Ваша первая задача — обойти систему аутентификации эмулятора "Цербера". Проанализируйте лог и восстановите данные для входа: ПОЗЫВНОЙ, ПАРОЛЬ, ТОКЕН.</p>
-        <div class="log-box">[01:10] Policy Update: Passwords must combine target name and operation type. Target: AURORA, Operation: BREACH.
-[01:11] Login attempt for user 'admin' - FAILED (permission_denied)
-[01:12] Login attempt for user 'GHOST' - FAILED (token_mismatch)
-[01:13] [SECURITY_EVENT] Token generation failed. Params: [ERR_CODE_PRIMARY_DIGIT=4], [TARGET_SYSTEM_ID=7]. Method: CONCAT.
-[01:14] System health check... OK
-[01:15] Login attempt for user 'j.smith' - FAILED (bad_pass)</div>
-        <input type="text" id="ans1_user" placeholder="ПОЗЫВНОЙ"> <input type="text" id="ans1_pass" placeholder="ПАРОЛЬ"> <input type="text" id="ans1_token" placeholder="ТОКЕН">
-        <button onclick="checkStage1()">Войти</button>
-    </template>
-
-    <template id="stage2-template">
-        <h1 class="glitch-text">ЭТАП 2: АУДИТ ПОДСИСТЕМ "ЦЕРБЕРА"</h1>
-        <p>"Цербер" использует устаревшие службы как ловушки. Изучите отчет сканера и введите команду для отключения уязвимой подсистемы.</p>
-        <div class="log-box">SERVICE_MODULE             | STATUS  | RECOMMENDED_ACTION
----------------------------|---------|-----------------------------
-cerberus.auth.service      | active  | MONITOR
-cerberus.core.service      | active  | MONITOR
-cerberus.firewall.service  | active  | MONITOR
-<span class="danger-text">cerberus.legacy_ftp.service</span>| active  | <span class="danger-text">DISABLE (use 'systemctl')</span>
-cerberus.logging.service   | active  | MONITOR</div>
-        <input type="text" id="answer2" placeholder="Введите команду..."> <button onclick="checkStage2()">Выполнить</button>
-    </template>
-
-    <template id="stage3-template">
-        <h1 class="glitch-text">ЭТАП 3: АНАЛИЗ ДАМПА ПАМЯТИ</h1>
-        <p>"Цербер" прячет ключи шифрования в оперативной памяти. Найдите ключ активной сессии (`SESSION.KEY`), чтобы обойти его сканеры. Игнорируйте мусорные данные.</p>
-        <div class="log-box">...
-01B0: 44 45 42 55 47 5f 4b 45 | DEBUG_KE (DEPRECATED)
-01C0: 59 3a 20 30 78 44 45 41 | Y: 0xDEA
-01D0: 44 0a 4f 4c 44 5f 4b 45 | D.OLD_KE
-01E0: 59 3a 20 30 78 31 32 33 | Y: 0x123
-01F0: 34 0a 54 45 53 54 5f 4b | 4.TEST_K (INACTIVE)
-0200: 45 59 3a 20 <b>0x4142</b> | EY: <b>0x4142</b>
-0210: <b>4344</b> 0a 53 45 53 53 49 | <b>CD</b>.SESSI
-0220: 4f 4e 2e 4b 45 59 20 20 | ON.KEY  (<b>ACTIVE</b>)
-...</div>
-        <input type="text" id="answer3" placeholder="Ключ доступа (ACCESS_KEY)"> <button onclick="checkStage3()">Извлечь</button>
-    </template>
-
-    <template id="stage4-template">
-        <h1 class="glitch-text">ЭТАП 4: ВОССТАНОВЛЕНИЕ ПОЗЫВНОГО</h1>
-        <p>Ваш цифровой след зашумлен помехами "Цербера". Выделите из шума свой позывной, чтобы подтвердить личность для дальнейшего продвижения.</p>
-        <div id="glitch-box"></div>
-        <input type="text" id="answer4" placeholder="Скрытое слово"> <button onclick="checkStage4()">Расшифровать</button>
-    </template>
-
-    <template id="stage5-template">
-        <h1 class="glitch-text">ЭТАП 5: ПОИСК УЗЛА ЭКСФИЛЬТРАЦИИ</h1>
-        <p>"Цербер" использует скрытые узлы для отправки отчетов. Проанализируйте сетевой трафик и определите IP-адрес, куда был отправлен аномальный пакет по порту 31337.</p>
-        <div class="log-box">TIME | SRC_IP        | DST_IP          | PROTO | LEN  | INFO
-...
-13:01| 192.168.1.50  | 8.8.8.8         | DNS   | 74   | Standard query A? google.com
-13:01| 192.168.1.52  | 198.51.100.12   | HTTPS | 1500 | [SYN]
-13:02| 192.168.1.50  | 218.45.192.88   | TCP   | 879121 | Port 31337 -> 80 [PSH, ACK]
-13:03| 192.168.1.55  | 192.168.1.1     | HTTP  | 321  | GET /status.html
-13:04| 192.168.1.52  | 192.168.1.1     | ARP   | 42   | Who has 192.168.1.50?
-...</div>
-        <input type="text" id="answer5" placeholder="Destination IP"> <button onclick="checkStage5()">Определить</button>
-    </template>
-
-    <template id="stage6-template">
-        <h1 class="glitch-text">ЭТАП 6: АНАЛИЗ ШИФРОГРАММЫ</h1>
-        <p>Перехвачено сообщение "Цербера", зашифрованное сдвигом (шифр Цезаря). Расшифруйте его, чтобы получить кодовую фразу.</p>
-        <div class="log-box">ENCRYPTED PAYLOAD: "olssv-dvysk-vtlnh-alza"
-SECURITY LEVEL: 7
-ANALYSIS: The encryption key (shift value) corresponds to the security level number.</div>
-        <div class="interactive-tool">
-            <label for="tool-input-6-text">[УТИЛИТА: ДЕШИФРАТОР СДВИГА]</label>
-            <input type="text" id="tool-input-6-text" placeholder="Зашифрованный текст...">
-            <label for="tool-input-6-key">Ключ сдвига:</label>
-            <input type="number" id="tool-input-6-key" placeholder="Числовой ключ...">
-            <button onclick="processStage6Tool()">Обработать</button>
-            <label style="margin-top:10px;">Результат:</label>
-            <pre id="tool-output-6"></pre>
-        </div>
-        <input type="text" id="answer6" placeholder="Введите расшифрованную фразу"> <button onclick="checkStage6()">Подтвердить</button>
-    </template>
-
-    <template id="stage7-template">
-        <h1 class="glitch-text">ЭТАП 7: АНАЛИЗ ФАЙЛА КОНФИГУРАЦИИ</h1>
-        <p>Имя файла известно. Внутри — конфигурация одного из модулей "Цербера". Соберите пароль по умолчанию из переменных согласно формату.</p>
-        <div class="log-box"># Cerberus Module Config v2.1 // "Project Chimera"
-# All values are case-sensitive.
-[variables]
-prefix = "chimera"
-secret_code = "lock"
-year = "2077"
-# Format for default password generation: ${prefix}-${year}-${secret_code}
-[settings]
-listen_port = 8443
-encryption = "AES-GCM"</div>
-        <input type="text" id="answer7" placeholder="Сконструированный пароль"> <button onclick="checkStage7()">Собрать</button>
-    </template>
-
-    <template id="stage8-template">
-        <h1 class="glitch-text">ЭТАП 8: НЕЙТРАЛИЗАЦИЯ УГРОЗЫ</h1>
-        <p>"Цербер" инициировал атаку, вызвавшую перегрев ядра. Проанализируйте телеметрию и выберите действие, устраняющее ПЕРВОПРИЧИНУ проблемы, а не её следствие.</p>
-        <div class="log-box">[15:10:01] SYS_MONITOR: Network traffic on eth0 at 998Mbps. Status: DDoS DETECTED.
-[15:10:02] SYS_MONITOR: CPU load at 100%. Cause: Network stack processing flood.
-[15:10:03] SYS_MONITOR: Main coolant pump pressure at 5%. Status: FAILURE. Core temp rising to critical.
-[15:10:04] SYS_MONITOR: Reserve coolant tank pressure at 100%. Status: STANDBY.</div>
-        <div>
-            <button class="danger" onclick="checkStage8('REBOOT_SERVER')">Аварийная Перезагрузка</button>
-            <button onclick="checkStage8('RESERVE_COOLANT')">Активировать Резервное Охлаждение</button>
-            <button onclick="checkStage8('ISOLATE_NETWORK')">Изолировать Сетевой Интерфейс (eth0)</button>
-        </div>
-    </template>
-
-    <template id="stage9-template">
-        <h1 class="glitch-text">ЭТАП 9: АНАЛИЗ СКРИПТА "ЦЕРБЕРА"</h1>
-        <p>Мы перехватили скрипт-инжектор "Цербера". Определите имя ключевой функции, которая выполняет и внедрение, и маскировку процесса.</p>
-        <div class="log-box">function find_process(p_name) {
-  // ... process search logic ...
-  return process_handle;
-}
-// This function combines injection and cloaking
-function inject_and_hide(process, file) {
-  target = find_process(process);
-  if (target) {
-    inject_dll(target, file);   // Step 1: Inject
-    cloak_process_id(target); // Step 2: Hide
-  }
-}
-function log_telemetry(message) {
-  // ... logging logic ...
-}</div>
-        <input type="text" id="answer9" placeholder="Название функции..."> <button onclick="checkStage9()">Идентифицировать</button>
-    </template>
-
-    <template id="stage10-template">
-        <h1 class="glitch-text">ЭТАП 10: ГЛУБОКИЙ АУДИТ СИСТЕМЫ</h1>
-        <p>"Цербер" изменил системный файл. Изучите отчет сканера целостности и определите имя файла, который не прошел критическую проверку (статус FAILED).</p>
-        <div class="log-box">[SYSTEM INTEGRITY SCAN REPORT - PID: 7712]
-[14:30:01] Scanning C:\Windows\System32...
-[14:30:02] Checking kernel32.dll... [OK]
-[14:30:03] Checking gdi32.dll... [OK]
-[14:30:04] Checking svchost.exe... <span class="warn-text">[WARNING]</span> Hash mismatch. Reason: Legitimate update. PRIORITY: LOW.
-[14:30:05] Checking user32.dll... <span class="danger-text">[FAILED]</span> PRIORITY: CRITICAL.
-    LIVE_HASH:    9a9f7d...c5d88
-    EXPECTED_HASH: 5f0b1a...8d3e9
-[14:30:06] Checking ntdll.dll... [OK]
-[14:30:07] Checking ntd11.dll... <span class="info-text">[UNKNOWN_FILE]</span> Not in system manifest.
-[14:30:08] ...
-[14:30:09] SCAN COMPLETE. 1 failure(s), 1 warning(s) detected.</div>
-        <input type="text" id="answer10" placeholder="Имя скомпрометированного файла..."> <button onclick="checkStage10()">Обнаружить</button>
-    </template>
-
-    <template id="stage11-template">
-        <h1 class="glitch-text">ЭТАП 11: ДЕКОДИРОВАНИЕ HEX</h1>
-        <p>"Цербер" передаёт команды в виде HEX-строк. Декодируйте перехваченную команду, чтобы узнать следующий пароль.</p>
-        <p>Скопируйте эту строку: <code>4F4D4547412D4C4F434B444F574E</code></p>
-        <div class="interactive-tool">
-            <label for="tool-input-11">[УТИЛИТА: HEX -> ASCII КОНВЕРТЕР]</label>
-            <input type="text" id="tool-input-11" placeholder="Вставьте HEX-строку сюда...">
-            <button onclick="processStage11Tool()">Обработать</button>
-            <label style="margin-top:10px;">Результат:</label>
-            <pre id="tool-output-11"></pre>
-        </div>
-        <input type="text" id="answer11" placeholder="Введите декодированную команду/пароль"> <button onclick="checkStage11()">Подтвердить</button>
-    </template>
-
-    <template id="stage12-template">
-        <h1 class="glitch-text">ЭТАП 12: ПОИСК УЯЗВИМОСТИ ДОСТУПА</h1>
-        <p>Для повышения привилегий "Цербер" ищет файлы с неверно настроенными правами. Найдите исполняемый файл с SUID-битом ('s'), который позволяет запуск от имени root.</p>
-        <div class="log-box">PERMS      OWNER  GROUP  PATH
--rw-r--r-- root   root   /etc/passwd
--rwxr-xr-x root   root   /bin/bash
--rwsr-xr-x root   root   /opt/aurora/diag_tool
--rwxr-x--- root   adm    /var/log/syslog</div>
-        <input type="text" id="answer12" placeholder="Полный путь к файлу"> <button onclick="checkStage12()">Найти</button>
-    </template>
-
-    <template id="stage13-template">
-        <h1 class="glitch-text">ЭТАП 13: ВОССТАНОВЛЕНИЕ ДАННЫХ</h1>
-        <p>Журнал транзакций БД поврежден атакой. Найдите значение (`value`) ключа доступа, которое было успешно записано в последней подтвержденной (`COMMIT; -- OK`) транзакции.</p>
-        <div class="log-box">[18:01] BEGIN; INSERT ... FAILED
-[18:02] BEGIN; UPDATE users SET last_login=now() WHERE id=1; COMMIT; -- OK
-[18:03] BEGIN; INSERT INTO secrets (key, value) VALUES ('backup_key', 'backup_access_key_Alpha7!'); COMMIT; -- OK
-[18:04] BEGIN; DELETE FROM logs; ROLLBACK; -- CANCELED</div>
-        <input type="text" id="answer13" placeholder="Значение из лога"> <button onclick="checkStage13()">Восстановить</button>
-    </template>
-
-    <template id="stage14-template">
-        <h1 class="glitch-text">ЭТАП 14: РЕВЕРС-ИНЖИНИРИНГ</h1>
-        <p>Проанализируйте фрагмент ассемблерного кода. Определите, какое значение будет в регистре `EAX` после выполнения всех команд. Ответ дайте в десятичной системе.</p>
-        <div class="log-box">_init:
-  MOV EAX, 12      ; EAX = 12
-_calc_offset:
-  ADD EAX, 3       ; EAX = 15
-  SUB EAX, 5       ; EAX = 10
-_scale_factor:
-  IMUL EAX, 4      ; EAX = 40 (Integer Multiply)
-_finalize:
-  SHL EAX, 1       ; EAX = 80 (Shift Left by 1 bit, equals EAX * 2)
-; EAX = ?</div>
-        <input type="text" id="answer14" placeholder="Финальное значение EAX (десятичное)"> <button onclick="checkStage14()">Вычислить</button>
-    </template>
-
-    <template id="stage15-template">
-        <h1 class="glitch-text">ЭТАП 15: КОРРЕЛЯЦИЯ ЛОГОВ</h1>
-        <p>Инсайдер использовал jump-хост для маскировки. Проследите его путь через системы, сопоставляя IP-адреса, и определите имя пользователя (`user`).</p>
-        <div class="log-box" style="border-color: var(--warn-color);"><b>VPN.LOG</b><br>...<br>[13:01:55] User 'j.holloway' authenticated. Assigned internal IP: 10.254.1.18<br>[13:01:59] User 'm.stark' authenticated. Assigned internal IP: 10.254.1.22<br>...</div>
-        <div class="log-box"><b>JUMP_HOST.LOG</b><br>...<br>[13:02:10] Inbound connection from 10.254.1.18 accepted.<br>[INFO] Source IP for outbound connections: 10.10.10.5<br>...</div>
-        <div class="log-box"><b>DATABASE.LOG</b><br>...<br>[13:02:16] Connection from 10.10.10.5. Query: 'DUMP TABLE users_private'. UNAUTHORIZED.<br>[13:02:20] Connection from 192.168.1.10. Query: 'SELECT status'. OK.<br>...</div>
-        <input type="text" id="answer15" placeholder="Имя пользователя инсайдера"> <button onclick="checkStage15()">Определить</button>
-    </template>
-
-    <template id="stage16-template">
-        <h1 class="glitch-text">ЭТАП 16: ПРОТОКОЛ "ЖНЕЦ" v2.0</h1>
-        <p>Адаптивный агент "Цербера" активен. Управляйте энергией, анализируйте уязвимости и нейтрализуйте его.</p>
-        <div id="stage16-display">
-            <div>
-                АГЕНТ: <span id="agent-status">ЗАГРУЗКА...</span><br>
-                ЦЕЛОСТНОСТЬ: <span id="agent-health">100%</span>
+    <!-- TEMPLATES -->
+    <template id="stage1-template"><h1 class="glitch-text">ЭТАП 1: ПРОБОЙ ПЕРИМЕТРА</h1><p>Ваша первая задача — обойти систему аутентификации эмулятора "Цербера". Проанализируйте лог и восстановите данные для входа: ПОЗЫВНОЙ, ПАРОЛЬ, ТОКЕН.</p><div class="log-box">[01:10] Policy Update: Passwords must combine target name and operation type. Target: AURORA, Operation: BREACH.<br>[01:11] Login attempt for user 'admin' - FAILED (permission_denied)<br>[01:12] Login attempt for user 'GHOST' - FAILED (token_mismatch)<br>[01:13] [SECURITY_EVENT] Token generation failed. Params: [ERR_CODE_PRIMARY_DIGIT=4], [TARGET_SYSTEM_ID=7]. Method: CONCAT.<br>[01:14] System health check... OK<br>[01:15] Login attempt for user 'j.smith' - FAILED (bad_pass)</div><input type="text" id="ans1_user" placeholder="ПОЗЫВНОЙ"> <input type="text" id="ans1_pass" placeholder="ПАРОЛЬ"> <input type="text" id="ans1_token" placeholder="ТОКЕН"><button data-stage="1">Войти</button></template>
+    <template id="stage2-template"><h1 class="glitch-text">ЭТАП 2: АУДИТ ПОДСИСТЕМ "ЦЕРБЕРА"</h1><p>"Цербер" использует устаревшие службы как ловушки. Изучите отчет сканера и введите команду для отключения уязвимой подсистемы.</p><div class="log-box">SERVICE_MODULE             | STATUS  | RECOMMENDED_ACTION<br>---------------------------|---------|-----------------------------<br>cerberus.auth.service      | active  | MONITOR<br>cerberus.core.service      | active  | MONITOR<br>cerberus.firewall.service  | active  | MONITOR<br><span class="danger-text">cerberus.legacy_ftp.service</span>| active  | <span class="danger-text">DISABLE (use 'systemctl')</span><br>cerberus.logging.service   | active  | MONITOR</div><input type="text" id="answer2" placeholder="Введите команду..."><button data-stage="2">Выполнить</button></template>
+    <template id="stage3-template"><h1 class="glitch-text">ЭТАП 3: АНАЛИЗ ДАМПА ПАМЯТИ</h1><p>"Цербер" прячет ключи шифрования в оперативной памяти. Найдите ключ активной сессии (`SESSION.KEY`), чтобы обойти его сканеры. Игнорируйте мусорные данные.</p><div class="log-box">...<br>01B0: 44 45 42 55 47 5f 4b 45 | DEBUG_KE (DEPRECATED)<br>01C0: 59 3a 20 30 78 44 45 41 | Y: 0xDEA<br>01D0: 44 0a 4f 4c 44 5f 4b 45 | D.OLD_KE<br>01E0: 59 3a 20 30 78 31 32 33 | Y: 0x123<br>01F0: 34 0a 54 45 53 54 5f 4b | 4.TEST_K (INACTIVE)<br>0200: 45 59 3a 20 <b>0x4142</b> | EY: <b>0x4142</b><br>0210: <b>4344</b> 0a 53 45 53 53 49 | <b>CD</b>.SESSI<br>0220: 4f 4e 2e 4b 45 59 20 20 | ON.KEY  (<b>ACTIVE</b>)<br>...</div><input type="text" id="answer3" placeholder="Ключ доступа (ACCESS_KEY)"><button data-stage="3">Извлечь</button></template>
+    <template id="stage4-template"><h1 class="glitch-text">ЭТАП 4: ВОССТАНОВЛЕНИЕ ПОЗЫВНОГО</h1><p>Ваш цифровой след зашумлен помехами "Цербера". Выделите из шума свой позывной, чтобы подтвердить личность для дальнейшего продвижения.</p><div id="glitch-box"></div><input type="text" id="answer4" placeholder="Скрытое слово"><button data-stage="4">Расшифровать</button></template>
+    <template id="stage5-template"><h1 class="glitch-text">ЭТАП 5: ПОИСК УЗЛА ЭКСФИЛЬТРАЦИИ</h1><p>"Цербер" использует скрытые узлы для отправки отчетов. Проанализируйте сетевой трафик и определите IP-адрес, куда был отправлен аномальный пакет по порту 31337.</p><div class="log-box">TIME | SRC_IP        | DST_IP          | PROTO | LEN  | INFO<br>...<br>13:01| 192.168.1.50  | 8.8.8.8         | DNS   | 74   | Standard query A? google.com<br>13:01| 192.168.1.52  | 198.51.100.12   | HTTPS | 1500 | [SYN]<br>13:02| 192.168.1.50  | 218.45.192.88   | TCP   | 879121 | Port 31337 -> 80 [PSH, ACK]<br>13:03| 192.168.1.55  | 192.168.1.1     | HTTP  | 321  | GET /status.html<br>13:04| 192.168.1.52  | 192.168.1.1     | ARP   | 42   | Who has 192.168.1.50?<br>...</div><input type="text" id="answer5" placeholder="Destination IP"><button data-stage="5">Определить</button></template>
+    <template id="stage6-template"><h1 class="glitch-text">ЭТАП 6: АНАЛИЗ ШИФРОГРАММЫ</h1><p>Перехвачено сообщение "Цербера", зашифрованное сдвигом (шифр Цезаря). Расшифруйте его, чтобы получить кодовую фразу.</p><div class="log-box">ENCRYPTED PAYLOAD: "olssv-dvysk-vtlnh-alza"<br>SECURITY LEVEL: 7<br>ANALYSIS: The encryption key (shift value) corresponds to the security level number.</div><div class="interactive-tool"><label for="tool-input-6-text">[УТИЛИТА: ДЕШИФРАТОР СДВИГА]</label><input type="text" id="tool-input-6-text" placeholder="Зашифрованный текст..."><label for="tool-input-6-key">Ключ сдвига:</label><input type="number" id="tool-input-6-key" placeholder="Числовой ключ..."><button data-tool="6">Обработать</button><label style="margin-top:10px;">Результат:</label><pre id="tool-output-6"></pre></div><input type="text" id="answer6" placeholder="Введите расшифрованную фразу"><button data-stage="6">Подтвердить</button></template>
+    <template id="stage7-template"><h1 class="glitch-text">ЭТАП 7: АНАЛИЗ ФАЙЛА КОНФИГУРАЦИИ</h1><p>Имя файла известно. Внутри — конфигурация одного из модулей "Цербера". Соберите пароль по умолчанию из переменных согласно формату.</p><div class="log-box"># Cerberus Module Config v2.1 // "Project Chimera"<br># All values are case-sensitive.<br>[variables]<br>prefix = "chimera"<br>secret_code = "lock"<br>year = "2077"<br># Format for default password generation: ${prefix}-${year}-${secret_code}<br>[settings]<br>listen_port = 8443<br>encryption = "AES-GCM"</div><input type="text" id="answer7" placeholder="Сконструированный пароль"><button data-stage="7">Собрать</button></template>
+    <template id="stage8-template"><h1 class="glitch-text">ЭТАП 8: НЕЙТРАЛИЗАЦИЯ УГРОЗЫ</h1><p>"Цербер" инициировал атаку, вызвавшую перегрев ядра. Проанализируйте телеметрию и выберите действие, устраняющее ПЕРВОПРИЧИНУ проблемы, а не её следствие.</p><div class="log-box">[15:10:01] SYS_MONITOR: Network traffic on eth0 at 998Mbps. Status: DDoS DETECTED.<br>[15:10:02] SYS_MONITOR: CPU load at 100%. Cause: Network stack processing flood.<br>[15:10:03] SYS_MONITOR: Main coolant pump pressure at 5%. Status: FAILURE. Core temp rising to critical.<br>[15:10:04] SYS_MONITOR: Reserve coolant tank pressure at 100%. Status: STANDBY.</div><div><button class="danger" data-action="REBOOT_SERVER">Аварийная Перезагрузка</button><button data-action="RESERVE_COOLANT">Активировать Резервное Охлаждение</button><button data-action="ISOLATE_NETWORK">Изолировать Сетевой Интерфейс (eth0)</button></div></template>
+    <template id="stage9-template"><h1 class="glitch-text">ЭТАП 9: АНАЛИЗ СКРИПТА "ЦЕРБЕРА"</h1><p>Мы перехватили скрипт-инжектор "Цербера". Определите имя ключевой функции, которая выполняет и внедрение, и маскировку процесса.</p><div class="log-box">function find_process(p_name) {<br>  // ... process search logic ...<br>  return process_handle;<br>}<br>// This function combines injection and cloaking<br>function inject_and_hide(process, file) {<br>  target = find_process(process);<br>  if (target) {<br>    inject_dll(target, file);   // Step 1: Inject<br>    cloak_process_id(target); // Step 2: Hide<br>  }<br>}<br>function log_telemetry(message) {<br>  // ... logging logic ...<br>}</div><input type="text" id="answer9" placeholder="Название функции..."><button data-stage="9">Идентифицировать</button></template>
+    <template id="stage10-template"><h1 class="glitch-text">ЭТАП 10: ГЛУБОКИЙ АУДИТ СИСТЕМЫ</h1><p>"Цербер" изменил системный файл. Изучите отчет сканера целостности и определите имя файла, который не прошел критическую проверку (статус FAILED).</p><div class="log-box">[SYSTEM INTEGRITY SCAN REPORT - PID: 7712]<br>[14:30:01] Scanning C:\Windows\System32...<br>[14:30:02] Checking kernel32.dll... [OK]<br>[14:30:03] Checking gdi32.dll... [OK]<br>[14:30:04] Checking svchost.exe... <span class="warn-text">[WARNING]</span> Hash mismatch. Reason: Legitimate update. PRIORITY: LOW.<br>[14:30:05] Checking user32.dll... <span class="danger-text">[FAILED]</span> PRIORITY: CRITICAL.<br>    LIVE_HASH:    9a9f7d...c5d88<br>    EXPECTED_HASH: 5f0b1a...8d3e9<br>[14:30:06] Checking ntdll.dll... [OK]<br>[14:30:07] Checking ntd11.dll... <span class="info-text">[UNKNOWN_FILE]</span> Not in system manifest.<br>[14:30:08] ...<br>[14:30:09] SCAN COMPLETE. 1 failure(s), 1 warning(s) detected.</div><input type="text" id="answer10" placeholder="Имя скомпрометированного файла..."><button data-stage="10">Обнаружить</button></template>
+    <template id="stage11-template"><h1 class="glitch-text">ЭТАП 11: ДЕКОДИРОВАНИЕ HEX</h1><p>"Цербер" передаёт команды в виде HEX-строк. Декодируйте перехваченную команду, чтобы узнать следующий пароль.</p><p>Скопируйте эту строку: <code>4F4D4547412D4C4F434B444F574E</code></p><div class="interactive-tool"><label for="tool-input-11">[УТИЛИТА: HEX -> ASCII КОНВЕРТЕР]</label><input type="text" id="tool-input-11" placeholder="Вставьте HEX-строку сюда..."><button data-tool="11">Обработать</button><label style="margin-top:10px;">Результат:</label><pre id="tool-output-11"></pre></div><input type="text" id="answer11" placeholder="Введите декодированную команду/пароль"><button data-stage="11">Подтвердить</button></template>
+    <template id="stage12-template"><h1 class="glitch-text">ЭТАП 12: ПОИСК УЯЗВИМОСТИ ДОСТУПА</h1><p>Для повышения привилегий "Цербер" ищет файлы с неверно настроенными правами. Найдите исполняемый файл с SUID-битом ('s'), который позволяет запуск от имени root.</p><div class="log-box">PERMS      OWNER  GROUP  PATH<br>-rw-r--r-- root   root   /etc/passwd<br>-rwxr-xr-x root   root   /bin/bash<br>-rwsr-xr-x root   root   /opt/aurora/diag_tool<br>-rwxr-x--- root   adm    /var/log/syslog</div><input type="text" id="answer12" placeholder="Полный путь к файлу"><button data-stage="12">Найти</button></template>
+    <template id="stage13-template"><h1 class="glitch-text">ЭТАП 13: ВОССТАНОВЛЕНИЕ ДАННЫХ</h1><p>Журнал транзакций БД поврежден атакой. Найдите значение (`value`) ключа доступа, которое было успешно записано в последней подтвержденной (`COMMIT; -- OK`) транзакции.</p><div class="log-box">[18:01] BEGIN; INSERT ... FAILED<br>[18:02] BEGIN; UPDATE users SET last_login=now() WHERE id=1; COMMIT; -- OK<br>[18:03] BEGIN; INSERT INTO secrets (key, value) VALUES ('backup_key', 'backup_access_key_Alpha7!'); COMMIT; -- OK<br>[18:04] BEGIN; DELETE FROM logs; ROLLBACK; -- CANCELED</div><input type="text" id="answer13" placeholder="Значение из лога"><button data-stage="13">Восстановить</button></template>
+    <template id="stage14-template"><h1 class="glitch-text">ЭТАП 14: РЕВЕРС-ИНЖИНИРИНГ</h1><p>Проанализируйте фрагмент ассемблерного кода. Определите, какое значение будет в регистре `EAX` после выполнения всех команд. Ответ дайте в десятичной системе.</p><div class="log-box">_init:<br>  MOV EAX, 12      ; EAX = 12<br>_calc_offset:<br>  ADD EAX, 3       ; EAX = 15<br>  SUB EAX, 5       ; EAX = 10<br>_scale_factor:<br>  IMUL EAX, 4      ; EAX = 40 (Integer Multiply)<br>_finalize:<br>  SHL EAX, 1       ; EAX = 80 (Shift Left by 1 bit, equals EAX * 2)<br>; EAX = ?</div><input type="text" id="answer14" placeholder="Финальное значение EAX (десятичное)"><button data-stage="14">Вычислить</button></template>
+    <template id="stage15-template"><h1 class="glitch-text">ЭТАП 15: КОРРЕЛЯЦИЯ ЛОГОВ</h1><p>Инсайдер использовал jump-хост для маскировки. Проследите его путь через системы, сопоставляя IP-адреса, и определите имя пользователя (`user`).</p><div class="log-box" style="border-color: var(--warn-color);"><b>VPN.LOG</b><br>...<br>[13:01:55] User 'j.holloway' authenticated. Assigned internal IP: 10.254.1.18<br>[13:01:59] User 'm.stark' authenticated. Assigned internal IP: 10.254.1.22<br>...</div><div class="log-box"><b>JUMP_HOST.LOG</b><br>...<br>[13:02:10] Inbound connection from 10.254.1.18 accepted.<br>[INFO] Source IP for outbound connections: 10.10.10.5<br>...</div><div class="log-box"><b>DATABASE.LOG</b><br>...<br>[13:02:16] Connection from 10.10.10.5. Query: 'DUMP TABLE users_private'. UNAUTHORIZED.<br>[13:02:20] Connection from 192.168.1.10. Query: 'SELECT status'. OK.<br>...</div><input type="text" id="answer15" placeholder="Имя пользователя инсайдера"><button data-stage="15">Определить</button></template>
+    <template id="stage16-template"><h1 class="glitch-text">ЭТАП 16: ПРОТОКОЛ "ЖНЕЦ" v2.0</h1><p>Адаптивный агент "Цербера" активен. Управляйте энергией, анализируйте уязвимости и нейтрализуйте его.</p><div id="stage16-display"><div>АГЕНТ: <span id="agent-status">ЗАГРУЗКА...</span><br>ЦЕЛОСТНОСТЬ: <span id="agent-health">100%</span></div><div>ОПЕРАТОР: <br>ЭНЕРГИЯ: <span id="player-energy">100</span></div></div><div id="stage16-actions"><button data-action="overload">Перегрузка щита [-30Э]</button><button data-action="analyze">Анализ уязвимости [-10Э]</button><button data-action="execute_alpha">Эксплойт: Альфа [-25Э]</button><button data-action="execute_beta">Эксплойт: Бета [-25Э]</button><button data-action="recharge">Перезарядка [+15Э]</button><button class="danger" data-action="purge">Очистка системы</button></div><div id="stage16-log"></div></template>
+    <template id="stage17-template"><h1 class="glitch-text">ФИНАЛ: ФОРМИРОВАНИЕ КЛЮЧА ДОСТУПА</h1><p>Вы собрали все части головоломки. Скомбинируйте ключевые данные для генерации мастер-ключа, который даст вам доступ к реальному узлу "Авроры".</p><p>Формат: <code>[Ключ из памяти]-[IP "Цербера"]-[Команда HEX]-[Имя инсайдера]</code></p><input type="text" id="answer17" placeholder="0x...-....-....-...."><button class="danger" data-stage="17">СГЕНЕРИРОВАТЬ КЛЮЧ</button></template>
+    
+    <template id="transition-screen-template">
+        <div class="final-header">АТТЕСТАЦИЯ 'ОМЕГА': СИМУЛЯЦИЯ ЗАВЕРШЕНА</div>
+        <div class="final-content">
+            <div class="final-panel">
+                <div class="final-panel-title">ПРЯМАЯ ТРАНСЛЯЦИЯ ТЕЛЕМЕТРИИ</div>
+                <div id="final-telemetry-log"></div>
             </div>
-            <div>
-                ОПЕРАТОР: <br>
-                ЭНЕРГИЯ: <span id="player-energy">100</span>
+            <div id="final-ascii-art"></div>
+            <div class="final-panel">
+                <div class="final-panel-title">ОПЕРАТИВНАЯ СВОДКА: АТТЕСТАЦИЯ</div>
+                <table id="final-debrief-table">
+                    <thead><tr><th>ЗАДАЧА</th><th>РЕЗУЛЬТАТ</th><th>СТАТУС</th></tr></thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
-        <div id="stage16-actions">
-            <button id="action-overload" onclick="performAgentAction('overload')">Перегрузка щита [-30Э]</button>
-            <button id="action-analyze" onclick="performAgentAction('analyze')">Анализ уязвимости [-10Э]</button>
-            <button id="action-execute-alpha" onclick="performAgentAction('execute_alpha')">Эксплойт: Альфа [-25Э]</button>
-            <button id="action-execute-beta" onclick="performAgentAction('execute_beta')">Эксплойт: Бета [-25Э]</button>
-            <button id="action-recharge" onclick="performAgentAction('recharge')">Перезарядка [+15Э]</button>
-            <button id="action-purge" class="danger" onclick="performAgentAction('purge')">Очистка системы</button>
+        <div class="final-footer">
+            <div id="final-command-prompt" style="display: none;">
+                <span>[root@aurora-sim ~]# </span>
+                <input type="text" id="final-command-input" autocomplete="off">
+            </div>
         </div>
-        <div id="stage16-log"></div>
-    </template>
-
-    <template id="stage17-template">
-        <h1 class="glitch-text">ФИНАЛ: ФОРМИРОВАНИЕ КЛЮЧА ДОСТУПА</h1>
-        <p>Вы собрали все части головоломки. Скомбинируйте ключевые данные для генерации мастер-ключа, который даст вам доступ к реальному узлу "Авроры".</p>
-        <p>Формат: [Ключ из памяти]-[IP "Цербера"]-[Команда HEX]-[Имя инсайдера]</p>
-        <input type="text" id="answer17" placeholder="0xXXXX-XXX.XX.XXX.XX-XXXX-XXXX-XXXXXX-X.xxxxxxxx"> <button class="danger" onclick="checkStage17()">СГЕНЕРИРОВАТЬ КЛЮЧ</button>
     </template>
     
-    <template id="final-screen-template">
-        <h1 class="glitch-text" style="color: var(--accent-color);">АТТЕСТАЦИЯ ПРОЙДЕНА</h1>
-        <p style="color: #0ff; font-size: 18px;">ОЦЕНКА: ОТЛИЧНО. ДОПУСК К ОПЕРАЦИИ "ОМЕГА" ПОЛУЧЕН.</p>
-        <p>Вы успешно прошли симуляцию и доказали свою компетентность. Данные, собранные вами, являются ключом к реальной системе.<br><b>ВНИМАНИЕ. Вам предоставляется одноразовое окно для подключения к главному узлу "Авроры".</b></p>
-        <p>Не подведите нас, хакер. Протокол "Омега" должен быть нейтрализован любой ценой.</p>
-        <div id="final-report-container">
-            <h3 style="color:var(--warn-color); text-align: left; width:100%; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">ИТОГОВЫЙ БРИФИНГ:</h3>
+    <template id="stage19-template">
+        <h1 class="glitch-text" style="color:var(--warn-color)">СЕКРЕТНЫЙ ЭТАП 18: ЛОВУШКА</h1>
+        <p>Вы попали в "песочницу" - карантинную зону, имитирующую реальную систему. "Цербер" наблюдает. Чтобы выбраться, нужно доказать, что вы знаете, где находитесь. Изучите переменные окружения и определите тип среды.</p>
+        <div class="log-box">
+            [ENVIRONMENT VARIABLES DUMP]<br>
+            HOSTNAME: <span class="info-text">aurora-prod-7a2b</span><br>
+            USER: <span class="info-text">root</span><br>
+            LOG_LEVEL: <span class="info-text">DEBUG</span><br>
+            ENV_TYPE: <span class="warn-text">SANDBOX</span> <span class="danger-text">&lt;-- ANOMALY DETECTED</span><br>
+            API_ENDPOINT: <span class="info-text">/api/v1/prod/</span><br>
+            IS_VIRTUAL: <span class="info-text">true</span>
         </div>
-         <a id="final-link" href="#" target="_blank">ПОДКЛЮЧИТЬСЯ К УЗЛУ "АВРОРА"</a>
+        <p>Введите значение переменной <code>ENV_TYPE</code> для калибровки вашего эксплойта и побега из "песочницы".</p>
+        <input type="text" id="answer19" placeholder="Значение ENV_TYPE"><button data-stage="19">Калибровать</button>
+    </template>
+    <template id="stage20-template">
+        <h1 class="glitch-text" style="color:var(--warn-color)">СЕКРЕТНЫЙ ЭТАП 19: ПОИСК ИСТИНЫ</h1>
+        <p>Вы выбрались. Настоящая файловая система "Авроры" перед вами. Но "Цербер" повредил пути к критическим файлам. Протокол "Омега" спрятан. Восстановите полный путь к файлу <code>payload.bin</code>, используя фрагменты из логов.</p>
+        <div class="log-box">
+            [LOG: file_access_monitor.log]<br>
+            ...<br>
+            [1]: Access to <span class="warn-text">/core/protocols/</span> ... GRANTED<br>
+            [2]: Access to /core/drivers/ ... GRANTED<br>
+            [3]: Access to /core/protocols/<span class="warn-text">omega/</span> ... GRANTED<br>
+            [4]: Access to /core/protocols/chimera/ ... DENIED<br>
+            [5]: Reading file <span class="warn-text">payload.bin</span> from active directory... OK<br>
+            ...
+        </div>
+        <p>Соберите правильный путь, объединяя фрагменты в правильном порядке.</p>
+        <input type="text" id="answer20" placeholder="Полный путь к файлу"><button data-stage="20">Локализовать</button>
+    </template>
+    <template id="stage21-template">
+        <h1 class="glitch-text" style="color:var(--danger-color)">СЕКРЕТНЫЙ ЭТАП 20: ВЫБОР</h1>
+        <p>Вы у цели. Протокол "Омега" - это не вирус, а "мертвая рука", система контр-удара. Его запуск приведет к катастрофе. У вас есть один шанс его отключить. Но "Цербер" оставил ловушку.</p>
+        <div class="log-box">
+            [OMEGA PROTOCOL INTERFACE]<br><br>
+            # <span class="info-text">function initiate_failsafe()</span> - Initiates a full system lockdown. Locks YOU out.<br>
+            # <span class="danger-text">function execute_disarm_sequence()</span> - Deactivates the Omega payload by purging its core ignition keys.<br><br>
+            <span class="warn-text">WARNING:</span> An incorrect command will trigger the failsafe AND alert external security forces. Choose wisely.
+        </div>
+        <p>Выберите команду для отправки в ядро системы.</p>
+        <div><button class="danger" data-action="FAILSAFE">initiate_failsafe()</button><button data-action="DISARM_SEQUENCE">execute_disarm_sequence()</button></div>
+    </template>
+
+    <template id="true-final-screen-template">
+        <div class="final-header">АТТЕСТАЦИЯ ПРОЙДЕНА. ДОСТУП РАЗРЕШЕН.</div>
+        <div class="final-content">
+            <div class="final-panel-true">
+                <div class="final-panel-title">СТАТУС СИМУЛЯЦИИ</div>
+                <dl id="final-stats-list"></dl>
+            </div>
+            <div class="final-panel-true">
+                <div class="final-panel-title">СЛЕДУЮЩАЯ ЦЕЛЬ</div>
+                <div id="final-target-info"></div>
+            </div>
+            <div class="final-panel-true">
+                <div class="final-panel-title">ПОЛУЧЕННЫЕ РАЗВЕДДАННЫЕ</div>
+                <dl id="final-intel-recap"></dl>
+            </div>
+        </div>
+        <div class="final-footer">
+            <a href="#" id="connect-button" class="danger" target="_blank">ПОДКЛЮЧИТЬСЯ К СЕТИ</a>
+        </div>
     </template>
 
     <script>
-        // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
-        let currentStep = 0;
-        const finalUrl = "https://invasion-omega.github.io/ProtectServer/"; // ССЫЛКА НА ОСНОВНОЙ КВЕСТ
-        let typewriterInterval, glitchInterval;
-        let isTyping = false;
-        const questData = {};
-        
-        // --- State for Stage 16 ---
-        let gameState = {
-            agent: {
-                status: 'SHIELDED', // SHIELDED, VULNERABLE
-                health: 100,
-                adaptation: 'NONE' // NONE, ALPHA, BETA
-            },
-            player: {
-                energy: 100
-            },
-            gameOver: false
+    (function() {
+        // --- DOM ELEMENTS ---
+        const DOM = {
+            preloader: document.getElementById('preloader'),
+            preloaderText: document.getElementById('preloader-text'),
+            devConsole: { trigger: document.getElementById('dev-console-trigger'), container: document.getElementById('dev-console'), header: document.getElementById('dev-console-header'), body: document.getElementById('dev-console-body'), navList: document.getElementById('dev-nav-list') },
+            dialogue: { box: document.getElementById('dialogue-box'), text: document.getElementById('dialogue-text'), button: document.getElementById('dialogue-button') },
+            mainContainer: document.getElementById('main-container'),
+            finalLink: "https://invasion-omega.github.io/ProtectServer/"
         };
 
-        // --- Диалоги Инструктора "Прометей" ---
-        const dialogues = [
-            /* 0*/ "Инициализация симуляции... Я - ИИ-Инструктор 'Прометей'. Это ваша финальная аттестация перед операцией 'Омега'. Ваша цель - корпорация 'Аврора'. Докажите, что вы готовы к встрече с их защитой - ИИ 'Цербер'.",
-            /* 1*/ "Допуск подтвержден. Начнем. 'Цербер' использует многоуровневую аутентификацию. Ваша первая задача - обойти симуляцию его внешнего периметра. Проанализируйте лог.",
-            /* 2*/ "Доступ получен. Этап два: саботаж. 'Цербер' использует устаревшие службы как ловушки для невнимательных. Ликвидируйте уязвимость, следуя отчету сканера.",
-            /* 3*/ "Подсистема деактивирована. Хорошо. Теперь сложнее: 'Цербер' прячет ключи в оперативной памяти. Сосредоточьтесь на активном ключе сессии, чтобы обмануть его сканеры.",
-            /* 4*/ "Ключ извлечен. Следующий тест — ваше самоопределение в цифровом шуме. 'Цербер' попытается стереть ваш след. Подтвердите свой позывной.",
-            /* 5*/ "Идентификация пройдена. 'Призрак' в машине. Теперь сетевой анализ. 'Цербер' отправляет отчеты на скрытые узлы. Найдите точку эксфильтрации данных.",
-            /* 6*/ "IP-адрес идентифицирован. Мы перехватили зашифрованный контейнер. Это не просто данные, а команда. Расшифруйте ее. Ключ скрыт в метаданных.",
-            /* 7*/ "Фраза восстановлена. В 80% случаев взлом — результат халатности. Изучите файл конфигурации и соберите пароль из компонентов, как это сделал бы ленивый разработчик.",
-            /* 8*/ "Пароль собран. Внимание, симуляция контратаки! 'Цербер' атакует систему. Не поддавайтесь панике, ищите корень проблемы, а не боритесь с симптомами.",
-            /* 9*/ "Система стабилизирована. Решение верное. Теперь анализ кода. Мы перехватили инжектор 'Цербера'. Найдите его ключевую исполняющую функцию.",
-            /*10*/ "Функция идентифицирована. После внедрения 'Цербер' изменяет системные файлы. Проведите глубокий аудит целостности и найдите критическую аномалию.",
-            /*11*/ "Компрометация обнаружена. Канал управления 'Цербера' передает команды в HEX-формате. Декодируйте перехваченное сообщение.",
-            /*12*/ "Команда восстановлена. Теперь они попытаются повысить свои привилегии. Для этого им нужен файл с особыми правами доступа. Проведите аудит.",
-            /*13*/ "Уязвимый файл найден. Атака также повредила базу данных. Восстановите последние валидные данные из журнала транзакций. Они могут быть важны.",
-            /*14*/ "Данные восстановлены. Мы получили доступ к низкоуровневым инструкциям процессора. Рассчитайте результат их микрооперации, чтобы предсказать действия 'Цербера'.",
-            /*15*/ "Результат верен. Финальный аналитический этап. Инсайдер использует посредника для маскировки. Проведите полную корреляцию логов, чтобы вскрыть его личность.",
-            /*16*/ "Личность установлена. Финальный практический тест. Против вас адаптивный боевой агент. Управляйте ресурсами и тактикой, чтобы выжить и победить.",
-            /*17*/ "Агент нейтрализован. Вы собрали все фрагменты информации. Соберите из них мастер-ключ. Это ваш пропуск в реальную сеть 'Авроры'.",
-            /*18*/ "Ключ принят. Симуляция пройдена. Вы готовы. Окно для атаки открыто. Подключайтесь к узлу 'Аврора' и нейтрализуйте протокол 'Омега'. Удачи, Призрак."
-        ];
-        
-        function populateQuestData(upToStage) { const fullData = { '1': { user: 'GHOST', pass: 'AURORA_BREACH', token: '47' }, '3': { memoryKey: '0x41424344' }, '4': { shieldName: 'GHOST' }, '5': { attackerIP: '218.45.192.88' }, '6': { decodedPhrase: 'hello-world-omega-test' }, '7': { constructedPass: 'chimera-2077-lock' }, '10': { compromisedFile: 'user32.dll' }, '11': { hexCommand: 'OMEGA-LOCKDOWN' }, '12': { vulnerableFile: '/opt/aurora/diag_tool' }, '13': { sqlValue: 'backup_access_key_Alpha7!' }, '14': { asmResult: 80 }, '15': { attackerUser: 'j.holloway' } }; for(let i = 1; i <= upToStage; i++){ if(fullData[i]) Object.assign(questData, fullData[i]); } }
-        function jumpToStage(stageNum) { stopGlitchEffect(); populateQuestData(stageNum - 1); currentStep = stageNum - 1; advanceState(); }
-        
-        function toggleDevConsole() {
-            const consoleEl = document.getElementById('dev-console');
-            const triggerEl = document.getElementById('dev-console-trigger');
-            if (consoleEl.style.display === 'block') {
-                consoleEl.style.display = 'none';
-                triggerEl.style.display = 'block';
-            } else {
-                consoleEl.style.display = 'block';
-                triggerEl.style.display = 'none';
+        // --- GAME STATE & CONFIG ---
+        let state = { currentStep: 0, isTyping: false, typewriterInterval: null, glitchInterval: null, questData: {}, stage16: {}, secretStagesUnlocked: false };
+
+        const config = {
+            dialogues: [
+                "Инициализация симуляции... Я - ИИ-Инструктор 'Прометей'. Это ваша финальная аттестация перед операцией 'Омега'. Ваша цель - корпорация 'Аврора'. Докажите, что вы готовы к встрече с их защитой - ИИ 'Цербер'.",
+                "Допуск подтвержден. Начнем. 'Цербер' использует многоуровневую аутентификацию. Ваша первая задача - обойти симуляцию его внешнего периметра. Проанализируйте лог.",
+                "Доступ получен. Этап два: саботаж. 'Цербер' использует устаревшие службы как ловушки для невнимательных. Ликвидируйте уязвимость, следуя отчету сканера.",
+                "Подсистема деактивирована. Хорошо. Теперь сложнее: 'Цербер' прячет ключи в оперативной памяти. Сосредоточьтесь на активном ключе сессии, чтобы обмануть его сканеры.",
+                "Ключ извлечен. Следующий тест — ваше самоопределение в цифровом шуме. 'Цербер' попытается стереть ваш след. Подтвердите свой позывной.",
+                "Идентификация пройдена. 'Призрак' в машине. Теперь сетевой анализ. 'Цербер' отправляет отчеты на скрытые узлы. Найдите точку эксфильтрации данных.",
+                "IP-адрес идентифицирован. Мы перехватили зашифрованный контейнер. Это не просто данные, а команда. Расшифруйте ее. Ключ скрыт в метаданных.",
+                "Фраза восстановлена. В 80% случаев взлом — результат халатности. Изучите файл конфигурации и соберите пароль из компонентов, как это сделал бы ленивый разработчик.",
+                "Пароль собран. Внимание, симуляция контратаки! 'Цербер' атакует систему. Не поддавайтесь панике, ищите корень проблемы, а не боритесь с симптомами.",
+                "Система стабилизирована. Решение верное. Теперь анализ кода. Мы перехватили инжектор 'Цербера'. Найдите его ключевую исполняющую функцию.",
+                "Функция идентифицирована. После внедрения 'Цербер' изменяет системные файлы. Проведите глубокий аудит целостности и найдите критическую аномалию.",
+                "Компрометация обнаружена. Канал управления 'Цербера' передает команды в HEX-формате. Декодируйте перехваченное сообщение.",
+                "Команда восстановлена. Теперь они попытаются повысить свои привилегии. Для этого им нужен файл с особыми правами доступа. Проведите аудит.",
+                "Уязвимый файл найден. Атака также повредила базу данных. Восстановите последние валидные данные из журнала транзакций. Они могут быть важны.",
+                "Данные восстановлены. Мы получили доступ к низкоуровневым инструкциям процессора. Рассчитайте результат их микрооперации, чтобы предсказать действия 'Цербера'.",
+                "Результат верен. Финальный аналитический этап. Инсайдер использует посредника для маскировки. Проведите полную корреляцию логов, чтобы вскрыть его личность.",
+                "Личность установлена. Финальный практический тест. Против вас адаптивный боевой агент. Управляйте ресурсами и тактикой, чтобы выжить и победить.",
+                "Агент нейтрализован. Вы собрали все фрагменты информации. Соберите из них мастер-ключ. Это ваш пропуск в реальную сеть 'Авроры'.",
+                "Ключ принят. Симуляция пройдена. Вы готовы. Окно для атаки открыто. Подключайтесь к узлу 'Аврора' и нейтрализуйте протокол 'Омега'. Удачи, Призрак.",
+                "Ловушка! Вы в карантинной зоне. 'Цербер' считает, что поймал вас. Но это и есть ваш шанс. Осмотритесь и найдите способ доказать системе, что вы на шаг впереди.",
+                "Отлично. Вы выбрались из песочницы. Теперь вы в настоящем ядре. Но 'Цербер' успел повредить файловую систему. Найдите истинное расположение протокола 'Омега', пока он не перегруппировался.",
+                "Протокол найден. Призрак, это последний шаг. 'Омега' - протокол 'мертвой руки'. Его нужно не уничтожить, а деактивировать. Ошибетесь - и все усилия будут напрасны. Не подведите.",
+            ],
+            answers: {
+                stage1: { user: 'GHOST', pass: 'AURORA_BREACH', token: '47' }, stage2: 'systemctl disable cerberus.legacy_ftp.service', stage3: '0x41424344', stage4: 'GHOST', stage5: '218.45.192.88', stage6: 'hello-world-omega-test', stage7: 'chimera-2077-lock', stage8: 'ISOLATE_NETWORK', stage9: 'inject_and_hide', stage10: 'user32.dll', stage11: 'OMEGA-LOCKDOWN', stage12: '/opt/aurora/diag_tool', stage13: 'backup_access_key_Alpha7!', stage14: '80', stage15: 'j.holloway',
+                stage19: 'SANDBOX', stage20: '/core/protocols/omega/payload.bin', stage21: 'DISARM_SEQUENCE'
             }
-        }
+        };
 
-        function collapseDevConsoleBody() {
-             document.getElementById('dev-console-body').classList.toggle('collapsed');
-        }
-
-        function initDevConsole() {
-            const navList = document.getElementById('dev-nav-list');
-            for (let i = 1; i <= 17; i++) {
-                const li = document.createElement('li');
-                li.innerHTML = `<a href="#" onclick="jumpToStage(${i})">Этап ${i}</a>`;
-                navList.appendChild(li);
-            }
-            const finalLi = document.createElement('li');
-            finalLi.innerHTML = `<a href="#" onclick="jumpToFinalScreen()" style="color:var(--danger-color);">Финал</a>`;
-            navList.appendChild(finalLi);
-        }
-
-        function jumpToFinalScreen() { stopGlitchEffect(); populateQuestData(17); currentStep = 18; showFinalScreen(); }
+        // --- HELPER FUNCTIONS ---
         function showProcessing(callback) { const bar = document.getElementById('processing'); const fill = document.getElementById('processing-fill'); bar.style.display = 'block'; fill.style.width = '0%'; setTimeout(() => { fill.style.width = '100%'; }, 100); setTimeout(() => { bar.style.display = 'none'; callback(); }, 1600); }
-        function typewriter(element, text, callback) { let i = 0; element.innerHTML = ""; isTyping = true; const btn = document.getElementById('dialogue-button'); if(btn) btn.disabled = true; clearInterval(typewriterInterval); typewriterInterval = setInterval(() => { if (i < text.length) { element.innerHTML += text.charAt(i); i++; } else { isTyping = false; clearInterval(typewriterInterval); if(btn) btn.disabled = false; if(callback) callback(); } }, 20); }
-        function skipTypewriter() { if (!isTyping) return; isTyping = false; clearInterval(typewriterInterval); const btn = document.getElementById('dialogue-button'); const targetText = dialogues[currentStep]; document.getElementById('dialogue-text').innerHTML = targetText; if (btn) btn.disabled = false; }
-        function stopGlitchEffect() { clearInterval(glitchInterval); }
+        function typewriter(element, text, callback) { let i = 0; element.innerHTML = ""; state.isTyping = true; DOM.dialogue.button.disabled = true; clearInterval(state.typewriterInterval); state.typewriterInterval = setInterval(() => { if (i < text.length) { element.innerHTML += text.charAt(i); i++; } else { state.isTyping = false; clearInterval(state.typewriterInterval); DOM.dialogue.button.disabled = false; if (callback) callback(); } }, 20); }
+        function skipTypewriter() { if (!state.isTyping) return; state.isTyping = false; clearInterval(state.typewriterInterval); const targetText = config.dialogues[state.currentStep]; DOM.dialogue.text.innerHTML = targetText; DOM.dialogue.button.disabled = false; }
+        function stopGlitchEffect() { clearInterval(state.glitchInterval); }
+        function hideAll() { stopGlitchEffect(); document.querySelectorAll('.stage, #dialogue-box').forEach(el => { el.style.display = 'none'; el.classList.remove('visible'); }); }
+        function showDialogue(index) { hideAll(); DOM.dialogue.box.style.display = 'flex'; DOM.dialogue.button.style.display = 'block'; setTimeout(() => { DOM.dialogue.box.classList.add('visible'); typewriter(DOM.dialogue.text, config.dialogues[index] || ""); }, 10); }
+        function showError(elements) { elements.forEach(el => { if (el) { el.classList.add('error'); setTimeout(() => el.classList.remove('error'), 500); } }); }
 
-        function hideAll() {
-            stopGlitchEffect();
-            document.querySelectorAll('.stage, #dialogue-box').forEach(el => {
-                el.style.display = 'none';
-                el.classList.remove('visible');
-            });
+        // --- MAIN GAME FLOW ---
+        function advanceState() {
+            state.currentStep++;
+            if (state.currentStep === 18) {
+                showDialogue(18);
+                DOM.dialogue.button.onclick = () => showProcessing(showTransitionScreen);
+            } else if (state.currentStep <= 21) { 
+                showDialogue(state.currentStep); 
+                DOM.dialogue.button.onclick = () => showProcessing(() => showStage('stage' + state.currentStep));
+            } else {
+                showTrueFinalScreen();
+            }
         }
-
-        function showDialogue(index) {
-            hideAll();
-            const box = document.getElementById('dialogue-box');
-            box.style.display = 'flex';
-            setTimeout(() => {
-                box.classList.add('visible');
-                typewriter(document.getElementById('dialogue-text'), dialogues[index] || "");
-            }, 10);
-        }
+        function handleCorrectAnswer() { showProcessing(advanceState); }
 
         function showStage(id) {
             hideAll();
             const stage = document.getElementById(id);
+            if (!stage) { console.error(`Stage element not found for ${id}.`); return; }
             const template = document.getElementById(id + '-template');
-            
-            if (template) {
-                stage.innerHTML = template.innerHTML;
-            } else {
-                console.error(`Template not found for ${id}`);
-                stage.innerHTML = `<h1 class="glitch-text">ERROR: STAGE CONTENT FAILED TO LOAD</h1>`;
-            }
-
+            if (template) { stage.innerHTML = template.innerHTML; } else { console.error(`Template not found for ${id}`); stage.innerHTML = `<h1 class="glitch-text">ERROR</h1>`; return; }
             stage.style.display = 'flex';
             setTimeout(() => { stage.classList.add('visible'); }, 10);
-
             if (id === 'stage4') startGlitchEffect();
             if (id === 'stage16') initStage16();
-        }
-        
-        function advanceState() {
-            currentStep++;
-            const dialogueButton = document.getElementById('dialogue-button');
-            if (currentStep <= 17) {
-                showDialogue(currentStep);
-                dialogueButton.onclick = () => showProcessing(() => showStage('stage' + currentStep));
-            } else {
-                showDialogue(18);
-                dialogueButton.onclick = () => showProcessing(() => jumpToFinalScreen());
-            }
-        }
-        
-        function handleCorrectAnswer() { showProcessing(() => advanceState()); }
-        
-        function startSimulation() {
-            currentStep = 0;
-            showDialogue(0);
-            document.getElementById('dialogue-button').onclick = advanceState;
+            if (id === 'stage17') { document.getElementById('answer17').placeholder = `${state.questData.memoryKey || '...'}-${state.questData.attackerIP || '...'}-${state.questData.hexCommand || '...'}-${state.questData.attackerUser || '...'}`; }
         }
 
-        function checkStage1() { if(document.getElementById('ans1_user').value.trim().toUpperCase() === 'GHOST' && document.getElementById('ans1_pass').value.trim().toUpperCase() === 'AURORA_BREACH' && document.getElementById('ans1_token').value.trim() === '47') { questData.user = 'GHOST'; questData.pass = 'AURORA_BREACH'; questData.token = '47'; handleCorrectAnswer(); } else { alert("ДАННЫЕ НЕВЕРНЫ. 'ЦЕРБЕР' УСИЛИВАЕТ ЗАЩИТУ."); } }
-        function checkStage2() { if(document.getElementById('answer2').value.trim().toLowerCase() === 'systemctl disable cerberus.legacy_ftp.service') {handleCorrectAnswer();} else { alert('НЕВЕРНАЯ КОМАНДА. ПОДСИСТЕМА ВСЕ ЕЩЕ АКТИВНА.'); }}
-        function checkStage3() { const answer = document.getElementById('answer3').value.trim().toUpperCase(); if(answer === '0X41424344') { questData.memoryKey = answer; handleCorrectAnswer(); } else { alert('НЕВЕРНЫЙ КЛЮЧ. ПРОВЕРЬТЕ АДРЕС В ДАМПЕ.'); } }
-        function checkStage4() { const answer = document.getElementById('answer4').value.trim().toUpperCase(); if(answer === 'GHOST') { questData.shieldName = answer; handleCorrectAnswer(); } else { alert("ОШИБКА РАСПОЗНАВАНИЯ. 'ЦЕРБЕР' МАСКИРУЕТ СИГНАЛ."); } }
-        function checkStage5() { const answer = document.getElementById('answer5').value.trim(); if(answer === '218.45.192.88') { questData.attackerIP = answer; handleCorrectAnswer(); } else { alert('IP-АДРЕС НЕВЕРЕН. УТЕЧКА ПРОДОЛЖАЕТСЯ.'); } }
-        function checkStage6() { if(document.getElementById('answer6').value.trim().toLowerCase() === 'hello-world-omega-test') { questData.decodedPhrase = 'hello-world-omega-test'; handleCorrectAnswer(); } else { alert('ДЕКОДИРОВАНИЕ НЕУДАЧНО ИЛИ ФРАЗА НЕВЕРНА.'); } }
-        function checkStage7() { if(document.getElementById('answer7').value.trim() === 'chimera-2077-lock') { questData.constructedPass = 'chimera-2077-lock'; handleCorrectAnswer(); } else { alert('НЕВЕРНЫЙ ПАРОЛЬ. ПРОВЕРЬТЕ ФОРМАТ И ПЕРЕМЕННЫЕ.'); } }
-        function checkStage8(action) { if(action === 'ISOLATE_NETWORK') handleCorrectAnswer(); else { alert('НЕВЕРНОЕ РЕШЕНИЕ. БОРЬБА СО СЛЕДСТВИЕМ, А НЕ С ПРИЧИНОЙ, ПРИВЕЛА К КРАХУ СИСТЕМЫ. ПЕРЕЗАПУСК...'); location.reload(); } }
-        function checkStage9() { if(document.getElementById('answer9').value.trim().toLowerCase() === 'inject_and_hide') { handleCorrectAnswer(); } else { alert('ИДЕНТИФИКАЦИЯ НЕ ПРОЙДЕНА.'); } }
-        function checkStage10() { const answer = document.getElementById('answer10').value.trim().toLowerCase(); if(answer === 'user32.dll') { questData.compromisedFile = 'user32.dll'; handleCorrectAnswer(); } else { alert('НЕВЕРНЫЙ ФАЙЛ. ВНИМАТЕЛЬНО ИЗУЧИТЕ ОТЧЕТ НА ПРЕДМЕТ КРИТИЧЕСКИХ СБОЕВ.'); } }
-        function checkStage11() { if(document.getElementById('answer11').value.trim().toUpperCase() === 'OMEGA-LOCKDOWN') { questData.hexCommand = 'OMEGA-LOCKDOWN'; handleCorrectAnswer(); } else { alert('НЕВЕРНАЯ КОМАНДА.'); } }
-        function checkStage12() { if(document.getElementById('answer12').value.trim() === '/opt/aurora/diag_tool') { questData.vulnerableFile = '/opt/aurora/diag_tool'; handleCorrectAnswer(); } else { alert('НЕВЕРНЫЙ ПУТЬ К ФАЙЛУ. ВЕКТОР АТАКИ ОСТАЕТСЯ ОТКРЫТЫМ.'); } }
-        function checkStage13() { if(document.getElementById('answer13').value.trim() === 'backup_access_key_Alpha7!') { questData.sqlValue = 'backup_access_key_Alpha7!'; handleCorrectAnswer(); } else { alert('ДАННЫЕ НЕВЕРНЫ.'); } }
-        function checkStage14() { if(document.getElementById('answer14').value.trim() === '80') { questData.asmResult = 80; handleCorrectAnswer(); } else { alert('НЕВЕРНЫЙ РЕЗУЛЬТАТ. ПРОВЕРЬТЕ ВЫЧИСЛЕНИЯ.'); } }
-        function checkStage15() { if(document.getElementById('answer15').value.trim().toLowerCase() === 'j.holloway') { questData.attackerUser = 'j.holloway'; handleCorrectAnswer(); } else { alert('НЕВЕРНОЕ ИМЯ ПОЛЬЗОВАТЕЛЯ. ПРОВЕРЬТЕ ЦЕПОЧКУ СОБЫТИЙ В ЛОГАХ.'); } }
-        function checkStage17() { const finalCode = `${questData.memoryKey}-${questData.attackerIP}-${questData.hexCommand}-${questData.attackerUser}`; if(document.getElementById('answer17').value.trim().toUpperCase() === finalCode.toUpperCase()) { handleCorrectAnswer(); } else { alert('МАСТЕР-КЛЮЧ НЕВЕРЕН. ДОСТУП ЗАБЛОКИРОВАН.'); } }
-
-        function startGlitchEffect() {
-            const glitchBox = document.getElementById('glitch-box');
-            if(!glitchBox) return;
-            const targetWord = 'GHOST';
-            const chars = 'AZERTYUIOPQSDFGHJKLMWXCVBN0123456789*#$@';
-            if (glitchInterval) clearInterval(glitchInterval);
-            glitchInterval = setInterval(() => {
-                let newText = '';
-                for (let i = 0; i < targetWord.length; i++) {
-                    newText += Math.random() > 0.6 ? targetWord[i] : chars[Math.floor(Math.random() * chars.length)];
-                }
-                glitchBox.textContent = newText;
-            }, 100);
-        }
-
-        function processStage6Tool() {
-            const text = document.getElementById('tool-input-6-text').value.toLowerCase();
-            const shift = parseInt(document.getElementById('tool-input-6-key').value);
-            const output = document.getElementById('tool-output-6');
-            if (isNaN(shift)) { output.textContent = 'ОШИБКА: Ключ должен быть числом.'; return; }
-            
-            let result = '';
-            const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i];
-                const index = alphabet.indexOf(char);
-                if (index !== -1) {
-                    let newIndex = (index - shift + 26) % 26;
-                    result += alphabet[newIndex];
-                } else {
-                    result += char;
-                }
-            }
-            output.textContent = result;
-        }
-
-        function processStage11Tool() {
-            const hex = document.getElementById('tool-input-11').value.replace(/\s/g, '');
-            const output = document.getElementById('tool-output-11');
-            let str = '';
-            if (hex.length % 2 !== 0) {
-                 output.textContent = 'ОШИБКА: Неверная длина HEX-строки.'; return;
-            }
-            try {
-                for (let i = 0; i < hex.length; i += 2) {
-                    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-                }
-                output.textContent = str;
-            } catch (e) {
-                output.textContent = 'ОШИБКА: Неверные символы в HEX-строке.';
-            }
-        }
-        
-        // --- STAGE 16: Reaper Protocol v2.0 Logic ---
-        function initStage16() {
-            gameState = {
-                agent: { status: 'SHIELDED', health: 100, adaptation: 'NONE' },
-                player: { energy: 100 },
-                gameOver: false
-            };
-            const log = document.getElementById('stage16-log');
-            if(log) log.innerHTML = '';
-
-            // BUG FIX: Re-enable buttons on restart
-            document.querySelectorAll('#stage16-actions button').forEach(btn => btn.disabled = false);
-
-            updateGameDisplay();
-            logToStage16('Протокол "Жнец" v2.0 активирован. Цель обнаружена.', 'warn');
-        }
-        
-        function updateGameDisplay() {
-            document.getElementById('agent-status').textContent = gameState.agent.status + (gameState.agent.adaptation !== 'NONE' ? ` (ADAPTED: ${gameState.agent.adaptation})` : '');
-            document.getElementById('agent-health').textContent = `${gameState.agent.health}%`;
-            document.getElementById('player-energy').textContent = gameState.player.energy;
-
-            if (gameState.gameOver) {
-                 document.querySelectorAll('#stage16-actions button').forEach(btn => btn.disabled = true);
-            }
-        }
-
-        function logToStage16(message, type = 'info') {
-            const log = document.getElementById('stage16-log');
-            if(log) log.innerHTML += `<p class="log-entry ${type}">> ${message}</p>`;
-            log.scrollTop = log.scrollHeight;
-        }
-        
-        function spendEnergy(cost) {
-            if (gameState.player.energy < cost) {
-                logToStage16(`Недостаточно энергии! Требуется: ${cost}, Доступно: ${gameState.player.energy}`, 'error');
-                return false;
-            }
-            gameState.player.energy -= cost;
-            return true;
-        }
-
-        function performAgentAction(action) {
-            if (gameState.gameOver) return;
-
-            switch(action) {
-                case 'overload':
-                    if (!spendEnergy(30)) return;
-                    if (gameState.agent.status === 'SHIELDED') {
-                        gameState.agent.status = 'VULNERABLE';
-                        logToStage16('Щиты перегружены. Агент уязвим!', 'success');
-                    } else {
-                        logToStage16('Действие неэффективно. Щиты уже отключены.', 'error');
-                    }
-                    break;
-                
-                case 'analyze':
-                    if (!spendEnergy(10)) return;
-                    let vulnerability = 'АЛЬФА';
-                    if (gameState.agent.adaptation === 'ALPHA') { vulnerability = 'БЕТА'; }
-                    logToStage16(`АНАЛИЗ: Обнаружена уязвимость к эксплойту типа ${vulnerability}.`, 'info');
-                    break;
-
-                case 'execute_alpha':
-                case 'execute_beta':
-                    const exploitType = (action === 'execute_alpha') ? 'ALPHA' : 'BETA';
-                    if (!spendEnergy(25)) return;
-
-                    if (gameState.agent.status === 'SHIELDED') {
-                        logToStage16('КОНТРАТАКА: Атака по щиту вызвала ответный импульс! Энергия -20.', 'danger-text');
-                        gameState.player.energy -= 20;
-                    } else if (gameState.agent.adaptation === exploitType) {
-                        logToStage16(`Броня адаптирована к ${exploitType}. Атака неэффективна.`, 'error');
-                    } else {
-                        gameState.agent.health -= 50;
-                        gameState.agent.adaptation = exploitType;
-                        if(gameState.agent.health < 0) gameState.agent.health = 0;
-                        logToStage16(`Попадание эксплойтом ${exploitType}! Целостность агента: ${gameState.agent.health}%.`, 'success');
-                        
-                        if (gameState.agent.health > 0) {
-                            logToStage16(`Агент адаптируется к атаке типа ${exploitType}...`, 'warn');
-                            setTimeout(() => {
-                               gameState.agent.status = 'SHIELDED';
-                               logToStage16('Агент восстановил щиты!');
-                               updateGameDisplay();
-                            }, 1500);
+        function checkAnswers(e) {
+            const target = e.target; const stageNum = target.dataset.stage; if (!stageNum) return;
+            let isCorrect = false; let errorElements = []; const stageKey = 'stage' + stageNum;
+            switch (stageKey) {
+                case 'stage1': const user = document.getElementById('ans1_user'), pass = document.getElementById('ans1_pass'), token = document.getElementById('ans1_token'); isCorrect = user.value.trim().toUpperCase() === config.answers.stage1.user && pass.value.trim().toUpperCase() === config.answers.stage1.pass && token.value.trim() === config.answers.stage1.token; if (!isCorrect) errorElements = [user, pass, token]; else state.questData.user = config.answers.stage1.user; break;
+                case 'stage17': const finalCode = `${state.questData.memoryKey}-${state.questData.attackerIP}-${state.questData.hexCommand}-${state.questData.attackerUser}`; const ans17 = document.getElementById('answer17'); isCorrect = ans17.value.trim().toUpperCase() === finalCode.toUpperCase(); if (!isCorrect) errorElements = [ans17]; else state.questData.masterKey = ans17.value.trim().toUpperCase(); break;
+                default:
+                    const answerInput = document.getElementById('answer' + stageNum);
+                    if (answerInput && config.answers[stageKey] !== undefined) {
+                        isCorrect = answerInput.value.trim().toLowerCase() === String(config.answers[stageKey]).toLowerCase();
+                        if (!isCorrect) { errorElements = [answerInput]; } else {
+                            if(stageKey === 'stage3') state.questData.memoryKey = config.answers.stage3;
+                            if(stageKey === 'stage5') state.questData.attackerIP = config.answers.stage5;
+                            if(stageKey === 'stage11') state.questData.hexCommand = config.answers.stage11;
+                            if(stageKey === 'stage15') state.questData.attackerUser = config.answers.stage15;
                         }
                     }
-                    break;
-
-                case 'recharge':
-                    if (!spendEnergy(0)) return; // Check for energy just in case, cost is 0
-                    gameState.player.energy += 15;
-                    if (gameState.player.energy > 100) gameState.player.energy = 100;
-                    logToStage16('Перенаправление энергии... Заряд +15.', 'info');
-                    break;
-
-                case 'purge':
-                    if (gameState.agent.health <= 0) {
-                        logToStage16('Протокол "Жнец" выполнен. Агент стерт. Система чиста.', 'success');
-                        gameState.gameOver = true;
-                        setTimeout(handleCorrectAnswer, 1500);
-                    } else {
-                        logToStage16('Очистка невозможна. Агент все еще активен.', 'error');
-                    }
-                    break;
             }
-
-            if (gameState.player.energy <= 0 && !gameState.gameOver) {
-                gameState.player.energy = 0;
-                logToStage16('КРИТИЧЕСКИЙ СБОЙ: Энергия на нуле. Миссия провалена. Перезапуск протокола...', 'danger-text');
-                gameState.gameOver = true;
-                setTimeout(initStage16, 3000);
-            }
-            
-            updateGameDisplay();
+            if (isCorrect) handleCorrectAnswer(); else showError(errorElements);
         }
-        
-        function showFinalScreen() {
+
+        function handleChoice(e) { 
+            const action = e.target.dataset.action; if (!action) return; 
+            const stageId = e.target.closest('.stage').id;
+            let correctAnswer;
+            switch(stageId) {
+                case 'stage8': correctAnswer = config.answers.stage8; break;
+                case 'stage21': correctAnswer = config.answers.stage21; break;
+                default: return;
+            }
+            if (action === correctAnswer) handleCorrectAnswer(); else { alert('НЕВЕРНОЕ РЕШЕНИЕ. КРАХ СИСТЕМЫ. ПЕРЕЗАПУСК...'); location.reload(); }
+        }
+
+        function handleTools(e) { const toolNum = e.target.dataset.tool; if (!toolNum) return; switch(toolNum) { case '6': const text6 = document.getElementById('tool-input-6-text').value.toLowerCase(); const shift = parseInt(document.getElementById('tool-input-6-key').value); const output6 = document.getElementById('tool-output-6'); if (isNaN(shift)) { output6.textContent = 'ОШИБКА: Ключ должен быть числом.'; return; } let result = ''; const alphabet = 'abcdefghijklmnopqrstuvwxyz'; for (let i = 0; i < text6.length; i++) { const char = text6[i]; const index = alphabet.indexOf(char); if (index !== -1) { let newIndex = (index - shift + 26) % 26; result += alphabet[newIndex]; } else { result += char; } } output6.textContent = result; break; case '11': const hex = document.getElementById('tool-input-11').value.replace(/\s/g, ''); const output11 = document.getElementById('tool-output-11'); if (hex.length % 2 !== 0) { output11.textContent = 'ОШИБКА: Неверная длина HEX-строки.'; return; } try { let str = ''; for (let i = 0; i < hex.length; i += 2) { str += String.fromCharCode(parseInt(hex.substr(i, 2), 16)); } output11.textContent = str; } catch (err) { output11.textContent = 'ОШИБКА: Неверные символы в HEX-строке.'; } break; } }
+        function startGlitchEffect() { const glitchBox = document.getElementById('glitch-box'); if (!glitchBox) return; const targetWord = config.answers.stage4; const chars = 'AZERTYUIOPQSDFGHJKLMWXCVBN0123456789*#$@'; stopGlitchEffect(); state.glitchInterval = setInterval(() => { let newText = ''; for (let i = 0; i < targetWord.length; i++) { newText += Math.random() > 0.6 ? targetWord[i] : chars[Math.floor(Math.random() * chars.length)]; } glitchBox.textContent = newText; }, 100); }
+
+        function initStage16() { state.stage16 = { agent: { status: 'SHIELDED', health: 100, adaptation: 'NONE' }, player: { energy: 100 }, gameOver: false }; const log = document.getElementById('stage16-log'); if (log) log.innerHTML = ''; document.querySelectorAll('#stage16-actions button').forEach(btn => btn.disabled = false); updateGameDisplay16(); logToStage16('Протокол "Жнец" v2.0 активирован.', 'warn'); }
+        function updateGameDisplay16() { document.getElementById('agent-status').textContent = state.stage16.agent.status + (state.stage16.agent.adaptation !== 'NONE' ? ` (ADAPTED: ${state.stage16.agent.adaptation})` : ''); document.getElementById('agent-health').textContent = `${state.stage16.agent.health}%`; document.getElementById('player-energy').textContent = state.stage16.player.energy; if (state.stage16.gameOver) { document.querySelectorAll('#stage16-actions button').forEach(btn => btn.disabled = true); } }
+        function logToStage16(message, type = 'info') { const log = document.getElementById('stage16-log'); if (log) { log.innerHTML += `<p class="log-entry ${type}">> ${message}</p>`; log.scrollTop = log.scrollHeight; } }
+        function agentTurn() { if (state.stage16.gameOver) return; setTimeout(() => { let actionTaken = false; if (state.stage16.agent.status === 'VULNERABLE' && Math.random() < 0.75) { state.stage16.agent.status = 'SHIELDED'; logToStage16('ХОД АГЕНТА: Щиты восстановлены!', 'warn'); actionTaken = true; } else if (state.stage16.agent.health < 100 && Math.random() < 0.5) { state.stage16.agent.health = Math.min(100, state.stage16.agent.health + 5); logToStage16(`ХОД АГЕНТА: Аварийный ремонт...`, 'warn'); actionTaken = true; } if (!actionTaken) { logToStage16('ХОД АГЕНТА: Перекалибровка...', 'info'); } updateGameDisplay16(); document.querySelectorAll('#stage16-actions button').forEach(btn => btn.disabled = state.stage16.gameOver); }, 800); }
+        function handleStage16(e) { const action = e.target.dataset.action; if (!action || state.stage16.gameOver) return; document.querySelectorAll('#stage16-actions button').forEach(btn => btn.disabled = true); let cost = 0; switch(action) { case 'overload': cost = 30; break; case 'analyze': cost = 10; break; case 'execute_alpha': case 'execute_beta': cost = 25; break; case 'recharge': cost = 0; break; } if (state.stage16.player.energy < cost) { logToStage16(`Недостаточно энергии!`, 'error'); document.querySelectorAll('#stage16-actions button').forEach(btn => btn.disabled = false); return; } state.stage16.player.energy -= cost; switch(action) { case 'overload': if (state.stage16.agent.status === 'SHIELDED') { state.stage16.agent.status = 'VULNERABLE'; logToStage16('Щиты перегружены. Агент уязвим!', 'success'); } else { logToStage16('Действие неэффективно.', 'warn'); } break; case 'analyze': logToStage16(`АНАЛИЗ: Уязвимость к ${(state.stage16.agent.adaptation === 'ALPHA') ? 'БЕТА' : 'АЛЬФА'}.`, 'info'); break; case 'execute_alpha': case 'execute_beta': const exploitType = (action === 'execute_alpha') ? 'ALPHA' : 'BETA'; if (state.stage16.agent.status === 'SHIELDED') { logToStage16('КОНТРАТАКА: Энергия -20.', 'error'); state.stage16.player.energy -= 20; } else if (state.stage16.agent.adaptation === exploitType) { logToStage16(`Адаптация! Атака ${exploitType} неэффективна.`, 'error'); } else { state.stage16.agent.health = Math.max(0, state.stage16.agent.health - 50); logToStage16(`Попадание! Целостность: ${state.stage16.agent.health}%.`, 'success'); if (state.stage16.agent.health > 0) { state.stage16.agent.adaptation = exploitType; logToStage16(`Агент адаптируется...`, 'warn'); } } break; case 'recharge': state.stage16.player.energy = Math.min(100, state.stage16.player.energy + 15); logToStage16('Перенаправление энергии... Заряд +15.', 'info'); break; case 'purge': if (state.stage16.agent.health <= 0) { logToStage16('Протокол "Жнец" выполнен.', 'success'); state.stage16.gameOver = true; setTimeout(handleCorrectAnswer, 1500); return; } else { logToStage16('Очистка невозможна.', 'error'); } break; } updateGameDisplay16(); if (state.stage16.player.energy <= 0 && !state.stage16.gameOver) { state.stage16.player.energy = 0; logToStage16('КРИТИЧЕСКИЙ СБОЙ: Энергия на нуле.', 'error'); state.stage16.gameOver = true; setTimeout(initStage16, 3000); } else if (!state.stage16.gameOver) { agentTurn(); } }
+
+        function showTransitionScreen() {
+            hideAll(); const stage = document.getElementById('transition-screen'); const template = document.getElementById('transition-screen-template'); if (template) stage.innerHTML = template.innerHTML;
+            stage.style.display = 'flex'; setTimeout(() => stage.classList.add('visible'), 10);
+            const telemetryLog = document.getElementById('final-telemetry-log'); const asciiArt = document.getElementById('final-ascii-art'); const commandPrompt = document.getElementById('final-command-prompt'); const commandInput = document.getElementById('final-command-input'); const debriefTableBody = document.querySelector('#final-debrief-table tbody');
+            const telemetryLines = [ "Инициализация прямого подключения к симуляционному ядру...", "Статус: <span class='status-success'>OK</span>", "Обход файрвола 'Авроры-СИМ'... ", "Сигнатура: 0xDEADBEEF... Статус: <span class='status-accent'>ПРОЙДЕНО</span>", "Поиск процесса ИИ 'Цербер-СИМ'... ", "PID: 911... Статус: <span class='status-danger'>ОБНАРУЖЕН</span>", "--------------------------------", "[<span class='warn-text'>ПРОМЕТЕЙ</span>]: > Система твоя. Введи команду для получения доступа к реальной сети: <span class='status-accent'>execute_omega_protocol</span>" ];
+            let lineIndex = 0; function typeTelemetry() { if (lineIndex < telemetryLines.length) { telemetryLog.innerHTML += `> ${telemetryLines[lineIndex]}\n`; telemetryLog.scrollTop = telemetryLog.scrollHeight; lineIndex++; setTimeout(typeTelemetry, 250); } else { showFinalDebrief(); } }
+            function typeCell(cell, text, callback) { let i = 0; cell.innerHTML = ""; const interval = setInterval(() => { if (i < text.length) { cell.innerHTML += text.charAt(i); i++; } else { clearInterval(interval); if(callback) callback(); } }, 30); }
+            function showFinalDebrief() {
+                const debriefData = [ { task: `Пробой периметра`, result: `Позывной 'GHOST' подтвержден`, status: `<span class="status-success">УСПЕХ</span>` }, { task: `Саботаж системы`, result: `Уязвимая служба отключена`, status: `<span class="status-warn">ВЫПОЛНЕНО</span>` }, { task: `Идентификация инсайдера`, result: `j.holloway`, status: `<span class="status-success">УСПЕХ</span>` }, { task: `Нейтрализация агента`, result: `Протокол "Жнец" завершен`, status: `<span class="status-danger">УСПЕХ</span>` }, { task: `Контроль над симуляцией`, result: `Ядро 'Авроры-СИМ' захвачено`, status: `<span class="status-accent">ПОЛНЫЙ</span>` } ];
+                let rowIndex = 0; function addRow() { if (rowIndex < debriefData.length) { const item = debriefData[rowIndex]; const tr = debriefTableBody.insertRow(); const taskCell = tr.insertCell(); const resultCell = tr.insertCell(); const statusCell = tr.insertCell(); taskCell.textContent = item.task; statusCell.innerHTML = item.status; setTimeout(() => tr.style.opacity = 1, 50); typeCell(resultCell, item.result, () => { rowIndex++; addRow(); }); } else { setTimeout(() => { commandPrompt.style.display = 'flex'; commandInput.focus(); }, 500); } } addRow();
+            }
+            commandInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { if (commandInput.value.trim().toLowerCase() === 'execute_omega_protocol') { commandInput.disabled = true; commandInput.style.borderColor = 'var(--main-color)'; stage.classList.add('glitch-active'); updateDevConsoleForSecretStages(); setTimeout(() => { stage.classList.remove('glitch-active'); advanceState(); }, 1500); } else { showError([commandInput]); } } });
+            const omegaArt = [ "        _.-^^---....,,--_        ", "    _--                  --_  ", "   <                        >)   ", "   |                         |   ", "    \\._                   _./    ", "       ```--. . , ; .--'''       ", "             | |   |             ", "          .-=||  | |=-.          ", "          `-=#$%&%$#=-'          ", "             | ;  :|             ", "    /\\/\\/\\/\\/  ,/  |\\/\\/\\/\\/\\    ", ]; asciiArt.textContent = omegaArt.join('\n'); typeTelemetry();
+        }
+
+        function showTrueFinalScreen() {
             hideAll();
-            populateQuestData(17);
-            const stage = document.getElementById('final-screen');
-            const template = document.getElementById('final-screen-template');
-            if (template) stage.innerHTML = template.innerHTML;
-
-            const reportContainer = document.getElementById('final-report-container');
+            const stage = document.getElementById('true-final-screen');
+            const template = document.getElementById('true-final-screen-template');
+            if (template) { stage.innerHTML = template.innerHTML; } else { return; }
+            stage.style.display = 'flex'; setTimeout(() => stage.classList.add('visible'), 10);
             
-            const reportData = [
-                { label: 'Ключ сессии:', value: questData.memoryKey },
-                { label: 'IP-адрес "Цербера":', value: questData.attackerIP },
-                { label: 'Команда HEX:', value: questData.hexCommand },
-                { label: 'Ключевой инсайдер:', value: questData.attackerUser },
-                { label: 'Цель:', value: "ПРОТОКОЛ ОМЕГА" },
-                { label: 'Статус:', value: "ГОТОВ К ВЫПОЛНЕНИЮ" },
-            ];
-            
-            reportData.forEach((item, index) => {
-                setTimeout(() => {
-                    const reportItem = document.createElement('div');
-                    reportItem.className = 'report-item';
-                    reportItem.innerHTML = `<span class="label">${item.label}</span><span class="data"></span><span class="status">[...]</span>`;
-                    if (reportContainer) reportContainer.appendChild(reportItem);
+            const statsList = document.getElementById('final-stats-list');
+            const intelList = document.getElementById('final-intel-recap');
+            const targetInfo = document.getElementById('final-target-info');
+            const connectButton = document.getElementById('connect-button');
+            connectButton.href = DOM.finalLink;
 
-                    setTimeout(() => reportItem.classList.add('visible'), 50);
-                    
+            const statsData = [ { term: "Оператор", def: state.questData.user || "GHOST" }, { term: "Результат аттестации", def: "Успешно" }, { term: "Угрозы симуляции", def: "<span style='color: var(--danger-color)'>Нейтрализованы</span>" }, { term: "Допуск к операции 'Омега'", def: "<span style='color: var(--main-color)'>ПОДТВЕРЖДЕН</span>" } ];
+            const intelData = [ { term: "Ключ доступа из памяти", def: state.questData.memoryKey || "Н/Д" }, { term: "IP-адрес цели", def: state.questData.attackerIP || "Н/Д" }, { term: "Имя инсайдера", def: state.questData.attackerUser || "Н/Д" }, { term: "Финальный мастер-ключ", def: state.questData.masterKey || "Н/Д" } ];
+            
+            targetInfo.innerHTML = `
+                <div class="target-info"><span class="target-label">TARGET</span><span class="target-data">AURORA CORP.</span></div>
+                <div class="target-info"><span class="target-label">LOCATION</span><span class="target-data">NEO-KYOTO</span></div>
+                <div class="target-info"><span class="target-label">OBJECTIVE</span><span class="target-data">NEUTRALIZE 'OMEGA'</span></div>
+                <div class="target-status">AWAITING CONNECTION...</div>
+            `;
+            
+            function populateList(listElement, data, delay) {
+                data.forEach((item, index) => {
                     setTimeout(() => {
-                       const dataSpan = reportItem.querySelector('.data');
-                       const statusSpan = reportItem.querySelector('.status');
-                       if(!dataSpan || !statusSpan) return;
-                       animateTextScramble(dataSpan, item.value || '??????', () => {
-                           statusSpan.textContent = '[OK]';
-                           statusSpan.classList.add('confirmed');
-                       });
-                    }, 250);
-                }, index * 400);
-            });
-            
-            const finalLink = document.getElementById('final-link');
-            if (finalLink) finalLink.href = finalUrl;
-            stage.style.display = 'flex';
-            setTimeout(() => { stage.classList.add('visible'); }, 10);
-        }
-
-        function animateTextScramble(element, final_text, onComplete) { let i = 0; const scramble_chars = 'ABCDEF0123456789?#@%*<>'; const interval = setInterval(() => { let current_text = ''; let allDone = true; for(let j=0; j<final_text.length; j++) { if(j <= i) { current_text += final_text[j]; } else { current_text += scramble_chars[Math.floor(Math.random() * scramble_chars.length)]; allDone = false; } } element.textContent = current_text; if(allDone) { clearInterval(interval); if(onComplete) onComplete(); } i++; }, 50); }
-
-        function startBootAnimation() {
-            const bootText = ["ПОДКЛЮЧЕНИЕ К СИМУЛЯЦИОННОМУ УЗЛУ...", "ЗАГРУЗКА ИИ-ИНСТРУКТОРА 'ПРОМЕТЕЙ'...", "КОМПИЛЯЦИЯ СЦЕНАРИЯ АТТЕСТАЦИИ [ОМЕГА]...", "ПРОВЕРКА ЦЕЛОСТНОСТИ ДАННЫХ...", "СИМУЛЯЦИЯ ГОТОВА. УДАЧИ, ХАКЕР."];
-            let line = 0; const el = document.getElementById('preloader-text');
-            const interval = setInterval(() => {
-                if (line < bootText.length) { el.innerHTML += bootText[line] + "\n"; line++; } 
-                else { clearInterval(interval); setTimeout(() => { const preloader = document.getElementById('preloader'); preloader.style.opacity = '0'; setTimeout(() => { preloader.style.display = 'none'; startSimulation(); initDevConsole(); }, 800); }, 1000); }
-            }, 600);
-        }
-        
-        window.onload = startBootAnimation;
-        // Hotkey for dev console
-        window.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
-                e.preventDefault();
-                toggleDevConsole();
+                        const dt = document.createElement('dt');
+                        const dd = document.createElement('dd');
+                        dt.textContent = item.term;
+                        dd.innerHTML = item.def;
+                        listElement.appendChild(dt);
+                        listElement.appendChild(dd);
+                        dt.style.animationDelay = `${index * 0.15}s`;
+                        dd.style.animationDelay = `${index * 0.15 + 0.1}s`;
+                    }, (index * 150) + delay);
+                });
             }
+            populateList(statsList, statsData, 500);
+            populateList(intelList, intelData, 1500);
+        }
+
+        function populateQuestData(upToStage) {
+            state.questData = {}; const fullData = { 1: {user: 'GHOST'}, 3: { memoryKey: config.answers.stage3 }, 5: { attackerIP: config.answers.stage5 }, 11: { hexCommand: config.answers.stage11 }, 15: { attackerUser: config.answers.stage15 }, 17: { masterKey: `${config.answers.stage3}-${config.answers.stage5}-${config.answers.stage11}-${config.answers.stage15}` } };
+            for(let i = 1; i <= upToStage; i++){ if(fullData[i]) Object.assign(state.questData, fullData[i]); }
+        }
+        function jumpToStage(stageNum) { 
+            stopGlitchEffect(); populateQuestData(stageNum); 
+            if (stageNum >= 19 && !state.secretStagesUnlocked) { updateDevConsoleForSecretStages(); }
+            state.currentStep = stageNum - 1; advanceState();
+        }
+        function initDevConsole() {
+            for (let i = 1; i <= 17; i++) { DOM.devConsole.navList.innerHTML += `<li><a href="#" data-jump="${i}">Этап ${i}</a></li>`; }
+            DOM.devConsole.navList.innerHTML += `<li><a href="#" data-jump="18" style="color:var(--accent-color);">[Переход]</a></li>`;
+        }
+        function updateDevConsoleForSecretStages() {
+            if (state.secretStagesUnlocked) return;
+            DOM.devConsole.navList.innerHTML += `<li class="dev-secret-marker" style="text-align:center; color: var(--warn-color); padding: 5px 0;">--СЕКРЕТНЫЕ ЭТАПЫ--</li>`;
+            DOM.devConsole.navList.innerHTML += `<li><a href="#" data-jump="19">Секретный этап 18</a></li>`;
+            DOM.devConsole.navList.innerHTML += `<li><a href="#" data-jump="20">Секретный этап 19</a></li>`;
+            DOM.devConsole.navList.innerHTML += `<li><a href="#" data-jump="21">Секретный этап 20</a></li>`;
+            DOM.devConsole.navList.innerHTML += `<li><a href="#" data-jump="22" style="color:var(--danger-color);">Истинный финал</a></li>`;
+            state.secretStagesUnlocked = true;
+        }
+
+        function startBootAnimation() { const bootText = ["ПОДКЛЮЧЕНИЕ К СИМУЛЯЦИОННОМУ УЗЛУ...", "ЗАГРУЗКА ИИ-ИНСТРУКТОРА 'ПРОМЕТЕЙ'...", "КОМПИЛЯЦИЯ СЦЕНАРИЯ АТТЕСТАЦИИ [ОМЕГА]...", "ПРОВЕРКА ЦЕЛОСТНОСТИ ДАННЫХ...", "СИМУЛЯЦИЯ ГОТОВА. УДАЧИ, ХАКЕР."]; let line = 0; const el = DOM.preloaderText; function typeLine() { if (line < bootText.length) { el.innerHTML += bootText[line] + "\n"; line++; setTimeout(typeLine, 600); } else { setTimeout(() => { DOM.preloader.style.opacity = '0'; setTimeout(() => { DOM.preloader.style.display = 'none'; startSimulation(); }, 800); }, 1000); } } typeLine(); }
+        function startSimulation() { state.currentStep = 0; showDialogue(0); DOM.dialogue.button.onclick = () => showProcessing(advanceState); }
+        function addEventListeners() {
+            DOM.dialogue.text.addEventListener('click', skipTypewriter);
+            DOM.devConsole.trigger.addEventListener('click', () => { DOM.devConsole.container.style.display = 'block'; DOM.devConsole.trigger.style.display = 'none'; });
+            DOM.devConsole.header.addEventListener('click', () => { DOM.devConsole.container.style.display = 'none'; DOM.devConsole.trigger.style.display = 'block'; });
+            DOM.devConsole.body.addEventListener('click', (e) => { if(e.target.tagName !== 'A') return; const jumpTo = e.target.dataset.jump; if(jumpTo) jumpToStage(parseInt(jumpTo)); });
+            DOM.mainContainer.addEventListener('click', (e) => { 
+                if (e.target.tagName !== 'BUTTON') return; 
+                if (e.target.dataset.stage) checkAnswers(e); 
+                if (e.target.dataset.tool) handleTools(e); 
+                const closestStage = e.target.closest('.stage');
+                if (closestStage && (closestStage.id === 'stage8' || closestStage.id === 'stage21')) { handleChoice(e); }
+                if (e.target.closest('#stage16-actions')) handleStage16(e); 
+            });
+            window.addEventListener('keydown', (e) => { if (e.ctrlKey && e.shiftKey && e.key === 'D') { e.preventDefault(); DOM.devConsole.trigger.click(); } });
+        }
+
+        window.addEventListener('load', () => { 
+            initDevConsole(); 
+            addEventListeners(); 
+            startBootAnimation(); 
         });
+    })();
     </script>
 </body>
 </html>
